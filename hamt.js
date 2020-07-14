@@ -11,7 +11,7 @@ function nextBits(obj, n) {
 }*/
 
 function nextBits(obj, n) {
-	if (obj.left < n) throw new Error("out of bits")
+	// if (obj.left < n) throw new Error("out of bits")
     let res = (obj.num >> BigInt(obj.left-n)) & BigInt((1 << n) - 1)
     obj.left -= n
     return res
@@ -67,6 +67,32 @@ console.log(Buffer.from("AATS", "base64"))
 
 console.log(Buffer.from("REAA", "base64"))
 
+const blake = require('blakejs')
+
+function base32(bytes, alphabet) {
+	let bn = {num: bytesToBig(bytes), left: bytes.length*8}
+	let res = ""
+	while (bn.left > 0) {
+		res += alphabet[Number(nextBits(bn, 5))]
+	}
+	return res
+}
+
+function addressToString(dta) {
+	let bytes = Buffer.from(dta, "base64")
+	let addr = "wait"
+	if (bytes[0] == 0) {
+		addr = readVarInt(bytes, 1)
+	}
+	if (bytes[0] == 1) {
+		let hash = blake.blake2bHex(bytes, null, 4)
+		console.log(hash, bytes.slice(1))
+		let b = Buffer.concat([bytes.slice(1), Buffer.from(hash,"hex")])
+		addr = base32(b, "abcdefghijklmnopqrstuvwxyz234567")
+	}
+	return `t${bytes[0]}${addr}`
+}
+
 let data = [
 	"REAA",
 	[
@@ -116,6 +142,12 @@ function getValue(n, hv, key) {
 	let c = n.data.pointers[cindex]
 
 	console.log("cindex", cindex, c)
+
+	for (let it of Object.values(c)) {
+		for (let [k,v] of it) {
+			console.log(`key ${addressToString(k)} value ${bytesToBig(Buffer.from(v, "base64"), 0)}`)
+		}
+	}
 	/*
 	if c.isShard() {
 		chnd, err := c.loadChild(ctx, n.store, n.bitWidth, n.hash)
@@ -148,7 +180,7 @@ function bytesToBig(p) {
 function parseNode(data) {
 	return {
 		pointers: data[1],
-		bitfield: bytesToBig(Buffer.from("REAA", "base64")),
+		bitfield: bytesToBig(Buffer.from(data[0], "base64")),
 	}
 }
 
