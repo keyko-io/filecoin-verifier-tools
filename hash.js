@@ -145,8 +145,11 @@ exports.fmix = fmix64
 exports.bmix = bmix
 exports.hash = hash
 
-let res = hash(new Buffer.from("asd"))
+/*
+let res = hash(Buffer.from("asd"))
 console.log(res.h1.toString(16), res.h2.toString(16))
 
-res = hash(new Buffer.from("quick brown fox jumped over the fence"))
+res = hash(Buffer.from("quick brown fox jumped over the fence"))
 console.log(res.h1.toString(16), res.h2.toString(16))
+*/
+
