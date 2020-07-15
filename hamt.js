@@ -86,7 +86,6 @@ function addressToString(dta) {
 	}
 	if (bytes[0] == 1) {
 		let hash = blake.blake2bHex(bytes, null, 4)
-		console.log(hash, bytes.slice(1))
 		let b = Buffer.concat([bytes.slice(1), Buffer.from(hash,"hex")])
 		addr = base32(b, "abcdefghijklmnopqrstuvwxyz234567")
 	}
@@ -158,14 +157,22 @@ function getValue(n, hv, key) {
 		return chnd.getValue(ctx, hv, k, cb)
 	}
 
-	for _, kv := range c.KVs {
-		if string(kv.Key) == k {
-			return cb(kv)
-		}
-	}
-
     return ErrNotFound
     */
+}
+
+async function forEach(n, load) {
+	for (let c of n.data.pointers) {
+		if (c[0]) {
+			let child = await load(c[0]['/'])
+			await forEach({bitWidth: n.bitWidth, data: parseNode(child)})
+		}
+		if (c[1]) {
+			for (let [k, v] of c[1]) {
+				console.log(`key ${addressToString(k)} value ${bytesToBig(Buffer.from(v, "base64"), 0)}`)
+			}
+		}
+	}
 }
 
 function bytesToBig(p) {
@@ -193,4 +200,11 @@ find({bitWidth: 5, data: parseNode(data)}, Buffer.from("ARiJj38k7tKKrHfwsOztHUhl
 find({bitWidth: 5, data: parseNode(data)}, Buffer.from("AOkH", "base64"))
 find({bitWidth: 5, data: parseNode(data)}, Buffer.from("AFA=", "base64"))
 
+forEach({bitWidth: 5, data: parseNode(data)})
+
+exports.printData = async function (data, load) {
+	await forEach({bitWidth: 5, data: parseNode(data)}, async a => {
+		return load(a)
+	})
+}
 
