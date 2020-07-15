@@ -3,6 +3,7 @@
     "@filecoin-shipyard/lotus-client-provider-nodejs": "0.0.5",
     "@filecoin-shipyard/lotus-client-rpc": "0.0.11",
     "@filecoin-shipyard/lotus-client-schema": "0.0.12",
+    "@zondax/filecoin-signing-tools": "^0.5.2",
     "blakejs": "^1.1.0",
     "cids": "^0.8.3"
   }

@@ -4,9 +4,13 @@ const {NodejsProvider: Provider} = require('@filecoin-shipyard/lotus-client-prov
 const {testnet} = require('@filecoin-shipyard/lotus-client-schema')
 const hamt = require('./hamt')
 // const CID = require('cids')
+const fs = require('fs')
+
 
 const endpointUrl = 'ws://localhost:1234/rpc/v0'
-const provider = new Provider(endpointUrl)
+const provider = new Provider(endpointUrl, {token: async () => {
+    return fs.readFileSync('/home/sami/.lotus/token')
+}})
 
 const client = new LotusRPC(provider, { schema: testnet.fullNode })
 
@@ -25,7 +29,30 @@ async function run () {
       await hamt.printData(verifiers, load)
       await new Promise(resolve => { setTimeout(resolve, 1000) })
     }
-  }
+}
 
-run()
+// run()
+const signer = require("@zondax/filecoin-signing-tools")
 
+const mnemonic = 'robot matrix ribbon husband feature attitude noise imitate matrix shaft resist cliff lab now gold menu grocery truth deliver camp about stand consider number'
+
+async function testTx() {
+    let key = signer.keyDerive(mnemonic, "m/44'/1'/1/0/2", "")
+    let from = key.address
+    console.log("address", from)
+    let msg = {
+        "to": "t17uoq6tp427uzv7fztkbsnn64iwotfrristwpryy",
+        "from": from,
+        "nonce": 0,
+        "value": "10",
+        "gasprice": "0",
+        "gaslimit": 25000,
+        "method": 0,
+        "params": ""
+    }
+    let signed_str = signer.transactionSignLotus(msg, key.private_hexstring)
+    console.log(signed_str)
+    await client.mpoolPush(JSON.parse(signed_str))
+}
+
+testTx()
