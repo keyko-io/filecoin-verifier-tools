@@ -4,7 +4,15 @@
     "@filecoin-shipyard/lotus-client-rpc": "0.0.11",
     "@filecoin-shipyard/lotus-client-schema": "0.0.12",
     "@zondax/filecoin-signing-tools": "^0.5.2",
+    "base32-decode": "^1.0.0",
+    "base32-encode": "^1.1.1",
+    "bip32": "^2.0.5",
+    "bip39": "^3.0.2",
     "blakejs": "^1.1.0",
-    "cids": "^0.8.3"
+    "cbor": "^5.0.2",
+    "cids": "^0.8.3",
+    "ipld-dag-cbor": "^0.16.0",
+    "secp256k1": "^4.0.1",
+    "varint": "^5.0.0"
   }
 }

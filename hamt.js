@@ -1,15 +1,6 @@
 const hash = require('./hash').hash
 
 // Get n next bits
-/*
-function nextBits(obj, n) {
-    if (obj.left < n) throw new Error("out of bits")
-    let res = obj.num & BigInt((2 << n) - 1)
-    obj.left -= n
-    obj.num = obj.num >> BigInt(n)
-    return res
-}*/
-
 function nextBits(obj, n) {
 	// if (obj.left < n) throw new Error("out of bits")
     let res = (obj.num >> BigInt(obj.left-n)) & BigInt((1 << n) - 1)
@@ -17,6 +8,7 @@ function nextBits(obj, n) {
     return res
 }
 
+/*
 let obj = {left:64, num: 0x12345fffan}
 
 console.log(nextBits(obj, 5))
@@ -30,10 +22,10 @@ console.log(nextBits(obj, 5))
 console.log(nextBits(obj, 5))
 console.log(nextBits(obj, 5))
 console.log(nextBits(obj, 5))
+*/
 
 function indexForBitPos(bp, bitfield) {
     let acc = bitfield
-    console.log(acc)
     let idx = 0
     while (bp > 0) {
         if ((acc & 1n) === 1n) {
@@ -45,7 +37,7 @@ function indexForBitPos(bp, bitfield) {
     return idx
 }
 
-console.log("pos", indexForBitPos(10, 0xf0f0f00f0ff0f0n))
+// console.log("pos", indexForBitPos(10, 0xf0f0f00f0ff0f0n))
 
 function readVarInt(bytes, offset) {
     let res = 0n
@@ -60,12 +52,14 @@ function readVarInt(bytes, offset) {
     return res
 }
 
+/*
 console.log(readVarInt(Buffer.from("AOkH", "base64"), 1))
 console.log(readVarInt(Buffer.from("AFA=", "base64"), 1))
 
 console.log(Buffer.from("AATS", "base64"))
 
 console.log(Buffer.from("REAA", "base64"))
+*/
 
 const blake = require('blakejs')
 
@@ -192,15 +186,17 @@ function parseNode(data) {
 }
 
 function find(n, key) {
-	console.log(hash(key).h1)
+	// console.log(hash(key).h1)
     return getValue(n, {num: hash(key).h1, left: 64}, key)
 }
 
+/*
 find({bitWidth: 5, data: parseNode(data)}, Buffer.from("ARiJj38k7tKKrHfwsOztHUhl+Z/j", "base64"))
 find({bitWidth: 5, data: parseNode(data)}, Buffer.from("AOkH", "base64"))
 find({bitWidth: 5, data: parseNode(data)}, Buffer.from("AFA=", "base64"))
 
 forEach({bitWidth: 5, data: parseNode(data)})
+*/
 
 exports.printData = async function (data, load) {
 	await forEach({bitWidth: 5, data: parseNode(data)}, async a => {
