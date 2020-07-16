@@ -1,3 +1,5 @@
+// from https://github.com/Zondax/filecoin-signing-tools/
+
 const base32Encode = require("base32-encode");
 const secp256k1 = require("secp256k1");
 const { getPayloadSECP256K1, getChecksum } = require("./utils");

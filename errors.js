@@ -1,3 +1,5 @@
+// from https://github.com/Zondax/filecoin-signing-tools/
+
 class UnknownProtocolIndicator extends Error {
   constructor(...args) {
     super(...args);
