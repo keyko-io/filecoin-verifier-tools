@@ -3,6 +3,7 @@
     "@filecoin-shipyard/lotus-client-provider-nodejs": "0.0.5",
     "@filecoin-shipyard/lotus-client-rpc": "0.0.11",
     "@filecoin-shipyard/lotus-client-schema": "0.0.12",
+    "@openworklabs/filecoin-address": "/home/sami/filecoin-address",
     "@zondax/filecoin-signing-tools": "^0.5.2",
     "base32-decode": "^1.0.0",
     "base32-encode": "^1.1.1",
