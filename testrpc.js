@@ -5,7 +5,6 @@ const {testnet} = require('@filecoin-shipyard/lotus-client-schema')
 const fs = require('fs')
 const signer = require("@Zondax/filecoin-signing-tools")
 const cbor = require('cbor')
-const utils = require('./utils')
 const blake = require('blakejs')
 
 const endpointUrl = 'ws://localhost:1234/rpc/v0'
@@ -48,8 +47,8 @@ function encodeBig(bn) {
 }
 
 async function sendVerify(verified, cap) {
-    console.log([utils.addressAsBytes(verified), encodeBig(cap)])
-    await sendTx("t06", 4, cbor.encode([utils.addressAsBytes(verified), encodeBig(cap)]))
+    console.log([signer.addressAsBytes(verified), encodeBig(cap)])
+    await sendTx("t06", 4, cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)]))
 }
 
 // sendTx("t17uoq6tp427uzv7fztkbsnn64iwotfrristwpryy", 0, "")
@@ -68,7 +67,7 @@ function encodeAddVerifier(verified, cap) {
     return {
         to: "t06",
         method: 2,
-        params: cbor.encode([utils.addressAsBytes(verified), encodeBig(cap)]),
+        params: cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)]),
     }
 }
 
@@ -76,7 +75,7 @@ function encodeAddVerifiedClient(verified, cap) {
     return {
         to: "t06",
         method: 4,
-        params: cbor.encode([utils.addressAsBytes(verified), encodeBig(cap)]),
+        params: cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)]),
     }
 }
 
@@ -84,13 +83,13 @@ function encodePropose(msig, msg) {
     return {
         to: msig,
         method: 2,
-        params: cbor.encode([utils.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params])
+        params: cbor.encode([signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params])
     }
 }
 
 function encodeProposalHashdata(from, msg) {
     console.log(from, msg.to)
-    return cbor.encode([utils.addressAsBytes(from), utils.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params])
+    return cbor.encode([signer.addressAsBytes(from), signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params])
 }
 
 function encodeApprove(msig, txid, from, msg) {
