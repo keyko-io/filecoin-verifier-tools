@@ -3,11 +3,9 @@ const {LotusRPC} = require('@filecoin-shipyard/lotus-client-rpc')
 const {NodejsProvider: Provider} = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const {testnet} = require('@filecoin-shipyard/lotus-client-schema')
 const fs = require('fs')
-const signer = require("@zondax/filecoin-signing-tools")
-const mysigner = require("./signer")
+const signer = require("@Zondax/filecoin-signing-tools")
 const cbor = require('cbor')
 const utils = require('./utils')
-const { ProtocolIndicator } = require("./constants");
 const blake = require('blakejs')
 
 const endpointUrl = 'ws://localhost:1234/rpc/v0'
@@ -36,7 +34,7 @@ async function signTx({to, method, params}) {
         "method": method,
         "params": params,
     }
-    return mysigner.transactionSignLotus(msg, key.private_hexstring)
+    return signer.transactionSignLotus(msg, key.private_hexstring)
 }
 
 async function sendTx(obj) {

@@ -21,6 +21,13 @@ function getDigest(message) {
   return Buffer.from(blake.blake2bFinal(blakeCtx));
 }
 
+function getPayloadSECP256K1(uncompressedPublicKey) {
+  // blake2b-160
+  const blakeCtx = blake.blake2bInit(20);
+  blake.blake2bUpdate(blakeCtx, uncompressedPublicKey);
+  return Buffer.from(blake.blake2bFinal(blakeCtx));
+}
+
 function getAccountFromPath(path) {
   return path.split("/")[2].slice(0, -1);
 }
@@ -55,4 +62,5 @@ module.exports = {
   addressAsBytes,
   bytesToAddress,
   tryToPrivateKeyBuffer,
+  getPayloadSECP256K1,
 };
