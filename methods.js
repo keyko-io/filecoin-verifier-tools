@@ -1,28 +1,13 @@
 
-const {LotusRPC} = require('@filecoin-shipyard/lotus-client-rpc')
-const {NodejsProvider: Provider} = require('@filecoin-shipyard/lotus-client-provider-nodejs')
-const {testnet} = require('@filecoin-shipyard/lotus-client-schema')
-const fs = require('fs')
 const signer = require("@Zondax/filecoin-signing-tools")
 const cbor = require('cbor')
 const blake = require('blakejs')
 
-const endpointUrl = 'ws://localhost:1234/rpc/v0'
-const provider = new Provider(endpointUrl, {token: async () => {
-    return fs.readFileSync('/home/sami/.lotus/token')
-}})
-
-const client = new LotusRPC(provider, { schema: testnet.fullNode })
-
-const mnemonic = 'robot matrix ribbon husband feature attitude noise imitate matrix shaft resist cliff lab now gold menu grocery truth deliver camp about stand consider number'
-let key = signer.keyDerive(mnemonic, "m/44'/1'/1/0/2", "")
-console.log("address", key.address)
-
-async function signTx({to, method, params}) {
+async function signTx(client, key, {to, method, params, value}) {
     const head = await client.chainHead()
     let state = await client.stateGetActor(key.address, head.Cids)
-    console.log(params)
-    console.log(state)
+    console.log("params", params)
+    console.log("state", state)
     let msg = {
         "to": to,
         "from": key.address,
@@ -36,14 +21,20 @@ async function signTx({to, method, params}) {
     return signer.transactionSignLotus(msg, key.private_hexstring)
 }
 
-async function sendTx(obj) {
-    await client.mpoolPush(JSON.parse(signTx(obj)))
-    process.exit(0)
+async function sendTx(client, key, obj) {
+    let tx = await signTx(client, key, obj)
+    console.log(tx)
+    await client.mpoolPush(JSON.parse(tx))
+}
+
+function pad(str) {
+    if (str.length % 2 == 0) return str
+    else return '0'+str
 }
 
 function encodeBig(bn) {
     if (bn.toString() == 0) return Buffer.from("")
-    return Buffer.from('00' + bn.toString(16), 'hex')
+    return Buffer.from('00' + pad(bn.toString(16)), 'hex')
 }
 
 async function sendVerify(verified, cap) {
@@ -64,6 +55,7 @@ function encodeSend(to) {
 }
 
 function encodeAddVerifier(verified, cap) {
+    console.log("verifier", [signer.addressAsBytes(verified), encodeBig(cap)])
     return {
         to: "t06",
         method: 2,
@@ -115,4 +107,15 @@ async function main() {
     console.log(await signTx(encodeApprove("t01006", 1, "t01007", encodeAddVerifier("t01005", 7777777))))
 }
 
-main()
+// main()
+
+module.exports = {
+    encodeSend,
+    encodeApprove,
+    encodePropose,
+    encodeAddVerifier,
+    encodeAddVerifiedClient,
+    sendTx,
+    signTx,
+}
+
