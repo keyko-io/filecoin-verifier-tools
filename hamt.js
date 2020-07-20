@@ -84,10 +84,6 @@ function getBit(b, n) {
 
 async function getValue(n, load, hv, key) {
     let idx = nextBits(hv, n.bitWidth)
-	console.log("idx", idx)
-	
-	console.log(n.data.bitfield.toString(2))
-
 	if (getBit(n.data.bitfield, idx) == 0) {
 		throw new Error("not found in bitfield")
 	}
@@ -96,16 +92,14 @@ async function getValue(n, load, hv, key) {
 
 	let c = n.data.pointers[cindex]
 
-	console.log("cindex", cindex, c)
-
 	if (c[0]) {
 		let child = await load(c[0]['/'])
-		return getValue({bitWidth: n.bitWidth, data: parseNode(child)}, hv, key)
+		return getValue({bitWidth: n.bitWidth, data: parseNode(child)}, load, hv, key)
 	}
 	if (c[1]) {
 		for (let [k,v] of c[1]) {
 			// console.log(`key ${addressToString(k)} value ${bytesToBig(Buffer.from(v, "base64"), 0)}`)
-			return Buffer.from(v, "base64")
+			if (k == key.toString("base64")) return Buffer.from(v, "base64")
 		}
 	}
 	throw new Error("key not found")
@@ -115,7 +109,7 @@ async function forEach(n, load, cb) {
 	for (let c of n.data.pointers) {
 		if (c[0]) {
 			let child = await load(c[0]['/'])
-			await forEach({bitWidth: n.bitWidth, data: parseNode(child)}, cb)
+			await forEach({bitWidth: n.bitWidth, data: parseNode(child)}, load, cb)
 		}
 		if (c[1]) {
 			for (let [k, v] of c[1]) {
@@ -135,6 +129,8 @@ function bytesToBig(p) {
 	}
 	return acc
 }
+
+exports.bytesToBig = bytesToBig
 
 function parseNode(data) {
 	return {
@@ -165,6 +161,10 @@ async function main() {
 }
 
 main()
+
+exports.find = async function (data, load, key) {
+	return getValue({bitWidth: 5, data: parseNode(data)}, load, {num: hash(key).h1, left: 64}, key)
+}
 
 exports.printData = async function (data, load) {
 	await forEach({bitWidth: 5, data: parseNode(data)}, async a => {
