@@ -1,6 +1,7 @@
 
 const signer = require("@Zondax/filecoin-signing-tools")
 const cbor = require('cbor')
+const hamt = require('./hamt')
 const blake = require('blakejs')
 
 async function signTx(client, key, {to, method, params, value}) {
@@ -107,6 +108,56 @@ async function main() {
     console.log(await signTx(encodeApprove("t01006", 1, "t01007", encodeAddVerifier("t01005", 7777777))))
 }
 
+function isType(schema) {
+    if (schema === 'address' || schema === 'bigint' || schema === 'int' || schema === 'buffer') return true
+    if (schema instanceof Array) {
+        if (schema[0] === 'list' || schema[0] === 'cbor') return true
+    }
+    return false
+}
+
+function decode(schema, data) {
+    if (schema === 'address') {
+        return signer.bytesToAddress(data, true)
+    }
+    if (schema === 'bigint') {
+        return hamt.bytesToBig(data)
+    }
+    if (schema === 'int' || schema === 'buffer') {
+        return data
+    }
+    if (schema instanceof Array) {
+        if (schema[0] === 'list') {
+            return data.map(a => decode(schema[1], a))
+        }
+        if (schema[0] === 'cbor') {
+            return decode(schema[1], cbor.decode(data))
+        }
+        if (schema.length != data.length) throw new Error("schema and data length do not match")
+        if (isType(schema[0])) {
+            let res = []
+            for (let i = 0; i < data.length; i++) {
+                res.push(decode(schema[i], data[i]))
+            }
+            return res
+        }
+        let res = {}
+        for (let i = 0; i < data.length; i++) {
+            res[schema[i][0]] = decode(schema[i][1], data[i])
+        }
+        return res
+    }
+    if (typeof schema === 'object') {
+        let res = {}
+        let entries = Object.entries(schema)
+        for (let i = 0; i < entries.length; i++) {
+            res[entries[i][0]] = decode(entries[i][1], data[i])
+        }
+        return res
+    }
+    throw new Error(`Unknown type ${schema}`)
+}
+
 // main()
 
 module.exports = {
@@ -117,5 +168,6 @@ module.exports = {
     encodeAddVerifiedClient,
     sendTx,
     signTx,
+    decode,
 }
 

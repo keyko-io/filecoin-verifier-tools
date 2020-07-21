@@ -117,6 +117,8 @@ function makeBuffers(obj) {
 	}
 }
 
+exports.makeBuffers = makeBuffers
+
 async function forEach(n, load, cb) {
 	for (let c of n.data.pointers) {
 		if (c[0]) {
