@@ -191,3 +191,19 @@ exports.printData = async function (data, load) {
 	print)
 }
 
+function readVarInt(bytes, offset) {
+    let res = 0n
+    let acc = 1n
+    for (let i = offset; i < bytes.length; i++) {
+        res += BigInt(bytes[i]&0x7f)*acc
+        if (bytes[i] < 0x7f) {
+            return res
+        }
+        acc *= 128n
+    }
+    return res
+}
+
+exports.readVarInt = function (bytes) {
+	return readVarInt(bytes, 0)
+}
