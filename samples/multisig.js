@@ -2,10 +2,12 @@
 const {LotusRPC} = require('@filecoin-shipyard/lotus-client-rpc')
 const {NodejsProvider: Provider} = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const {testnet} = require('@filecoin-shipyard/lotus-client-schema')
-const hamt = require('./hamt')
+const hamt = require('../hamt')
 // const CID = require('cids')
 const fs = require('fs')
-
+const varint = require('varint')
+const signer = require("@Zondax/filecoin-signing-tools")
+const cbor = require('cbor')
 
 const endpointUrl = 'ws://localhost:1234/rpc/v0'
 const provider = new Provider(endpointUrl, {token: async () => {
@@ -24,9 +26,19 @@ async function run () {
       const head = await client.chainHead()
       const state = head.Blocks[0].ParentStateRoot['/']
       console.log("height", head.Height, state)
-      const verifiers = (await client.chainGetNode(`${state}/@Ha:t06/1/1`)).Obj
-      console.log(JSON.stringify(verifiers, null, 2))
-      await hamt.printData(verifiers, load)
+      const data = (await client.chainGetNode(`${state}/@Ha:t0101/1/6`)).Obj
+      console.log(JSON.stringify(data, null, 2))
+      await hamt.forEach(data, load, function (k,v) {
+          let [target, value, method, params, signers] = v
+          let [verifier, cap] = cbor.decode(params)
+          console.log(
+              "key", varint.decode(k),
+              "target", signer.bytesToAddress(target, true),
+              "value sent", hamt.bytesToBig(value),
+              "method", method,
+              "params", [signer.bytesToAddress(verifier, true), hamt.bytesToBig(cap)],
+              "signers", signers.map(a => signer.bytesToAddress(a, true)))
+      })
       await new Promise(resolve => { setTimeout(resolve, 1000) })
     }
 }

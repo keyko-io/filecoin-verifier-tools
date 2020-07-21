@@ -6,8 +6,8 @@ const blake = require('blakejs')
 async function signTx(client, key, {to, method, params, value}) {
     const head = await client.chainHead()
     let state = await client.stateGetActor(key.address, head.Cids)
-    console.log("params", params)
-    console.log("state", state)
+    // console.log("params", params)
+    // console.log("state", state)
     let msg = {
         "to": to,
         "from": key.address,
@@ -23,7 +23,7 @@ async function signTx(client, key, {to, method, params, value}) {
 
 async function sendTx(client, key, obj) {
     let tx = await signTx(client, key, obj)
-    console.log(tx)
+    // console.log(tx)
     await client.mpoolPush(JSON.parse(tx))
 }
 
@@ -55,7 +55,7 @@ function encodeSend(to) {
 }
 
 function encodeAddVerifier(verified, cap) {
-    console.log("verifier", [signer.addressAsBytes(verified), encodeBig(cap)])
+    // console.log("verifier", [signer.addressAsBytes(verified), encodeBig(cap)])
     return {
         to: "t06",
         method: 2,
@@ -80,12 +80,12 @@ function encodePropose(msig, msg) {
 }
 
 function encodeProposalHashdata(from, msg) {
-    console.log(from, msg.to)
+    // console.log(from, msg.to)
     return cbor.encode([signer.addressAsBytes(from), signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params])
 }
 
 function encodeApprove(msig, txid, from, msg) {
-    console.log(from, msg)
+    // console.log(from, msg)
     let hashData = encodeProposalHashdata(from, msg)
     let hash = blake.blake2bHex(hashData, null, 32)
     return {
@@ -95,13 +95,13 @@ function encodeApprove(msig, txid, from, msg) {
     }
 }
 
-console.log(encodeAddVerifier("t01003", 7777777))
-console.log(encodePropose("t01006", encodeAddVerifier("t01003", 7777777)))
+// console.log(encodeAddVerifier("t01003", 7777777))
+// console.log(encodePropose("t01006", encodeAddVerifier("t01003", 7777777)))
 
 // sendTx(encodePropose("t01006", encodeAddVerifier("t01003", 7777777)))
 
 // console.log(encodeProposalHashdata("t01003", encodeAddVerifier("t01003", 7777777)).toString("hex"))
-console.log(encodeApprove("t01006", 1, "t01007", encodeAddVerifier("t01005", 7777777)).toString("hex"))
+// console.log(encodeApprove("t01006", 1, "t01007", encodeAddVerifier("t01005", 7777777)).toString("hex"))
 
 async function main() {
     console.log(await signTx(encodeApprove("t01006", 1, "t01007", encodeAddVerifier("t01005", 7777777))))

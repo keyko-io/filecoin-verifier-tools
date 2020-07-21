@@ -105,6 +105,18 @@ async function getValue(n, load, hv, key) {
 	throw new Error("key not found")
 }
 
+function makeBuffers(obj) {
+	if (typeof obj === 'string') {
+		return Buffer.from(obj, 'base64')
+	}
+	if (typeof obj === 'number') {
+		return obj
+	}
+	if (obj instanceof Array) {
+		return obj.map(makeBuffers)
+	}
+}
+
 async function forEach(n, load, cb) {
 	for (let c of n.data.pointers) {
 		if (c[0]) {
@@ -113,9 +125,7 @@ async function forEach(n, load, cb) {
 		}
 		if (c[1]) {
 			for (let [k, v] of c[1]) {
-				// let addr = new address.Address(Buffer.from(k, "base64"))
-				await cb(Buffer.from(k, "base64"), Buffer.from(v, "base64"))
-				// console.log(`key ${address.encode("t",addr)} value ${bytesToBig(Buffer.from(v, "base64"), 0)}`)
+				await cb(Buffer.from(k, "base64"), makeBuffers(v))
 			}
 		}
 	}
@@ -165,6 +175,14 @@ main()
 exports.find = async function (data, load, key) {
 	return getValue({bitWidth: 5, data: parseNode(data)}, load, {num: hash(key).h1, left: 64}, key)
 }
+
+exports.forEach = async function (data, load, cb) {
+	await forEach({bitWidth: 5, data: parseNode(data)}, async a => {
+		return load(a)
+	},
+	cb)
+}
+
 
 exports.printData = async function (data, load) {
 	await forEach({bitWidth: 5, data: parseNode(data)}, async a => {
