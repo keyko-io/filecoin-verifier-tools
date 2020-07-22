@@ -19,7 +19,7 @@ let key = signer.keyDerive(mnemonic, "m/44'/1'/1/0/2", "")
 console.log("address", key.address)
 
 async function main() {
-    let arg = methods.encodeAddVerifiedClient(process.argv[2], 10000000000000000000000n)
+    let arg = methods.verifreg.addVerifiedClient(process.argv[2], 10000000000000000000000n)
     await methods.sendTx(client, key, arg)
     process.exit(0)
 }

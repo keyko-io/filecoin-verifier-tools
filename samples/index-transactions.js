@@ -4,6 +4,7 @@ const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
 const hamt = require('../hamt')
 const methods = require('../methods')
 const fs = require('fs')
+const message = require('./message')
 
 const Sequelize = require('sequelize')
 
@@ -24,47 +25,7 @@ async function load(a) {
     return res.Obj
 }
 
-let message = {
-    version: "int",
-    to: "address",
-    from: "address",
-    nonce: "int",
-    value: "bigint",
-    gas_price: "bigint",
-    gas_limit: "int",
-    method: "int",
-    params: "buffer",
-}
-
-const Transaction = sequelize.define('transaction', {
-    version: {
-        type: Sequelize.INTEGER
-    },
-    to: {
-        type: Sequelize.STRING
-    },
-    from: {
-        type: Sequelize.STRING
-    },
-    nonce: {
-        type: Sequelize.INTEGER
-    },
-    value: {
-        type: Sequelize.DECIMAL(100)
-    },
-    gas_price: {
-        type: Sequelize.DECIMAL(100)
-    },
-    gas_limit: {
-        type: Sequelize.INTEGER
-    },
-    method: {
-        type: Sequelize.INTEGER
-    },
-    params: {
-        type: Sequelize.BLOB
-    },
-}, {});
+const Transaction = sequelize.define('transaction', message.db)
 
 async function handleMessages(i, dta) {
     if (dta[1] != 0) {
@@ -73,13 +34,13 @@ async function handleMessages(i, dta) {
             const msg = (await client.chainGetNode(e['/'])).Obj
             let tx
             if (msg.length == 2) {
-                tx = methods.decode(message, hamt.makeBuffers(msg[0]))
+                tx = methods.decode(message.message, hamt.makeBuffers(msg[0]))
             }
             else {
-                tx = methods.decode(message, hamt.makeBuffers(msg))
+                tx = methods.decode(message.message, hamt.makeBuffers(msg))
             }
             console.log(tx)
-            let obj = new Transaction(tx)
+            let obj = new Transaction({ ...tx, height: i})
             await obj.save()
         }
     }
@@ -91,7 +52,7 @@ async function run() {
 
     Transaction.sync()
 
-    for (let i = 1; i < 100; i++) {
+    for (let i = 1; i < 4000; i++) {
         const ts = await client.chainGetTipSetByHeight(i, null)
         // TODO: handle other blocks in tipset
         let msg = ts.Blocks[0].Messages['/']

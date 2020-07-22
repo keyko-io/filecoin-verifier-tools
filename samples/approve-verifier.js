@@ -18,8 +18,16 @@ console.log("address", key.address)
 
 async function main() {
     console.log("here", methods.encodeAddVerifier("t01003", 100000000000000000000000000000000000000000n).params.toString("hex"))
+    let add = methods.verifreg.addVerifier("t01003", 100000000000000000000000000000000000000000n)
+    let tx = methods.rootkey.approve(0, {...add, from: "t01001"})
+    console.log(tx)
+    /*
     let arg = methods.encodeApprove("t080", 0, "t01001", methods.encodeAddVerifier("t01003", 100000000000000000000000000000000000000000n))
-    await methods.sendTx(client, key, arg)
+    console.log(arg.params.toString("hex"))
+    console.log(tx.params.toString("hex"))
+    console.log(arg)
+    */
+    await methods.sendTx(client, key, tx)
     process.exit(0)
 }
 

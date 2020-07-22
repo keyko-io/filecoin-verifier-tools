@@ -17,15 +17,7 @@ let key = signer.keyDerive(mnemonic, "m/44'/1'/1/0/2", "")
 console.log("address", key.address)
 
 async function main() {
-    let tx = methods.rootkey.propose(methods.verifreg.addVerifier("t01004", 100000000000000000000000000000000000000000n))
-    /*
-    console.log(tx)
-    console.log("here", methods.encodeAddVerifier("t01004", 100000000000000000000000000000000000000000n).params.toString("hex"))
-    let arg = methods.encodePropose("t080", methods.encodeAddVerifier("t01004", 100000000000000000000000000000000000000000n))
-    console.log(arg.params.toString("hex"))
-    console.log(tx.params.toString("hex"))
-    */
-    await methods.sendTx(client, key, tx)
+    await methods.sendTx(client, key, methods.encodeSend("t01000"))
     process.exit(0)
 }
 
