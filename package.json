@@ -1,10 +1,25 @@
 {
+  "name": "@keyko-io/js-hamt-ipld",
+  "version": "0.1.0",
+  "description": "Javascript implementation of a HAMT using ipld",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keyko-io/js-hamt-ipld.git"
+  },
+  "keywords": [],
+  "author": "Keyko <root@keyko.io>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/keyko-io/js-hamt-ipld/issues"
+  },
+  "homepage": "https://github.com/keyko-io/js-hamt-ipld#readme",
+
   "dependencies": {
     "@filecoin-shipyard/lotus-client-provider-nodejs": "0.0.5",
     "@filecoin-shipyard/lotus-client-rpc": "0.0.11",
     "@filecoin-shipyard/lotus-client-schema": "0.0.12",
     "@openworklabs/filecoin-address": "0.0.10",
-    "@Zondax/filecoin-signing-tools": "/home/sami/filecoin-signing-tools/signer-npm/js",
+    "@keyko-io/filecoin-signing-tools": "0.2.0",
     "base32-decode": "^1.0.0",
     "base32-encode": "^1.1.1",
     "bip32": "^2.0.5",
