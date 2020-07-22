@@ -35,7 +35,7 @@ async function run() {
         const head = await client.chainHead()
         const state = head.Blocks[0].ParentStateRoot['/']
         console.log("height", head.Height, state)
-        const data = (await client.chainGetNode(`${state}/@Ha:t0101/1/6`)).Obj
+        const data = (await client.chainGetNode(`${state}/@Ha:t080/1/6`)).Obj
         console.log(JSON.stringify(data, null, 2))
         await hamt.forEach(data, load, function (k, v) {
             console.log("key", hamt.readVarInt(k) / 2n, methods.decode(spec, v))

@@ -14,8 +14,8 @@ async function signTx(client, key, {to, method, params, value}) {
         "from": key.address,
         "nonce": state.Nonce,
         "value": "123456789",
-        "gasprice": "0",
-        "gaslimit": 25000,
+        "gasprice": "1",
+        "gaslimit": 25000000,
         "method": method,
         "params": params,
     }

@@ -1,11 +1,14 @@
-
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
 const hamt = require('../hamt')
 const methods = require('../methods')
-// const CID = require('cids')
 const fs = require('fs')
+
+const Sequelize = require('sequelize')
+
+// create database lotus;
+const sequelize = new Sequelize('postgres://postgres:1234@localhost:5432/lotus')
 
 const endpointUrl = 'ws://localhost:1234/rpc/v0'
 const provider = new Provider(endpointUrl, {
@@ -33,41 +36,64 @@ let message = {
     params: "buffer",
 }
 
+const Transaction = sequelize.define('transaction', {
+    version: {
+        type: Sequelize.INTEGER
+    },
+    to: {
+        type: Sequelize.STRING
+    },
+    from: {
+        type: Sequelize.STRING
+    },
+    nonce: {
+        type: Sequelize.INTEGER
+    },
+    value: {
+        type: Sequelize.DECIMAL(100)
+    },
+    gas_price: {
+        type: Sequelize.DECIMAL(100)
+    },
+    gas_limit: {
+        type: Sequelize.INTEGER
+    },
+    method: {
+        type: Sequelize.INTEGER
+    },
+    params: {
+        type: Sequelize.BLOB
+    },
+}, {});
+
 async function handleMessages(i, dta) {
     if (dta[1] != 0) {
         // console.log(i, dta[2][2])
         for (let e of dta[2][2]) {
             const msg = (await client.chainGetNode(e['/'])).Obj
+            let tx
             if (msg.length == 2) {
-                console.log(methods.decode(message, hamt.makeBuffers(msg[0])))
+                tx = methods.decode(message, hamt.makeBuffers(msg[0]))
             }
             else {
-                console.log(methods.decode(message, hamt.makeBuffers(msg)))
+                tx = methods.decode(message, hamt.makeBuffers(msg))
             }
-        }
-    }
-}
-
-async function handleReceipts(i, dta) {
-    if (dta[1] != 0) {
-        console.log(i, dta[2][2])
-        for (let e of dta[2][2]) {
-            /*
-            const msg = (await client.chainGetNode(e['/'])).Obj
-            if (msg.length == 2) {
-                console.log(methods.decode(message, hamt.makeBuffers(msg[0])))
-            }
-            else {
-                console.log(methods.decode(message, hamt.makeBuffers(msg)))
-            }*/
+            console.log(tx)
+            let obj = new Transaction(tx)
+            await obj.save()
         }
     }
 }
 
 async function run() {
-    for (let i = 1; i < 1000; i++) {
+
+    await sequelize.authenticate()
+
+    Transaction.sync()
+
+    for (let i = 1; i < 100; i++) {
         const ts = await client.chainGetTipSetByHeight(i, null)
-        // const st = ts.Blocks[0].ParentStateRoot['/']
+        // TODO: handle other blocks in tipset
         let msg = ts.Blocks[0].Messages['/']
         const data = (await client.chainGetNode(msg)).Obj
         const d1 = (await client.chainGetNode(data[0]['/'])).Obj
@@ -75,14 +101,6 @@ async function run() {
         handleMessages(i, d1)
         handleMessages(i, d2)
     }
-    /*
-    for (let i = 1; i < 10000; i++) {
-        const ts = await client.chainGetTipSetByHeight(i, null)
-        // const st = ts.Blocks[0].ParentStateRoot['/']
-        let msg = ts.Blocks[0].ParentMessageReceipts['/']
-        const data = (await client.chainGetNode(msg)).Obj
-        handleReceipts(i, data)
-    }*/
     await client.destroy()
 }
 

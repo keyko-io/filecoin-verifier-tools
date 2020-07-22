@@ -18,7 +18,7 @@ console.log("address", key.address)
 
 async function main() {
     console.log("here", methods.encodeAddVerifier("t01004", 100000000000000000000000000000000000000000n).params.toString("hex"))
-    let arg = methods.encodePropose("t0101", methods.encodeAddVerifier("t01004", 100000000000000000000000000000000000000000n))
+    let arg = methods.encodePropose("t080", methods.encodeAddVerifier("t01004", 100000000000000000000000000000000000000000n))
     await methods.sendTx(client, key, arg)
     process.exit(0)
 }
