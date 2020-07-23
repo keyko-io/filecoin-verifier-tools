@@ -8,7 +8,7 @@ const fs = require('fs')
 
 const endpointUrl = 'ws://localhost:1234/rpc/v0'
 const provider = new Provider(endpointUrl, {token: async () => {
-    return fs.readFileSync('/home/sami/.lotus/token')
+    return fs.readFileSync('/Users/jpfernandez/.lotus/token')
 }})
 
 const client = new LotusRPC(provider, { schema: testnet.fullNode })
@@ -18,6 +18,7 @@ async function load(a) {
     return res.Obj
 }
 
+
 async function run () {
     while (true) {
       const head = await client.chainHead()
@@ -26,6 +27,10 @@ async function run () {
       const verifiers = (await client.chainGetNode(`${state}/@Ha:t06/1/1`)).Obj
       console.log(JSON.stringify(verifiers, null, 2))
       await hamt.printData(verifiers, load)
+
+      var verifierArray = []
+      verifierArray =  await hamt.buildArrayData(verifiers, load)    
+
       await new Promise(resolve => { setTimeout(resolve, 1000) })
     }
 }

@@ -10,7 +10,7 @@ const address = require('@openworklabs/filecoin-address')
 
 const endpointUrl = 'ws://localhost:1234/rpc/v0'
 const provider = new Provider(endpointUrl, {token: async () => {
-    return fs.readFileSync('/home/sami/.lotus/token')
+    return fs.readFileSync('/Users/jpfernandez/.lotus/token')
 }})
 
 const client = new LotusRPC(provider, { schema: testnet.fullNode })
@@ -20,6 +20,7 @@ async function load(a) {
     return res.Obj
 }
 
+
 async function run () {
     while (true) {
       const head = await client.chainHead()
@@ -28,6 +29,10 @@ async function run () {
       const verified = (await client.chainGetNode(`${state}/@Ha:t06/1/2`)).Obj
       console.log(JSON.stringify(verified, null, 2))
       await hamt.printData(verified, load)
+
+      var verifiedArray = []
+      verifiedArray =  await hamt.buildArrayData(verified, load)    
+
       /*
       let res = await hamt.find(verified, load, Buffer.from(address.newFromString('t1m3xb2aitedgcbwsm7lmsfysgnht22dlp4rkxaqi').str))
       console.log(hamt.bytesToBig(res))

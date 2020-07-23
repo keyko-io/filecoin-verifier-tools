@@ -14,7 +14,7 @@ const sequelize = new Sequelize('postgres://postgres:1234@localhost:5432/lotus')
 const endpointUrl = 'ws://localhost:1234/rpc/v0'
 const provider = new Provider(endpointUrl, {
     token: async () => {
-        return fs.readFileSync('/home/sami/.lotus/token')
+        return fs.readFileSync('/Users/jpfernandez/.lotus/token')
     }
 })
 
