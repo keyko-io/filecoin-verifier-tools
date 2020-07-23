@@ -14,3 +14,14 @@ Files
    * `encode`: encoding the data
    * `actor`: convenience for encoding actor info
 
+Samples
+ * add-client.js: adds a new verified client with cap
+ * approve-verifer.js: approve adding a verifier in multisig
+ * propose-verifier.js: propose adding a verifier in multisig
+ * index-transaction.js: add transactions from blocks to postgres
+ * tx-server.js: serve a list of transactions from postgres
+ * tx-client.js: get a list of transactions and parse parameters
+ * multisig.js: show multisig info
+ * verified.js: list verified clients
+ * verifiers.js: list verifiers
+ * info-browser.js and test.html: check that everything works in browser
