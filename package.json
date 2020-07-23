@@ -1,10 +1,10 @@
 {
   "dependencies": {
+    "@keyko-io/filecoin-signing-tools": "0.2.0",
     "@filecoin-shipyard/lotus-client-provider-nodejs": "0.0.5",
     "@filecoin-shipyard/lotus-client-rpc": "0.0.11",
     "@filecoin-shipyard/lotus-client-schema": "0.0.12",
     "@openworklabs/filecoin-address": "0.0.10",
-    "@Zondax/filecoin-signing-tools": "/home/sami/filecoin-signing-tools/signer-npm/js",
     "base32-decode": "^1.0.0",
     "base32-encode": "^1.1.1",
     "bip32": "^2.0.5",
@@ -12,9 +12,14 @@
     "blakejs": "^1.1.0",
     "cbor": "^5.0.2",
     "cids": "^0.8.3",
+    "express": "^4.17.1",
     "ipld-dag-cbor": "^0.16.0",
     "murmurhash3js-revisited": "^3.0.0",
+    "node-fetch": "^2.6.0",
+    "pg": "^8.3.0",
+    "pg-hstore": "^2.3.3",
     "secp256k1": "^4.0.1",
+    "sequelize": "^6.3.3",
     "varint": "^5.0.0"
   }
 }

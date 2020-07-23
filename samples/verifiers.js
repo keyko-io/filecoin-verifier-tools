@@ -6,7 +6,6 @@ const hamt = require('../hamt')
 // const CID = require('cids')
 const fs = require('fs')
 
-
 const endpointUrl = 'ws://localhost:1234/rpc/v0'
 const provider = new Provider(endpointUrl, {token: async () => {
     return fs.readFileSync('/home/sami/.lotus/token')

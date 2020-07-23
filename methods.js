@@ -1,5 +1,5 @@
 
-const signer = require("@Zondax/filecoin-signing-tools")
+const signer = require("@keyko-io/filecoin-signing-tools/js")
 const cbor = require('cbor')
 const hamt = require('./hamt')
 const blake = require('blakejs')
@@ -14,8 +14,8 @@ async function signTx(client, key, {to, method, params, value}) {
         "from": key.address,
         "nonce": state.Nonce,
         "value": "123456789",
-        "gasprice": "0",
-        "gaslimit": 25000,
+        "gasprice": "1",
+        "gaslimit": 25000000,
         "method": method,
         "params": params,
     }
@@ -24,7 +24,6 @@ async function signTx(client, key, {to, method, params, value}) {
 
 async function sendTx(client, key, obj) {
     let tx = await signTx(client, key, obj)
-    // console.log(tx)
     await client.mpoolPush(JSON.parse(tx))
 }
 
@@ -34,7 +33,7 @@ function pad(str) {
 }
 
 function encodeBig(bn) {
-    if (bn.toString() == 0) return Buffer.from("")
+    if (bn.toString() === "0") return Buffer.from("")
     return Buffer.from('00' + pad(bn.toString(16)), 'hex')
 }
 
@@ -56,7 +55,6 @@ function encodeSend(to) {
 }
 
 function encodeAddVerifier(verified, cap) {
-    // console.log("verifier", [signer.addressAsBytes(verified), encodeBig(cap)])
     return {
         to: "t06",
         method: 2,
@@ -73,6 +71,7 @@ function encodeAddVerifiedClient(verified, cap) {
 }
 
 function encodePropose(msig, msg) {
+    console.log("encpro", [signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params])
     return {
         to: msig,
         method: 2,
@@ -81,12 +80,10 @@ function encodePropose(msig, msg) {
 }
 
 function encodeProposalHashdata(from, msg) {
-    // console.log(from, msg.to)
     return cbor.encode([signer.addressAsBytes(from), signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params])
 }
 
 function encodeApprove(msig, txid, from, msg) {
-    // console.log(from, msg)
     let hashData = encodeProposalHashdata(from, msg)
     let hash = blake.blake2bHex(hashData, null, 32)
     return {
@@ -126,6 +123,31 @@ function decode(schema, data) {
     if (schema === 'int' || schema === 'buffer') {
         return data
     }
+    if (schema.type === 'hash') {
+        return data
+    }
+    if (schema.type === 'hamt') {
+        return {
+            find: async (lookup, key) => {
+                let res = await hamt.find(data, lookup, encode(schema.key, key))
+                return decode(schema.value, res)
+            },
+            asList: async (lookup) => {
+                let res = []
+                await hamt.forEach(data, lookup, async (k,v) => {
+                    res.push([decode(schema.key, k), decode(schema.value, v)])
+                })
+                return res
+            },
+            asObject: async (lookup) => {
+                let res = {}
+                await hamt.forEach(data, lookup, async (k,v) => {
+                    res[decode(schema.key, k)] = decode(schema.value, v)
+                })
+                return res
+            },
+        }
+    }
     if (schema instanceof Array) {
         if (schema[0] === 'list') {
             return data.map(a => decode(schema[1], a))
@@ -158,6 +180,121 @@ function decode(schema, data) {
     throw new Error(`Unknown type ${schema}`)
 }
 
+function encode(schema, data) {
+    if (schema === 'address') {
+        return signer.addressAsBytes(data)
+    }
+    if (schema === 'bigint') {
+        return encodeBig(data)
+    }
+    if (schema === 'int' || schema === 'buffer') {
+        return data
+    }
+    if (schema.type === 'hash') {
+        let hashData = cbor.encode(encode(schema.input, data))
+        let hash = blake.blake2bHex(hashData, null, 32)
+        return Buffer.from(hash, "hex")
+    }
+    if (schema instanceof Array) {
+        if (schema[0] === 'list') {
+            return data.map(a => encode(schema[1], a))
+        }
+        if (schema[0] === 'cbor') {
+            return cbor.encode(encode(schema[1], data))
+        }
+        if (schema.length != data.length) throw new Error("schema and data length do not match")
+        let res = []
+        for (let i = 0; i < data.length; i++) {
+            res.push(encode(schema[i], data[i]))
+        }
+        return res
+    }
+    if (typeof schema === 'object') {
+        let res = []
+        let entries = Object.entries(schema)
+        for (let i = 0; i < entries.length; i++) {
+            let arg
+            if (data instanceof Array) {
+                arg = data[i]
+            }
+            else {
+                arg = data[entries[i][0]]
+            }
+            res.push(encode(entries[i][1], arg))
+        }
+        return res
+    }
+    throw new Error(`Unknown type ${schema}`)
+} 
+
+function actor(address, spec) {
+    let res = {}
+    for (let [num, method] of Object.entries(spec)) {
+        res[method.name] = function (data) {
+            let params
+            if (arguments.length > 1) {
+                params = encode(method.input, Array.from(arguments))
+            }
+            else {
+                params = encode(method.input, data)
+            }
+            console.log("params", params)
+            return {
+                to: address,
+                value: 0n,
+                method: parseInt(num),
+                params: cbor.encode(params),
+            }
+        }
+    }
+    return res
+}
+
+let multisig = {
+    3: {
+        name: "approve",
+        input: {
+            id: "int",
+            hash: {
+                type: "hash",
+                input: {
+                    from: "address",
+                    to: "address",
+                    value: "bigint",
+                    method: "int",
+                    params: "buffer",
+                }
+            }
+        }
+    },
+    2: {
+        name: "propose",
+        input: {
+            to: "address",
+            value: "bigint",
+            method: "int",
+            params: "buffer",
+        }
+    },
+}
+
+let verifreg = {
+    2: {
+        name: "addVerifier",
+        input: {
+            verifier: "address",
+            cap: "bigint",
+        }
+    },
+    4: {
+        name: "addVerifiedClient",
+        input: {
+            address: "address",
+            cap: "bigint",
+        }
+    }
+}
+
 // main()
 
 module.exports = {
@@ -169,5 +306,10 @@ module.exports = {
     sendTx,
     signTx,
     decode,
+    encode,
+    actor,
+    multisig,
+    rootkey: actor("t080", multisig),
+    verifreg: actor("t06", verifreg),
 }
 
