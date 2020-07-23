@@ -1,5 +1,5 @@
 
-const signer = require("@Zondax/filecoin-signing-tools")
+const signer = require("@keyko-io/filecoin-signing-tools/js")
 const cbor = require('cbor')
 const hamt = require('./hamt')
 const blake = require('blakejs')
@@ -174,54 +174,6 @@ function decode(schema, data) {
         let entries = Object.entries(schema)
         for (let i = 0; i < entries.length; i++) {
             res[entries[i][0]] = decode(entries[i][1], data[i])
-        }
-        return res
-    }
-    throw new Error(`Unknown type ${schema}`)
-}
-
-async function decodeAsync(lookup, schema, data) {
-    if (schema === 'address') {
-        return signer.bytesToAddress(data, true)
-    }
-    if (schema === 'bigint') {
-        return hamt.bytesToBig(data)
-    }
-    if (schema === 'int' || schema === 'buffer') {
-        return data
-    }
-    if (schema.type === 'hash') {
-        return data
-    }
-    if (schema.type === 'hamt') {
-        console.log("hamt", data)
-        let res = []
-        await hamt.forEach(data, lookup, async (k,v) => {
-            let a = await decodeAsync(lookup, schema.key, k)
-            let b = await decodeAsync(lookup, schema.value, v)
-            res.push([a,b])
-        })
-        return res
-    }
-    if (schema instanceof Array) {
-        if (schema[0] === 'list') {
-            return Promise.all(data.map(a => decodeAsync(lookup, schema[1], a)))
-        }
-        if (schema[0] === 'cbor') {
-            return decodeAsync(lookup, schema[1], cbor.decode(data))
-        }
-        if (schema.length != data.length) throw new Error("schema and data length do not match")
-        let res = []
-        for (let i = 0; i < data.length; i++) {
-            res.push(await decodeAsync(lookup, schema[i], data[i]))
-        }
-        return res
-    }
-    if (typeof schema === 'object') {
-        let res = {}
-        let entries = Object.entries(schema)
-        for (let i = 0; i < entries.length; i++) {
-            res[entries[i][0]] = await decodeAsync(lookup, entries[i][1], data[i])
         }
         return res
     }

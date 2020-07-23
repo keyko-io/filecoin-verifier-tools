@@ -2,18 +2,6 @@
 # yarn lockfile v1
 
 
-"@Zondax/filecoin-signing-tools@file:../filecoin-signing-tools/signer-npm/js":
-  version "0.2.0"
-  dependencies:
-    base32-decode "^1.0.0"
-    base32-encode "^1.1.1"
-    bip32 "^2.0.5"
-    bip39 "^3.0.2"
-    blakejs "^1.1.0"
-    bn.js "^5.1.2"
-    ipld-dag-cbor "^0.15.3"
-    secp256k1 "^4.0.1"
-
 "@filecoin-shipyard/lotus-client-provider-browser@^0.0.14":
   version "0.0.14"
   resolved "https://registry.yarnpkg.com/@filecoin-shipyard/lotus-client-provider-browser/-/lotus-client-provider-browser-0.0.14.tgz#28268cd1a940627b08e06378527f5f34fea0db75"
@@ -37,6 +25,19 @@
   version "0.0.12"
   resolved "https://registry.yarnpkg.com/@filecoin-shipyard/lotus-client-schema/-/lotus-client-schema-0.0.12.tgz#5da274b11e1d306a79e8a09e6dd01d3a77b838e8"
   integrity sha512-wwqarwcUtqpy1pKq4o0jWM5ppbYxsnMZ5uQZ+WJ8dJmNiJuVTz6GjCtWNaCa+4kw2GgfkItj2BIjzweL7/5QNA==
+
+"@keyko-io/filecoin-signing-tools@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@keyko-io/filecoin-signing-tools/-/filecoin-signing-tools-0.2.0.tgz#47e4e35cf3b6c111cba8c4669823109499fe8436"
+  integrity sha512-FYwa6dlP2z57mkdX435OLxmeqscYAb05jI3gv/EoWBwOsW01UuDn73hwvjBS95ivdGDUMDUtqBuxYpTi108Y5Q==
+  dependencies:
+    base32-decode "^1.0.0"
+    base32-encode "^1.1.1"
+    bip32 "^2.0.5"
+    bip39 "^3.0.2"
+    blakejs "^1.1.0"
+    ipld-dag-cbor "^0.15.3"
+    secp256k1 "^4.0.1"
 
 "@openworklabs/filecoin-address@0.0.10":
   version "0.0.10"
@@ -147,7 +148,7 @@ bn.js@^4.11.8, bn.js@^4.4.0:
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.9.tgz#26d556829458f9d1e81fc48952493d0ba3507828"
   integrity sha512-E6QoYqCKZfgatHTdHzs1RRKP7ip4vvm+EyRUeE2RF0NblwVvb0p6jSVeNTOFxPn26QXN2o6SMfNxKp6kU8zQaw==
 
-bn.js@^5.0.0, bn.js@^5.1.2:
+bn.js@^5.0.0:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.1.2.tgz#c9686902d3c9a27729f43ab10f9d79c2004da7b0"
   integrity sha512-40rZaf3bUNKTVYu9sIeeEGOg7g14Yvnj9kH7b50EiwX0Q7A6umbvfI5tvHaOERH0XigqKkfLkFQxzb4e6CIXnA==
