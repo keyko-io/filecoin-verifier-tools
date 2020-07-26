@@ -3,11 +3,14 @@ const {NodejsProvider: Provider} = require('@filecoin-shipyard/lotus-client-prov
 const {testnet} = require('@filecoin-shipyard/lotus-client-schema')
 const fs = require('fs')
 const signer = require("@keyko-io/filecoin-signing-tools/js")
-const methods = require('../filecoin/methods')
+const methods = require('../../filecoin/methods')
+const constants = require("../constants")
 
-const endpointUrl = 'ws://localhost:1234/rpc/v0'
+let endpointUrl = constants.lotus_endpoint
+let tokenPath = constants.token_path 
+
 const provider = new Provider(endpointUrl, {token: async () => {
-    return fs.readFileSync('/Users/jpfernandez/.lotus/token')
+    return fs.readFileSync(tokenPath)
 }})
 
 const client = new LotusRPC(provider, { schema: testnet.fullNode })

@@ -1,12 +1,14 @@
 const express = require('express')
 const Sequelize = require('sequelize')
 const message = require('./message')
+const constants = require("../constants")
 
 const app = express()
 const port = 3000
 app.use(express.json());
 
-const sequelize = new Sequelize('postgres://postgres:1234@localhost:5432/lotus')
+let postgresConnUrl = constants.postgres_conn_url
+const sequelize = new Sequelize(postgresConnUrl)
 
 const Transaction = sequelize.define('transaction', message.db)
 

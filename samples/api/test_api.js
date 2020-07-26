@@ -1,12 +1,15 @@
 const fs = require('fs')
-const VerifyAPI = require('../api.js')
+const VerifyAPI = require('../../api/api.js')
 const signer = require("@keyko-io/filecoin-signing-tools/js")
+const constants = require("../constants")
 
 async function run () {
 
-    const endpointUrl = 'ws://localhost:1234/rpc/v0'
+    let endpointUrl = constants.lotus_endpoint
+    let tokenPath = constants.token_path 
+
     const api = new VerifyAPI(endpointUrl, {token:  () => {
-        return fs.readFileSync('/Users/jpfernandez/.lotus/token')
+        return fs.readFileSync(tokenPath)
     }})
 
     const mnemonic = 'exit mystery juice city argue breeze film learn orange dynamic marine diary antenna road couple surge marine assume loop thought leader liquid rotate believe'

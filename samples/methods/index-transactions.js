@@ -1,20 +1,23 @@
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
-const hamt = require('../hamt/hamt')
-const methods = require('../filecoin/methods')
+const hamt = require('../../hamt/hamt')
+const methods = require('../../filecoin/methods')
 const fs = require('fs')
 const message = require('./message')
+const constants = require("../constants")
 
 const Sequelize = require('sequelize')
 
 // create database lotus;
 const sequelize = new Sequelize('postgres://postgres:1234@localhost:5432/lotus')
 
-const endpointUrl = 'ws://localhost:1234/rpc/v0'
+let endpointUrl = constants.lotus_endpoint
+let tokenPath = constants.token_path 
+
 const provider = new Provider(endpointUrl, {
     token: async () => {
-        return fs.readFileSync('/Users/jpfernandez/.lotus/token')
+        return fs.readFileSync(tokenPath)
     }
 })
 
