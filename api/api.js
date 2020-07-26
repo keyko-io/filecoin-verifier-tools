@@ -30,24 +30,16 @@ class VerifyAPI {
         return  await hamt.buildArrayData(verifiers, this.load)
       
    }
-    
-   async listVerifiedClients() {
 
-        const head = await this.client.chainHead()
-        const state = head.Blocks[0].ParentStateRoot['/']
-        const verified = (await this.client.chainGetNode(`${state}/@Ha:t06/1/2`)).Obj  
-     
-        return await hamt.buildArrayData(verified, this.load)      
-      
-    }
+   async checkVerifier(verifierAddress) {
 
-    async verifyClient(clientAddress, datacap, key) {
+     // empty array if not verifier is present
+     return this.listVerifiers
+                .filter( verifier => verifier[0].toString() === verifierAddress)
 
-        let arg = methods.verifreg.addVerifiedClient(clientAddress, datacap)
-        await methods.sendTx(this.client, key, arg)
-    }
+   }
 
-    async proposeVerifier(verifierAccount, datacap, multisigKey) {
+   async proposeVerifier(verifierAccount, datacap, multisigKey) {
 
         // Not address but account in the form "t01004", for instance
         let tx = methods.rootkey.propose(methods.verifreg.addVerifier(verifierAccount, datacap))
@@ -64,10 +56,35 @@ class VerifyAPI {
         //let tx = methods.rootkey.approve(0, {...add, from: "t01001"})
         let tx = methods.rootkey.approve(0, {...add, from: fromAccount})
         console.log(tx)
-       
-        await methods.sendTx(this.client, key, tx)
+   
+        await methods.sendTx(this.client, multisigKey, tx)
 
+    }   
+
+    
+   async listVerifiedClients() {
+
+        const head = await this.client.chainHead()
+        const state = head.Blocks[0].ParentStateRoot['/']
+        const verified = (await this.client.chainGetNode(`${state}/@Ha:t06/1/2`)).Obj  
+     
+        return await hamt.buildArrayData(verified, this.load)      
+      
     }
+
+    async checkClient(clientAddress) {
+
+        return this.listVerifiedClients
+                   .filter( client => client[0].toString() === clientAddress)
+    }
+
+
+    async verifyClient(clientAddress, datacap, key) {
+
+        let arg = methods.verifreg.addVerifiedClient(clientAddress, datacap)
+        await methods.sendTx(this.client, key, arg)
+    }
+
 
 }
 
@@ -81,16 +98,13 @@ listClients() return List(address, datacap)
 verifyClient(clientAddress, dataCap, verifierAddress, verifierKey) return bool, error
 proposeVerifier(verifierAddress, fromAddress, fromKey) return bool, error
 acceptVerifier(verifierAddress, fromAddress, fromKey) return bool, error
+checkVerifier(verifierAddress) return (address, datacap), error
 
 
 addVerifier(verifierAddress, fromAddress,  rootKey) return bool, error
 removeVerifier(verifierAddress, fromAddress, rootKey) return bool, error
 
 
-
 getVerifiers(rootKeyAddress) return List(address, datacap, date, Tx details), error
-
-checkVerifier(verifierAddress) return (address, datacap), error
-
 getVerifiedClients(verifierAddress) return List(address, datacap, date, Tx details), error
 */
