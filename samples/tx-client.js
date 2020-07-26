@@ -1,6 +1,6 @@
 const signer = require("@keyko-io/filecoin-signing-tools/js")
 const fetch = require('node-fetch')
-const methods = require('../methods')
+const methods = require('../filecoin/methods')
 const cbor = require('cbor')
 
 const mnemonic = 'robot matrix ribbon husband feature attitude noise imitate matrix shaft resist cliff lab now gold menu grocery truth deliver camp about stand consider number'

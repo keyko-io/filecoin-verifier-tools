@@ -2,7 +2,7 @@
 const {LotusRPC} = require('@filecoin-shipyard/lotus-client-rpc')
 const {NodejsProvider: Provider} = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const {testnet} = require('@filecoin-shipyard/lotus-client-schema')
-const hamt = require('../hamt')
+const hamt = require('../filecoin/hamt')
 // const CID = require('cids')
 const fs = require('fs')
 

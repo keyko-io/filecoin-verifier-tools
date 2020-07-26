@@ -1,7 +1,7 @@
 
 const signer = require("@keyko-io/filecoin-signing-tools/js")
 const cbor = require('cbor')
-const hamt = require('./hamt')
+const hamt = require('../hamt/hamt')
 const blake = require('blakejs')
 
 async function signTx(client, key, {to, method, params, value}) {

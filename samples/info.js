@@ -2,10 +2,10 @@
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
-const hamt = require('../hamt')
+const hamt = require('../hamt/hamt')
 // const CID = require('cids')
 const fs = require('fs')
-const methods = require('../methods')
+const methods = require('../filecoin/methods')
 
 const endpointUrl = 'ws://localhost:1234/rpc/v0'
 const provider = new Provider(endpointUrl, {

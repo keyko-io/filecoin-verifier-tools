@@ -1,11 +1,11 @@
 const {LotusRPC} = require('@filecoin-shipyard/lotus-client-rpc')
 const {NodejsProvider: Provider} = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const {testnet} = require('@filecoin-shipyard/lotus-client-schema')
-const hamt = require('../hamt')
+const hamt = require('../hamt/hamt')
 // const CID = require('cids')
 const fs = require('fs')
 const address = require('@openworklabs/filecoin-address')
-const methods = require('../methods')
+const methods = require('../filecoin/methods')
 
 
 
@@ -41,10 +41,32 @@ class VerifyAPI {
       
     }
 
-    async verifyClient(address, datacap, key) {
+    async verifyClient(clientAddress, datacap, key) {
 
-        let arg = methods.verifreg.addVerifiedClient(address, datacap)
+        let arg = methods.verifreg.addVerifiedClient(clientAddress, datacap)
         await methods.sendTx(this.client, key, arg)
+    }
+
+    async proposeVerifier(verifierAccount, datacap, multisigKey) {
+
+        // Not address but account in the form "t01004", for instance
+        let tx = methods.rootkey.propose(methods.verifreg.addVerifier(verifierAccount, datacap))
+        await methods.sendTx(this.client, multisigKey, tx)
+
+    }
+
+    async approveVerifier(verifierAccount, dataCap, fromAccount, multisigKey) {
+
+        // Not address but account in the form "t01003", for instance
+        let add = methods.verifreg.addVerifier(verifierAccount, datacap)
+        console.log("here",add.params.toString("hex"))
+
+        //let tx = methods.rootkey.approve(0, {...add, from: "t01001"})
+        let tx = methods.rootkey.approve(0, {...add, from: fromAccount})
+        console.log(tx)
+       
+        await methods.sendTx(this.client, key, tx)
+
     }
 
 }
@@ -57,13 +79,14 @@ module.exports = VerifyAPI
 listVerifiers() return List(address, datacap), error
 listClients() return List(address, datacap)
 verifyClient(clientAddress, dataCap, verifierAddress, verifierKey) return bool, error
+proposeVerifier(verifierAddress, fromAddress, fromKey) return bool, error
+acceptVerifier(verifierAddress, fromAddress, fromKey) return bool, error
 
 
 addVerifier(verifierAddress, fromAddress,  rootKey) return bool, error
 removeVerifier(verifierAddress, fromAddress, rootKey) return bool, error
 
-proposeVerifier(verifierAddress, fromAddress, fromKey) return bool, error
-acceptVerifier(verifierAddress, fromAddress, fromKey) return bool, error
+
 
 getVerifiers(rootKeyAddress) return List(address, datacap, date, Tx details), error
 

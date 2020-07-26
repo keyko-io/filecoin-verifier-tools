@@ -1,8 +1,8 @@
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
-const hamt = require('../hamt')
-const methods = require('../methods')
+const hamt = require('../hamt/hamt')
+const methods = require('../filecoin/methods')
 const fs = require('fs')
 const message = require('./message')
 
