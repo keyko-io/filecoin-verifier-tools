@@ -4,7 +4,7 @@ const cbor = require('cbor')
 const hamt = require('../hamt/hamt')
 const blake = require('blakejs')
 
-async function signTx(client, key, {to, method, params, value}) {
+async function signTx(client, key, walletContext, {to, method, params, value}) {
     const head = await client.chainHead()
     let state = await client.stateGetActor(key.address, head.Cids)
     // console.log("params", params)
@@ -19,11 +19,15 @@ async function signTx(client, key, {to, method, params, value}) {
         "method": method,
         "params": params,
     }
-    return signer.transactionSignLotus(msg, key.private_hexstring)
+    console.log("Wallet COntext: ")
+    console.log(walletContext)
+
+   // return walletContext.sign(msg)
+     return signer.transactionSignLotus(msg, key.private_hexstring)
 }
 
-async function sendTx(client, key, obj) {
-    let tx = await signTx(client, key, obj)
+async function sendTx(client, key, walletContext, obj) {
+    let tx = await signTx(client, key, walletContext, obj)
     await client.mpoolPush(JSON.parse(tx))
 }
 
