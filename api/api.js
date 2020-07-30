@@ -47,7 +47,7 @@ class VerifyAPI {
 
     }
 
-    async approveVerifier(verifierAccount, dataCap, fromAccount, transactionId, multisigKey) {
+    async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, multisigKey) {
 
         // Not address but account in the form "t01003", for instance
         let add = methods.verifreg.addVerifier(verifierAccount, datacap)

@@ -7,7 +7,7 @@ const methods = require('../filecoin/methods')
 
 
 
-class VerifyAPI {
+class VerifyAPIWithWallet {
 
     constructor (lotusClient, walletContext) {
         this.client = lotusClient
@@ -37,30 +37,30 @@ class VerifyAPI {
 
    }
 
-   /*
    async proposeVerifier(verifierAccount, datacap, multisigKey) {
 
    
         // Not address but account in the form "t01004", for instance
        let tx = methods.rootkey.propose(methods.verifreg.addVerifier(verifierAccount, datacap))
-    await methods.sendTx(this.client, multisigKey, tx)
+    await methods.sendTx(this.client, multisigKey, this.walletContext, tx)
 
     }
 
-    async approveVerifier(verifierAccount, datacap, fromAccount, multisigKey) {
+     async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, multisigKey) {
 
         // Not address but account in the form "t01003", for instance
         let add = methods.verifreg.addVerifier(verifierAccount, datacap)
         console.log("here",add.params.toString("hex"))
 
         //let tx = methods.rootkey.approve(0, {...add, from: "t01001"})
-        let tx = methods.rootkey.approve(0, {...add, from: fromAccount})
+        let tx = methods.rootkey.approve(transactionId, {...add, from: fromAccount})
         console.log(tx)
    
-        await methods.sendTx(this.client, multisigKey, tx)
+        await methods.sendTx(this.client, multisigKey, this.walletContext, tx)
 
     }   
-*/
+
+
     
    async listVerifiedClients() {
 
@@ -88,4 +88,4 @@ class VerifyAPI {
 
 }
 
-module.exports = VerifyAPI
+module.exports = VerifyAPIWithWallet
