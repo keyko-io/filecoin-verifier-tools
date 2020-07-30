@@ -1,4 +1,6 @@
 {
+  "name": "filecoin-verifier-tools",
+  "version": "0.3.0",
   "dependencies": {
     "@keyko-io/filecoin-signing-tools": "0.2.0",
     "@filecoin-shipyard/lotus-client-provider-nodejs": "0.0.5",
