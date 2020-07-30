@@ -22,8 +22,8 @@ async function signTx(client, key, walletContext, {to, method, params, value}) {
     console.log("Wallet COntext: ")
     console.log(walletContext)
 
-   // return walletContext.sign(msg)
-     return signer.transactionSignLotus(msg, key.private_hexstring)
+     return walletContext.sign(msg)
+     //return signer.transactionSignLotus(msg, key.private_hexstring)
 }
 
 async function sendTx(client, key, walletContext, obj) {
