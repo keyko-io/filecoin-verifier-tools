@@ -12,7 +12,7 @@ let tokenPath = constants.token_path
 
 const provider = new Provider(endpointUrl, {
     token: async () => {
-        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.7zUuXreuX9jEf2cEBRpug5XZDvp1rSg7EOyYzQtGWxY"
+        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.16Um5hVGO9jh7eSujEFp_t5EXIh3h4q-5XwZJLYzOww" 
     }
 })
 
@@ -78,7 +78,7 @@ window.refresh = async function () {
 window.proposeVerifier = async function () {
 
     let account = document.getElementById("verifierAccount").value
-    let datacap = 50000000000000000000000000000000000000000n
+    let datacap = 100000000000000000000000000000000000000000n
     await api.proposeVerifier(account, datacap, key)
 }
 
@@ -86,12 +86,15 @@ window.approveVerifier = async function () {
 
     let rootkeyAccount = document.getElementById("rootkeyAccount").value
     let account = document.getElementById("verifierAccount2").value
+    let transactionID = document.getElementById("transactionID").value
 
     let datacap = 100000000000000000000000000000000000000000n
 
     const mnemonic = 'robot matrix ribbon husband feature attitude noise imitate matrix shaft resist cliff lab now gold menu grocery truth deliver camp about stand consider number'
     let key2 = signer.keyDerive(mnemonic, "m/44'/1'/1/0/2", "")
 
-    await api.approveVerifier(account, datacap, rootkeyAccount, key2) 
+
+
+    await api.approveVerifier(account, datacap, rootkeyAccount, transactionID, key2) 
 }
 

@@ -5,10 +5,29 @@
   </head>
   <body>
     <script src="test.js"></script>
-    <h1>Verifier info</h1>
+    <h1>Verifiers</h1>
     <div id="infoVerifiers">Loading...</div>
 
     <div><p></p></div>
+    <h2>Verified Clients</h2>
+    <div id="infoClients">Loading...</div>
+    <p></p>
+    <div>
+      <p>
+      <button onclick="refresh()">Refresh</button>
+      </p>
+    </div>
+    
+    <h3>Verify Client</h3>
+    Address <input type="text" id="address">
+    <button onclick="addVerifiedClient()">Add</button>
+  </body>
+
+    <div>
+      <p>
+      <h1>Key Holder</h1>
+    </p>
+  </div>
     <div>
       <h2>Propose Verifier</h2>
       Account <input type="text" id="verifierAccount">
@@ -18,20 +37,10 @@
       <h2>Approve Verifier</h2>
       Verifier Account <input type="text" id="verifierAccount2">
       Rootkey Account <input type="text" id="rootkeyAccount">
+      Proposal ID  <input type="text" id="transactionID">
       <button onclick="approveVerifier()">Approve</button>
     </div>
   
 
-    <h1>Verified Clients info</h1>
-    <div id="infoClients">Loading...</div>
-    <p></p>
-    <div>
-      <p>
-      <button onclick="refresh()">Refresh</button>
-      </p>
-    </div>
     
-    Address <input type="text" id="address">
-    <button onclick="addVerifiedClient()">Add</button>
-  </body>
 </html>

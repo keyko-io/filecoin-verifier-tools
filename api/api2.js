@@ -45,20 +45,19 @@ class VerifyAPI {
 
     }
 
-    async approveVerifier(verifierAccount, datacap, fromAccount, multisigKey) {
+    async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, multisigKey) {
 
         // Not address but account in the form "t01003", for instance
         let add = methods.verifreg.addVerifier(verifierAccount, datacap)
         console.log("here",add.params.toString("hex"))
 
         //let tx = methods.rootkey.approve(0, {...add, from: "t01001"})
-        let tx = methods.rootkey.approve(0, {...add, from: fromAccount})
+        let tx = methods.rootkey.approve(transactionId, {...add, from: fromAccount})
         console.log(tx)
    
         await methods.sendTx(this.client, multisigKey, tx)
 
     }   
-
     
    async listVerifiedClients() {
 
