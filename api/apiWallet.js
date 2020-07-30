@@ -3,7 +3,7 @@ const hamt = require('../hamt/hamt')
 // const CID = require('cids')
 const fs = require('fs')
 const address = require('@openworklabs/filecoin-address')
-const methods = require('../filecoin/methods')
+const methods = require('../filecoin/methodsWallet')
 const { BrowserProvider: BrowserProvider } = require('@filecoin-shipyard/lotus-client-provider-browser')
 const { NodejsProvider: NodejsProvider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
@@ -48,16 +48,16 @@ class VerifyAPIWithWallet {
 
    }
 
-   async proposeVerifier(verifierAccount, datacap, multisigKey) {
+   async proposeVerifier(verifierAccount, datacap, indexAccount) {
 
    
         // Not address but account in the form "t01004", for instance
        let tx = methods.rootkey.propose(methods.verifreg.addVerifier(verifierAccount, datacap))
-    await methods.sendTx(this.client, multisigKey, this.walletContext, tx)
+    await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
 
     }
 
-     async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, multisigKey) {
+     async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, indexAccount) {
 
         // Not address but account in the form "t01003", for instance
         let add = methods.verifreg.addVerifier(verifierAccount, datacap)
@@ -67,7 +67,7 @@ class VerifyAPIWithWallet {
         let tx = methods.rootkey.approve(transactionId, {...add, from: fromAccount})
         console.log(tx)
    
-        await methods.sendTx(this.client, multisigKey, this.walletContext, tx)
+        await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
 
     }   
 
@@ -90,10 +90,10 @@ class VerifyAPIWithWallet {
     }
 
 
-    async verifyClient(clientAddress, datacap, key) {
+    async verifyClient(clientAddress, datacap, indexAccount) {
 
         let arg = methods.verifreg.addVerifiedClient(clientAddress, datacap)
-        await methods.sendTx(this.client, key, this.walletContext, arg)
+        await methods.sendTx(this.client, indexAccount, this.walletContext, arg)
     }
 
 
