@@ -4,14 +4,25 @@ const hamt = require('../hamt/hamt')
 const fs = require('fs')
 const address = require('@openworklabs/filecoin-address')
 const methods = require('../filecoin/methods')
-
-
+const { BrowserProvider: BrowserProvider } = require('@filecoin-shipyard/lotus-client-provider-browser')
+const { NodejsProvider: NodejsProvider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
+const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 
 class VerifyAPIWithWallet {
 
     constructor (lotusClient, walletContext) {
         this.client = lotusClient
         this.walletContext = walletContext
+    }
+
+    static standAloneProvider(lotusEndpoint, token) {
+        var provider = new NodejsProvider(lotusEndpoint, token)
+        return new LotusRPC(provider, { schema: testnet.fullNode })
+    }
+
+    static browserProvider(lotusEndpoint, token) {
+        var provider = new BrowserProvider(lotusEndpoint, token)
+        return new LotusRPC(provider, { schema: testnet.fullNode })
     }
 
     async load(a) {
