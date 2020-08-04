@@ -26,48 +26,67 @@ class VerifyAPIWithWallet {
     }
 
     async load(a) {
-        let res = await this.client.chainGetNode(a)
-        return res.Obj
+        try{
+            let res = await this.client.chainGetNode(a)
+            return res.Obj
+        }catch (err) {
+            throw err
+          }
     }
 
     async listVerifiers() {
 
-        const head = await this.client.chainHead()
-        const state = head.Blocks[0].ParentStateRoot['/']
-        const verifiers = (await this.client.chainGetNode(`${state}/@Ha:t06/1/1`)).Obj
+        try{
+            const head = await this.client.chainHead()
+            const state = head.Blocks[0].ParentStateRoot['/']
+            const verifiers = (await this.client.chainGetNode(`${state}/@Ha:t06/1/1`)).Obj
         
-        return  await hamt.buildArrayData(verifiers, this.load)
+            return  await hamt.buildArrayData(verifiers, this.load)
+        }catch (err) {
+            throw err
+          }
       
    }
 
    async checkVerifier(verifierAddress) {
 
-     // empty array if not verifier is present
-     return this.listVerifiers
-                .filter( verifier => verifier[0].toString() === verifierAddress)
+    try{
+        // empty array if not verifier is present
+        return this.listVerifiers
+                    .filter( verifier => verifier[0].toString() === verifierAddress)
+    }catch (err) {
+        throw err
+      }
 
    }
 
    async proposeVerifier(verifierAccount, datacap, indexAccount) {
 
-   
-        // Not address but account in the form "t01004", for instance
-       let tx = methods.rootkey.propose(methods.verifreg.addVerifier(verifierAccount, datacap))
-    await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
+        try{
+            // Not address but account in the form "t01004", for instance
+            let tx = methods.rootkey.propose(methods.verifreg.addVerifier(verifierAccount, datacap))
+            return await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
+        }catch (err) {
+            throw err
+          }
 
     }
 
      async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, indexAccount) {
 
-        // Not address but account in the form "t01003", for instance
-        let add = methods.verifreg.addVerifier(verifierAccount, datacap)
-        console.log("here",add.params.toString("hex"))
+        try{
+            // Not address but account in the form "t01003", for instance
+            let add = methods.verifreg.addVerifier(verifierAccount, datacap)
+            console.log("here",add.params.toString("hex"))
 
-        //let tx = methods.rootkey.approve(0, {...add, from: "t01001"})
-        let tx = methods.rootkey.approve(transactionId, {...add, from: fromAccount})
-        console.log(tx)
+            //let tx = methods.rootkey.approve(0, {...add, from: "t01001"})
+            let tx = methods.rootkey.approve(transactionId, {...add, from: fromAccount})
+            console.log(tx)
    
-        await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
+            return await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
+        }catch (err) {
+            throw err
+          }
 
     }   
 
@@ -75,25 +94,37 @@ class VerifyAPIWithWallet {
     
    async listVerifiedClients() {
 
-        const head = await this.client.chainHead()
-        const state = head.Blocks[0].ParentStateRoot['/']
-        const verified = (await this.client.chainGetNode(`${state}/@Ha:t06/1/2`)).Obj  
-     
-        return await hamt.buildArrayData(verified, this.load)      
+        try{
+            const head = await this.client.chainHead()
+            const state = head.Blocks[0].ParentStateRoot['/']
+            const verified = (await this.client.chainGetNode(`${state}/@Ha:t06/1/2`)).Obj  
+            
+            return await hamt.buildArrayData(verified, this.load)     
+        }catch (err) {
+            throw err
+          }
+    } 
       
-    }
 
     async checkClient(clientAddress) {
 
-        return this.listVerifiedClients
-                   .filter( client => client[0].toString() === clientAddress)
+        try {
+            return this.listVerifiedClients
+                        .filter( client => client[0].toString() === clientAddress)
+        }catch (err) {
+            throw err
+        }   
     }
 
 
     async verifyClient(clientAddress, datacap, indexAccount) {
 
-        let arg = methods.verifreg.addVerifiedClient(clientAddress, datacap)
-        await methods.sendTx(this.client, indexAccount, this.walletContext, arg)
+        try{ 
+            let arg = methods.verifreg.addVerifiedClient(clientAddress, datacap)
+            return await methods.sendTx(this.client, indexAccount, this.walletContext, arg)
+        }catch (err) {
+            throw err
+          }
     }
 
 
