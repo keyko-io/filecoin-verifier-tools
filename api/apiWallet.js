@@ -62,6 +62,9 @@ class VerifyAPIWithWallet {
 
    async proposeVerifier(verifierAccount, datacap, indexAccount) {
 
+    if ( typeof this.wallet === 'undefined' || !this.walletContext)
+        throw new Error("No wallet context defined in API")
+
         try{
             // Not address but account in the form "t01004", for instance
             let tx = methods.rootkey.propose(methods.verifreg.addVerifier(verifierAccount, datacap))
@@ -74,6 +77,9 @@ class VerifyAPIWithWallet {
 
      async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, indexAccount) {
 
+        if ( typeof this.wallet === 'undefined' || !this.walletContext)
+            throw new Error("No wallet context defined in API")
+        
         try{
             // Not address but account in the form "t01003", for instance
             let add = methods.verifreg.addVerifier(verifierAccount, datacap)
@@ -91,7 +97,6 @@ class VerifyAPIWithWallet {
     }   
 
 
-    
    async listVerifiedClients() {
 
         try{
@@ -118,6 +123,10 @@ class VerifyAPIWithWallet {
 
 
     async verifyClient(clientAddress, datacap, indexAccount) {
+
+        
+        if ( typeof this.wallet === 'undefined' || !this.walletContext)
+            throw new Error("No wallet context defined in API")
 
         try{ 
             let arg = methods.verifreg.addVerifiedClient(clientAddress, datacap)
