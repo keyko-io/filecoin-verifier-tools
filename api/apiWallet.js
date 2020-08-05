@@ -68,7 +68,10 @@ class VerifyAPIWithWallet {
         try{
             // Not address but account in the form "t01004", for instance
             let tx = methods.rootkey.propose(methods.verifreg.addVerifier(verifierAccount, datacap))
-            return await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
+            let res = await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
+            // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
+            // we return the messageID
+            return res['/']
         }catch (err) {
             throw err
           }
@@ -89,7 +92,10 @@ class VerifyAPIWithWallet {
             let tx = methods.rootkey.approve(transactionId, {...add, from: fromAccount})
             console.log(tx)
    
-            return await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
+            let res = await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
+            // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
+            // we return the messageID
+            return res['/']
         }catch (err) {
             throw err
           }
@@ -130,7 +136,10 @@ class VerifyAPIWithWallet {
 
         try{ 
             let arg = methods.verifreg.addVerifiedClient(clientAddress, datacap)
-            return await methods.sendTx(this.client, indexAccount, this.walletContext, arg)
+            let res = await methods.sendTx(this.client, indexAccount, this.walletContext, arg)
+            // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
+            // we return the messageID
+            return res['/']
         }catch (err) {
             throw err
           }

@@ -29,7 +29,7 @@ async function signTx(client, indexAccount, walletContext, {to, method, params, 
 
 async function sendTx(client, key, walletContext, obj) {
     let tx = await signTx(client, key, walletContext, obj)
-    await client.mpoolPush(JSON.parse(tx))
+    return await client.mpoolPush(JSON.parse(tx))
 }
 
 function pad(str) {
