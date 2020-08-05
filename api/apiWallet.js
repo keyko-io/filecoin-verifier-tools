@@ -62,7 +62,7 @@ class VerifyAPIWithWallet {
 
    async proposeVerifier(verifierAccount, datacap, indexAccount) {
 
-    if ( typeof this.wallet === 'undefined' || !this.walletContext)
+    if ( typeof this.walletContext === 'undefined' || !this.walletContext)
         throw new Error("No wallet context defined in API")
 
         try{
@@ -77,7 +77,7 @@ class VerifyAPIWithWallet {
 
      async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, indexAccount) {
 
-        if ( typeof this.wallet === 'undefined' || !this.walletContext)
+        if ( typeof this.walletContext === 'undefined' || !this.walletContext)
             throw new Error("No wallet context defined in API")
         
         try{
@@ -125,7 +125,7 @@ class VerifyAPIWithWallet {
     async verifyClient(clientAddress, datacap, indexAccount) {
 
         
-        if ( typeof this.wallet === 'undefined' || !this.walletContext)
+        if ( typeof this.walletContext === 'undefined' || !this.walletContext)
             throw new Error("No wallet context defined in API")
 
         try{ 
