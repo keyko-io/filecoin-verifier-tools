@@ -1,9 +1,9 @@
 const {LotusRPC} = require('@filecoin-shipyard/lotus-client-rpc')
 const {NodejsProvider: Provider} = require('@filecoin-shipyard/lotus-client-provider-nodejs')
+const VerifyAPIWallet = require('../../api/apiWallet.js')
+const MockWallet = require('../mockWallet')
 const {testnet} = require('@filecoin-shipyard/lotus-client-schema')
 const fs = require('fs')
-const signer = require("@keyko-io/filecoin-signing-tools/js")
-const methods = require('../../filecoin/methods')
 const constants = require("../constants")
 
 let endpointUrl = constants.lotus_endpoint
@@ -15,13 +15,15 @@ const provider = new Provider(endpointUrl, {token: async () => {
 
 const client = new LotusRPC(provider, { schema: testnet.fullNode })
 
-const mnemonic = 'robot matrix ribbon husband feature attitude noise imitate matrix shaft resist cliff lab now gold menu grocery truth deliver camp about stand consider number'
-let key = signer.keyDerive(mnemonic, "m/44'/1'/1/0/2", "")
-console.log("address", key.address)
+const mnemonic = 'exit mystery juice city argue breeze film learn orange dynamic marine diary antenna road couple surge marine assume loop thought leader liquid rotate believe'
+const path = "m/44'/1'/1/0/"
+const mockWallet = new MockWallet(mnemonic, path)
+const api = new VerifyAPIWallet(client, mockWallet)
 
 async function main() {
-    await methods.sendTx(client, key, methods.encodeSend("t01000"))
+    await api.verifyClient("t1743zcvw32tdxumeln75e3pfcl43iy43k2fjdpza", 10000000000000000000000n, 2)
     process.exit(0)
+
 }
 
 main()

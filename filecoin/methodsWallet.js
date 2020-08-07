@@ -27,8 +27,8 @@ async function signTx(client, indexAccount, walletContext, {to, method, params, 
      //return signer.transactionSignLotus(msg, key.private_hexstring)
 }
 
-async function sendTx(client, key, walletContext, obj) {
-    let tx = await signTx(client, key, walletContext, obj)
+async function sendTx(client, indexAccount, walletContext, obj) {
+    let tx = await signTx(client, indexAccount, walletContext, obj)
     return await client.mpoolPush(JSON.parse(tx))
 }
 
