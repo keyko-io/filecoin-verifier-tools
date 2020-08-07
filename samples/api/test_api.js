@@ -1,5 +1,5 @@
 const fs = require('fs')
-const VerifyAPIWallet = require('../../api/apiWallet.js')
+const VerifyAPIWallet = require('../../api/api.js')
 const MockWallet = require('../mockWallet')
 const {LotusRPC} = require('@filecoin-shipyard/lotus-client-rpc')
 const {NodejsProvider: Provider} = require('@filecoin-shipyard/lotus-client-provider-nodejs')
@@ -23,7 +23,7 @@ async function run () {
     const path = "m/44'/1'/1/0/"
     const mockWallet = new MockWallet(mnemonic, path)
 
-    const api = new VerifyAPIWallet(client, mockWallet)
+    const api = new VerifyAPI(client, mockWallet)
     
     var address= "t1rxk2ynia27jb6cs5r7xcgydm72p5ouu4js6lsbi"
     var datacap = 10000000000000000000000n

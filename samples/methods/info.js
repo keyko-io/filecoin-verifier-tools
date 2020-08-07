@@ -5,7 +5,7 @@ const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
 const hamt = require('../../hamt/hamt')
 // const CID = require('cids')
 const fs = require('fs')
-const methods = require('../../filecoin/methodsWallet')
+const methods = require('../../filecoin/methods')
 const constants = require("../constants")
 
 let endpointUrl = constants.lotus_endpoint

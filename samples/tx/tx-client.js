@@ -1,6 +1,6 @@
 const signer = require("@keyko-io/filecoin-signing-tools/js")
 const fetch = require('node-fetch')
-const methods = require('../../filecoin/methodsWallet')
+const methods = require('../../filecoin/methods')
 const cbor = require('cbor')
 const constants = require("../constants")
 
