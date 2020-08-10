@@ -10,9 +10,9 @@
   "author": "Keyko <root@keyko.io>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/keyko-io/js-hamt-ipld/issues"
+    "url": "https://github.com/keyko-io/filecoin-verifier-tools/issues"
   },
-  "homepage": "https://github.com/keyko-io/js-hamt-ipld#readme",
+  "homepage": "https://github.com/keyko-io/filecoin-verifier-tools#readme",
   "dependencies": {
     "@keyko-io/filecoin-signing-tools": "0.2.0",
     "@filecoin-shipyard/lotus-client-provider-nodejs": "0.0.5",
