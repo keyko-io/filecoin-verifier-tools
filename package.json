@@ -1,6 +1,6 @@
 {
   "name": "@keyko-io/filecoin-verifier-tools",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Javascript implementation of a HAMT using ipld",
   "repository": {
     "type": "git",
