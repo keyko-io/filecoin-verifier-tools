@@ -24,15 +24,6 @@ async function load(a) {
     return res.Obj
 }
 
-let spec = [
-    ["target", "address"],
-    ["sent", "bigint"],
-    ["method", "int"],
-    ["params", ["cbor", [["verifier", "address"], ["cap", "bigint"]]]],
-    ["signers", ["list", "address"]],
-]
-
-
 async function run() {
     while (true) {
         const head = await client.chainHead()
@@ -40,9 +31,11 @@ async function run() {
         console.log("height", head.Height, state)
         const data = (await client.chainGetNode(`${state}/@Ha:t080/1/6`)).Obj
         console.log(JSON.stringify(data, null, 2))
-        await hamt.forEach(data, load, function (k, v) {
-            console.log("key", hamt.readVarInt(k) / 2n, methods.decode(spec, v))
-        })
+        let info = methods.decode(methods.pending, data)
+        let obj = await info.asObject(load)
+        for (let [k,v] of Object.entries(obj)) {
+            console.log(k, v, methods.parse(v))
+        }
         await new Promise(resolve => { setTimeout(resolve, 1000) })
     }
 }

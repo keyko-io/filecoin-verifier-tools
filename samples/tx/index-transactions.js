@@ -23,11 +23,6 @@ const provider = new Provider(endpointUrl, {
 
 const client = new LotusRPC(provider, { schema: testnet.fullNode })
 
-async function load(a) {
-    let res = await client.chainGetNode(a)
-    return res.Obj
-}
-
 const Transaction = sequelize.define('transaction', message.db)
 
 async function handleMessages(i, dta) {

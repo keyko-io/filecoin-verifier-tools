@@ -110,6 +110,9 @@ function decode(schema, data) {
     if (schema === 'bigint') {
         return hamt.bytesToBig(data)
     }
+    if (schema === 'bigint-signed') {
+        return hamt.bytesToBig(data)/2n
+    }
     if (schema === 'int' || schema === 'buffer') {
         return data
     }
@@ -268,6 +271,18 @@ let multisig = {
     },
 }
 
+let pending = {
+    type: "hamt",
+    key: "bigint-signed",
+    value: {
+        target: "address",
+        sent: "bigint",
+        method: "int",
+        params: "buffer",
+        signers: ["list", "address"],
+    }
+}
+
 let verifreg = {
     2: {
         name: "addVerifier",
@@ -285,6 +300,17 @@ let verifreg = {
     }
 }
 
+let reg = {
+    't080': multisig,
+    't06': verifreg,
+}
+
+function parse(tx) {
+    let actor = reg[tx.target]
+    let {name, input} = actor[tx.method]
+    return {name, params: decode(input, cbor.decode(tx.params))}
+}
+
 module.exports = {
     encodeSend,
     encodeApprove,
@@ -297,7 +323,9 @@ module.exports = {
     encode,
     actor,
     multisig,
+    pending,
     rootkey: actor("t080", multisig),
     verifreg: actor("t06", verifreg),
+    parse,
 }
 
