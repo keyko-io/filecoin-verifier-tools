@@ -1,5 +1,6 @@
 const address = require('@openworklabs/filecoin-address')
-const hash = require('./hash').hash
+// const hash = require('./hash').hash
+const sha256 = require('js-sha256')
 
 // Get n next bits
 function nextBits(obj, n) {
@@ -157,7 +158,8 @@ function load() {
 
 function find(n, key) {
 	// console.log(hash(key).h1)
-    return getValue(n, load, {num: hash(key).h1, left: 64}, key)
+	let hash = bytesToBig(Buffer.from(sha256(key), "hex"))
+    return getValue(n, load, {num: bytesToBig(hash), left: 256}, key)
 }
 
 function print(k,v) {
@@ -172,10 +174,11 @@ async function main() {
 	forEach({bitWidth: 5, data: parseNode(data)}, load, print)
 }
 
-main()
+// main()
 
 exports.find = async function (data, load, key) {
-	return getValue({bitWidth: 5, data: parseNode(data)}, load, {num: hash(key).h1, left: 64}, key)
+	let hash = bytesToBig(Buffer.from(sha256(key), "hex"))
+	return getValue({bitWidth: 5, data: parseNode(data)}, load, {num: hash, left: 256}, key)
 }
 
 exports.forEach = async function (data, load, cb) {
@@ -185,14 +188,12 @@ exports.forEach = async function (data, load, cb) {
 	cb)
 }
 
-
 exports.printData = async function (data, load) {
 	await forEach({bitWidth: 5, data: parseNode(data)}, async a => {
 		return load(a)
 	},
 	print)
 }
-
 
 exports.buildArrayData = async function (data, load) {
 	var dataArray = []
@@ -217,7 +218,6 @@ async function addToArray(n, load, dataArray) {
 		}
 	}
 }
-
 
 function readVarInt(bytes, offset) {
     let res = 0n

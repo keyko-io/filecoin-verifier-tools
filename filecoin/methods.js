@@ -24,7 +24,7 @@ async function signTx(client, indexAccount, walletContext, {to, method, params, 
         "params": params,
     }
 
-     return walletContext.sign(msg, indexAccount)
+    return walletContext.sign(msg, indexAccount)
 }
 
 async function sendTx(client, indexAccount, walletContext, obj) {

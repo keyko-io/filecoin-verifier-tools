@@ -29,6 +29,7 @@
     "cids": "^0.8.3",
     "express": "^4.17.1",
     "ipld-dag-cbor": "^0.16.0",
+    "js-sha256": "^0.9.0",
     "murmurhash3js-revisited": "^3.0.0",
     "node-fetch": "^2.6.0",
     "pg": "^8.3.0",

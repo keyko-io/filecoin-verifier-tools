@@ -66,16 +66,15 @@
 "@zondax/filecoin-signing-tools@file:../filecoin-signing-tools/signer-npm/js":
   version "0.2.0"
   dependencies:
-    "@openworklabs/filecoin-address" "0.0.10"
     base32-decode "^1.0.0"
     base32-encode "^1.1.1"
     bip32 "^2.0.5"
     bip39 "^3.0.2"
     blakejs "^1.1.0"
     bn.js "^5.1.2"
-    ipld-dag-cbor "^0.15.3"
+    ipld-dag-cbor "^0.16.0"
+    leb128 "0.0.5"
     secp256k1 "^4.0.1"
-    varint "^5.0.0"
 
 accepts@~1.3.7:
   version "1.3.7"
@@ -584,6 +583,11 @@ iso-url@~0.4.4, iso-url@~0.4.7:
   version "0.4.7"
   resolved "https://registry.yarnpkg.com/iso-url/-/iso-url-0.4.7.tgz#de7e48120dae46921079fe78f325ac9e9217a385"
   integrity sha512-27fFRDnPAMnHGLq36bWTpKET+eiXct3ENlCcdcMdk+mjXrb2kw3mhBUg1B7ewAC0kVzlOPhADzQgz1SE6Tglog==
+
+js-sha256@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/js-sha256/-/js-sha256-0.9.0.tgz#0b89ac166583e91ef9123644bd3c5334ce9d0966"
+  integrity sha512-sga3MHh9sgQN2+pJ9VYZ+1LPwXOxuBJBA5nrR5/ofPfuiJBE2hnjsaN8se8JznOmGLN2p49Pe5U/ttafcs/apA==
 
 js-sha3@^0.8.0:
   version "0.8.0"
