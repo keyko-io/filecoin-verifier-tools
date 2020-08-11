@@ -1,4 +1,4 @@
-const signer = require("@keyko-io/filecoin-signing-tools/js")
+const signer = require("@zondax/filecoin-signing-tools")
 const fetch = require('node-fetch')
 const methods = require('../methods')
 const cbor = require('cbor')

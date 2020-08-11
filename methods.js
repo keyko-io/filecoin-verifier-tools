@@ -1,5 +1,6 @@
 
 const signer = require("@keyko-io/filecoin-signing-tools/js")
+const signer2 = require("@zondax/filecoin-signing-tools")
 const cbor = require('cbor')
 const hamt = require('./hamt')
 const blake = require('blakejs')
@@ -14,16 +15,18 @@ async function signTx(client, key, {to, method, params, value}) {
         "from": key.address,
         "nonce": state.Nonce,
         "value": "123456789",
-        "gasprice": "1",
+        "gasfeecap": "1000000000",
+        "gaspremium": "15000",
         "gaslimit": 25000000,
         "method": method,
         "params": params,
     }
-    return signer.transactionSignLotus(msg, key.private_hexstring)
+    return signer2.transactionSignLotus(msg, key.private_hexstring)
 }
 
 async function sendTx(client, key, obj) {
     let tx = await signTx(client, key, obj)
+    console.log(tx)
     await client.mpoolPush(JSON.parse(tx))
 }
 

@@ -1,10 +1,11 @@
 {
   "dependencies": {
-    "@keyko-io/filecoin-signing-tools": "0.2.0",
     "@filecoin-shipyard/lotus-client-provider-nodejs": "0.0.5",
     "@filecoin-shipyard/lotus-client-rpc": "0.0.11",
     "@filecoin-shipyard/lotus-client-schema": "0.0.12",
+    "@keyko-io/filecoin-signing-tools": "^0.2.0",
     "@openworklabs/filecoin-address": "0.0.10",
+    "@zondax/filecoin-signing-tools": "/home/sami/filecoin-signing-tools/signer-npm/js",
     "base32-decode": "^1.0.0",
     "base32-encode": "^1.1.1",
     "bip32": "^2.0.5",

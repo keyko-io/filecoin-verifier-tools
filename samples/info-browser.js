@@ -3,12 +3,12 @@ const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const { BrowserProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-browser')
 const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
 const methods = require('../methods')
-const signer = require("@keyko-io/filecoin-signing-tools/js")
+const signer = require("@zondax/filecoin-signing-tools")
 
 const endpointUrl = 'ws://localhost:1234/rpc/v0'
 const provider = new Provider(endpointUrl, {
     token: async () => {
-        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.JPoCyZQKwHGB2OkXQs17wQW4qKFXtow9-t8d85dm3go"
+        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.djljRMzdXmMsC51Iu4bpcOTxoF1jZsp7Almm_6O-9dk"
     }
 })
 
@@ -30,8 +30,8 @@ async function run() {
     while (true) {
         const head = await client.chainHead()
         const state = head.Blocks[0].ParentStateRoot['/']
-        const verifiers = (await client.chainGetNode(`${state}/@Ha:t06/1/1`)).Obj
-        let dta = methods.decode(schema, verifiers)
+        const verified = (await client.chainGetNode(`${state}/@Ha:t06/1/2`)).Obj
+        let dta = methods.decode(schema, verified)
         let res = ""
         for (let [k,v] of await dta.asList(load)) {
             res += `<p>${k}: ${v.toString(10)}</p>`

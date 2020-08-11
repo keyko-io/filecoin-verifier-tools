@@ -2,7 +2,7 @@ const {LotusRPC} = require('@filecoin-shipyard/lotus-client-rpc')
 const {NodejsProvider: Provider} = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const {testnet} = require('@filecoin-shipyard/lotus-client-schema')
 const fs = require('fs')
-const signer = require("@keyko-io/filecoin-signing-tools/js")
+const signer = require("@zondax/filecoin-signing-tools")
 const methods = require('../methods')
 
 const endpointUrl = 'ws://localhost:1234/rpc/v0'
