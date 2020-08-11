@@ -21,7 +21,6 @@ async function load(a) {
     return res.Obj
 }
 
-
 async function run () {
     while (true) {
       const head = await client.chainHead()
@@ -32,7 +31,7 @@ async function run () {
       await hamt.printData(verifiers, load)
 
       var verifierArray = []
-      verifierArray =  await hamt.buildArrayData(verifiers, load)    
+      verifierArray =  await hamt.buildArrayData(verifiers, load)
 
       await new Promise(resolve => { setTimeout(resolve, 1000) })
     }

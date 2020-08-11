@@ -18,7 +18,7 @@ const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
 
 
 async function main() {
-    await api.verifyClient("t1743zcvw32tdxumeln75e3pfcl43iy43k2fjdpza", 10000000000000000000000n, 2)
+    await api.verifyClient(process.argv[2], 10000000000000000000000n, 2)
     process.exit(0)
 
 }
