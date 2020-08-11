@@ -1,4 +1,4 @@
-# js-hamt-ipld
+# Filecoin verifier tools
 
 Javascript implementation of a HAMT using ipld
 

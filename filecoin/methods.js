@@ -1,18 +1,20 @@
 
 const signer = require("@keyko-io/filecoin-signing-tools/js")
-const signer2 = require("@zondax/filecoin-signing-tools")
 const cbor = require('cbor')
-const hamt = require('./hamt')
+const hamt = require('../hamt/hamt')
 const blake = require('blakejs')
 
-async function signTx(client, key, {to, method, params, value}) {
+async function signTx(client, indexAccount, walletContext, {to, method, params, value}) {
     const head = await client.chainHead()
-    let state = await client.stateGetActor(key.address, head.Cids)
+    const address =  (await walletContext.getAccounts())[indexAccount]
+    console.log("address form wallet: " + address)
+   
+    let state = await client.stateGetActor(address, head.Cids)
     // console.log("params", params)
     // console.log("state", state)
     let msg = {
         "to": to,
-        "from": key.address,
+        "from": address,
         "nonce": state.Nonce,
         "value": "123456789",
         "gasfeecap": "1000000000",
@@ -21,13 +23,13 @@ async function signTx(client, key, {to, method, params, value}) {
         "method": method,
         "params": params,
     }
-    return signer2.transactionSignLotus(msg, key.private_hexstring)
+
+     return walletContext.sign(msg, indexAccount)
 }
 
-async function sendTx(client, key, obj) {
-    let tx = await signTx(client, key, obj)
-    console.log(tx)
-    await client.mpoolPush(JSON.parse(tx))
+async function sendTx(client, indexAccount, walletContext, obj) {
+    let tx = await signTx(client, indexAccount, walletContext, obj)
+    return await client.mpoolPush(JSON.parse(tx))
 }
 
 function pad(str) {
@@ -44,10 +46,6 @@ async function sendVerify(verified, cap) {
     console.log([signer.addressAsBytes(verified), encodeBig(cap)])
     await sendTx("t06", 4, cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)]))
 }
-
-// sendTx("t17uoq6tp427uzv7fztkbsnn64iwotfrristwpryy", 0, "")
-
-// sendTx("t1uu7jrpff4sh7g2clfjv7oc2oafui5hrlxeuax7q", 123456789101112n)
 
 function encodeSend(to) {
     return {
@@ -96,17 +94,6 @@ function encodeApprove(msig, txid, from, msg) {
     }
 }
 
-// console.log(encodeAddVerifier("t01003", 7777777))
-// console.log(encodePropose("t01006", encodeAddVerifier("t01003", 7777777)))
-
-// sendTx(encodePropose("t01006", encodeAddVerifier("t01003", 7777777)))
-
-// console.log(encodeProposalHashdata("t01003", encodeAddVerifier("t01003", 7777777)).toString("hex"))
-// console.log(encodeApprove("t01006", 1, "t01007", encodeAddVerifier("t01005", 7777777)).toString("hex"))
-
-async function main() {
-    console.log(await signTx(encodeApprove("t01006", 1, "t01007", encodeAddVerifier("t01005", 7777777))))
-}
 
 function isType(schema) {
     if (schema === 'address' || schema === 'bigint' || schema === 'int' || schema === 'buffer') return true
@@ -297,8 +284,6 @@ let verifreg = {
         }
     }
 }
-
-// main()
 
 module.exports = {
     encodeSend,

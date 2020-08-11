@@ -2,15 +2,18 @@
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
-const hamt = require('../hamt')
-const methods = require('../methods')
+const hamt = require('../../hamt/hamt')
+const methods = require('../../filecoin/methods')
 // const CID = require('cids')
 const fs = require('fs')
+const constants = require("../constants")
 
-const endpointUrl = 'ws://localhost:1234/rpc/v0'
+let endpointUrl = constants.lotus_endpoint
+let tokenPath = constants.token_path 
+
 const provider = new Provider(endpointUrl, {
     token: async () => {
-        return fs.readFileSync('/home/sami/.lotus/token')
+        return fs.readFileSync(tokenPath)
     }
 })
 

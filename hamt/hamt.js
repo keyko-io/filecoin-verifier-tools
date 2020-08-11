@@ -193,6 +193,32 @@ exports.printData = async function (data, load) {
 	print)
 }
 
+
+exports.buildArrayData = async function (data, load) {
+	var dataArray = []
+	await addToArray({bitWidth: 5, data: parseNode(data)}, async a => {
+		return load(a)
+	},
+	dataArray)
+
+	return dataArray
+}
+
+async function addToArray(n, load, dataArray) {
+	for (let c of n.data.pointers) {
+		if (c[0]) {
+			let child = await load(c[0]['/'])
+			await addToArray({bitWidth: n.bitWidth, data: parseNode(child)}, load, dataArray)
+		}
+		if (c[1]) {
+			for (let [k, v] of c[1]) {
+				await dataArray.push([address.encode('t', new address.Address(Buffer.from(k, "base64"))), bytesToBig(makeBuffers(v))])
+			}
+		}
+	}
+}
+
+
 function readVarInt(bytes, offset) {
     let res = 0n
     let acc = 1n
