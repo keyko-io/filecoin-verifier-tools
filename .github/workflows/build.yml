@@ -14,6 +14,6 @@ jobs:
         node-version: '10.x'
     - name: Build
       run: |
-      git submodule init ; git submodule update ; npm i
+      npm i
         npm build
 
