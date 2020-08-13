@@ -89,7 +89,7 @@ class VerifyAPI {
             console.log("here",add.params.toString("hex"))
 
             //let tx = methods.rootkey.approve(0, {...add, from: "t01001"})
-            let tx = methods.rootkey.approve(transactionId, {...add, from: fromAccount})
+            let tx = methods.rootkey.approve(parseInt(transactionId, 10), {...add, from: fromAccount})
             console.log(tx)
    
             let res = await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
