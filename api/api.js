@@ -122,18 +122,6 @@ class VerifyAPI {
         }
     }
 
-    async pendingRootTransactions() {
-        const head = await this.client.chainHead()
-        const state = head.Blocks[0].ParentStateRoot['/']
-        const data = (await this.client.chainGetNode(`${state}/@Ha:t080/1/6`)).Obj
-        let info = methods.decode(methods.pending, data)
-        let obj = await info.asObject(this.load)
-        for (let [k,v] of Object.entries(obj)) {
-            obj[k].parsed = methods.parse(v)
-        }
-        return obj
-    }
-
     async verifyClient(clientAddress, datacap, indexAccount) {
 
         if (typeof this.walletContext === 'undefined' || !this.walletContext)
