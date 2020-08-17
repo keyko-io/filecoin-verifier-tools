@@ -1,8 +1,5 @@
 const {testnet} = require('@filecoin-shipyard/lotus-client-schema')
 const hamt = require('../hamt/hamt')
-// const CID = require('cids')
-const fs = require('fs')
-const address = require('@openworklabs/filecoin-address')
 const methods = require('../filecoin/methods')
 const { BrowserProvider: BrowserProvider } = require('@filecoin-shipyard/lotus-client-provider-browser')
 const { NodejsProvider: NodejsProvider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
@@ -31,20 +28,26 @@ class VerifyAPI {
             return res.Obj
         }catch (err) {
             throw err
-          }
+        }
     }
 
     async listVerifiers() {
-
         try{
             const head = await this.client.chainHead()
             const state = head.Blocks[0].ParentStateRoot['/']
             const verifiers = (await this.client.chainGetNode(`${state}/@Ha:t06/1/1`)).Obj
-        
-            return  await hamt.buildArrayData(verifiers, this.load)
-        }catch (err) {
+            const listOfVerifiers = await hamt.buildArrayData(verifiers, this.load)
+            let returnList = []
+            for(const [key,value] in listOfVerifiers){
+                returnList.push({
+                    verifier: key,
+                    datacap: value.toString(10)
+                })
+            }
+            return returnList
+        } catch (err) {
             throw err
-          }
+        }
       
    }
 
@@ -53,7 +56,7 @@ class VerifyAPI {
     try{
         // empty array if not verifier is present
         return this.listVerifiers
-                    .filter( verifier => verifier[0].toString() === verifierAddress)
+                    .filter( verifier => verifier.verifier.toString() === verifierAddress)
     }catch (err) {
         throw err
       }
@@ -103,14 +106,21 @@ class VerifyAPI {
     }   
 
 
-   async listVerifiedClients() {
+    async listVerifiedClients() {
 
         try{
             const head = await this.client.chainHead()
             const state = head.Blocks[0].ParentStateRoot['/']
             const verified = (await this.client.chainGetNode(`${state}/@Ha:t06/1/2`)).Obj  
-            
-            return await hamt.buildArrayData(verified, this.load)     
+            const listOfVerified = await hamt.buildArrayData(verified, this.load)
+            let returnList = []
+            for(const [key,value] in listOfVerified){
+                returnList.push({
+                    verified: key,
+                    datacap: value.toString(10)
+                })
+            }
+            return returnList
         }catch (err) {
             throw err
           }
@@ -118,7 +128,6 @@ class VerifyAPI {
       
 
     async checkClient(clientAddress) {
-
         try {
             return this.listVerifiedClients
                         .filter( client => client[0].toString() === clientAddress)
@@ -129,11 +138,8 @@ class VerifyAPI {
 
 
     async verifyClient(clientAddress, datacap, indexAccount) {
-
-        
         if ( typeof this.walletContext === 'undefined' || !this.walletContext)
             throw new Error("No wallet context defined in API")
-
         try{ 
             let arg = methods.verifreg.addVerifiedClient(clientAddress, datacap)
             let res = await methods.sendTx(this.client, indexAccount, this.walletContext, arg)
@@ -142,7 +148,7 @@ class VerifyAPI {
             return res['/']
         }catch (err) {
             throw err
-          }
+        }
     }
 
     async pendingRootTransactions() {
@@ -151,10 +157,18 @@ class VerifyAPI {
         const data = (await this.client.chainGetNode(`${state}/@Ha:t080/1/6`)).Obj
         let info = methods.decode(methods.pending, data)
         let obj = await info.asObject(this.load)
+        let returnList = []
         for (let [k,v] of Object.entries(obj)) {
-            obj[k].parsed = methods.parse(v)
+            const parsed = methods.parse(v)
+            returnList.push({
+                id: k,
+                type: parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
+                verifier: parsed.params.verifier,
+                datacap: parsed.params.cap.toString(),
+                singers: v.singers
+            })
         }
-        return obj
+        return returnList
     }
 
 }
