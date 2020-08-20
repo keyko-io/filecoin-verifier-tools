@@ -16,7 +16,7 @@ async function signTx(client, indexAccount, walletContext, {to, method, params, 
         "to": to,
         "from": address,
         "nonce": state.Nonce,
-        "value": "123456789",
+        "value": value || "123456789",
         "gasfeecap": "1000000000",
         "gaspremium": "15000",
         "gaslimit": 25000000,
@@ -29,6 +29,7 @@ async function signTx(client, indexAccount, walletContext, {to, method, params, 
 
 async function sendTx(client, indexAccount, walletContext, obj) {
     let tx = await signTx(client, indexAccount, walletContext, obj)
+    console.log("going to send", tx)
     return await client.mpoolPush(JSON.parse(tx))
 }
 
@@ -43,7 +44,7 @@ function encodeBig(bn) {
 }
 
 async function sendVerify(verified, cap) {
-    console.log([signer.addressAsBytes(verified), encodeBig(cap)])
+    // console.log([signer.addressAsBytes(verified), encodeBig(cap)])
     await sendTx("t06", 4, cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)]))
 }
 
@@ -72,7 +73,7 @@ function encodeAddVerifiedClient(verified, cap) {
 }
 
 function encodePropose(msig, msg) {
-    console.log("encpro", [signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params])
+    // console.log("encpro", [signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params])
     return {
         to: msig,
         method: 2,
@@ -231,7 +232,7 @@ function actor(address, spec) {
             else {
                 params = encode(method.input, data)
             }
-            console.log("params", params)
+            // console.log("params", params)
             return {
                 to: address,
                 value: 0n,

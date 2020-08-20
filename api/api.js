@@ -83,11 +83,9 @@ class VerifyAPI {
         try {
             // Not address but account in the form "t01003", for instance
             let add = methods.verifreg.addVerifier(verifierAccount, datacap)
-            console.log("here", add.params.toString("hex"))
 
             //let tx = methods.rootkey.approve(0, {...add, from: "t01001"})
             let tx = methods.rootkey.approve(transactionId, { ...add, from: fromAccount })
-            console.log(tx)
 
             let res = await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
             // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}

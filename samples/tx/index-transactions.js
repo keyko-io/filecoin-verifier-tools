@@ -24,10 +24,10 @@ const provider = new Provider(endpointUrl, {
 const client = new LotusRPC(provider, { schema: testnet.fullNode })
 
 const Transaction = sequelize.define('transaction', message.db)
+const Block = sequelize.define('block', message.block)
 
-async function handleMessages(i, dta) {
+async function handleMessages(height, blockhash, dta) {
     if (dta[1] != 0) {
-        // console.log(i, dta[2][2])
         for (let e of dta[2][2]) {
             const msg = (await client.chainGetNode(e['/'])).Obj
             let tx
@@ -37,10 +37,28 @@ async function handleMessages(i, dta) {
             else {
                 tx = methods.decode(message.message, hamt.makeBuffers(msg))
             }
-            console.log(tx)
-            let obj = new Transaction({ ...tx, height: i})
+            let obj = new Transaction({ ...tx, height, txhash: e['/'], blockhash})
             await obj.save()
         }
+    }
+}
+
+const sleep = async (ms) => await new Promise(resolve => { setTimeout(resolve, ms) })
+
+async function indexHeight(i) {
+    const ts = await client.chainGetTipSetByHeight(i, null)
+    // TODO: handle other blocks in tipset
+    for (let j = 0; j < ts.Blocks.length; j++) {
+        let block = ts.Blocks[j]
+        let blockhash = ts.Cids[j]['/']
+        let obj = new Block({height: i, blockhash, miner: block.Miner, timestamp: block.Timestamp, parentweight: block.ParentWeight})
+        await obj.save()
+        let messages = block.Messages['/']
+        const data = (await client.chainGetNode(messages)).Obj
+        const d1 = (await client.chainGetNode(data[0]['/'])).Obj
+        const d2 = (await client.chainGetNode(data[1]['/'])).Obj
+        handleMessages(i, blockhash, d1)
+        handleMessages(i, blockhash, d2)
     }
 }
 
@@ -48,19 +66,20 @@ async function run() {
 
     await sequelize.authenticate()
 
-    Transaction.sync()
+    await Transaction.sync()
+    await Block.sync()
 
-    for (let i = 1; i < 4000; i++) {
-        const ts = await client.chainGetTipSetByHeight(i, null)
-        // TODO: handle other blocks in tipset
-        let msg = ts.Blocks[0].Messages['/']
-        const data = (await client.chainGetNode(msg)).Obj
-        const d1 = (await client.chainGetNode(data[0]['/'])).Obj
-        const d2 = (await client.chainGetNode(data[1]['/'])).Obj
-        handleMessages(i, d1)
-        handleMessages(i, d2)
+    const max = await sequelize.query("SELECT max(height) FROM blocks", { type: sequelize.QueryTypes.SELECT });
+
+    let cur_height = max[0].max
+    while (true) {
+        let head = await client.chainHead()
+        let target_height = head.Height
+        for (; cur_height < target_height; cur_height++) {
+            await indexHeight(cur_height)
+        }
+        sleep(1000)
     }
-    await client.destroy()
 }
 
 run()
