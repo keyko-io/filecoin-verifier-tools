@@ -20,6 +20,8 @@ async function run () {
         let info = await api.pendingRootTransactions()
         console.log(info)
 
+        console.log(await api.listVerifiers())
+
         await new Promise(resolve => { setTimeout(resolve, 1000) })
     }
 
