@@ -1,3 +1,17 @@
+
+/*
+Instead of these we can use something that will get graphql from postgres like hasura
+
+Sample query:
+{
+  transactions(where: {to_address: {_eq: "t080"}}) {
+    to_address
+    from_address
+    gas_limit
+  }
+}
+*/
+
 const express = require('express')
 const Sequelize = require('sequelize')
 const message = require('./message')
