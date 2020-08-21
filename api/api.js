@@ -38,7 +38,7 @@ class VerifyAPI {
             const verifiers = (await this.client.chainGetNode(`${state}/@Ha:t06/1/1`)).Obj
             const listOfVerifiers = await hamt.buildArrayData(verifiers, this.load)
             let returnList = []
-            for(const [key,value] in listOfVerifiers){
+            for(const [key,value] of listOfVerifiers){
                 returnList.push({
                     verifier: key,
                     datacap: value.toString(10)
@@ -113,7 +113,7 @@ class VerifyAPI {
             const verified = (await this.client.chainGetNode(`${state}/@Ha:t06/1/2`)).Obj  
             const listOfVerified = await hamt.buildArrayData(verified, this.load)
             let returnList = []
-            for(const [key,value] in listOfVerified){
+            for(const [key,value] of listOfVerified){
                 returnList.push({
                     verified: key,
                     datacap: value.toString(10)
