@@ -301,6 +301,21 @@ let verifreg = {
     }
 }
 
+<<<<<<< HEAD
+=======
+let pending = {
+    type: "hamt",
+    key: "bigint-signed",
+    value: {
+        target: "address",
+        sent: "bigint",
+        method: "int",
+        params: "buffer",
+        signers: ["list", "address"],
+    }
+}
+
+>>>>>>> 7b00d8f074e04e057e44e97bd8c4c73e993d1faf
 let reg = {
     't080': multisig,
     't06': verifreg,
