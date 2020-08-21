@@ -169,12 +169,11 @@ class VerifyAPI {
         let returnList = []
         for (let [k,v] of Object.entries(obj)) {
             const parsed = methods.parse(v)
+            console.log(parsed)
             returnList.push({
                 id: k,
-                type: parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
-                verifier: parsed.params.verifier,
-                datacap: parsed.params.cap.toString(),
-                singers: v.singers
+                parsed,
+                signers: v.signers
             })
         }
         return returnList

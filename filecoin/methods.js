@@ -307,9 +307,14 @@ let reg = {
 }
 
 function parse(tx) {
-    let actor = reg[tx.target]
-    let {name, input} = actor[tx.method]
-    return {name, params: decode(input, cbor.decode(tx.params))}
+    try {
+        let actor = reg[tx.target]
+        let {name, input} = actor[tx.method]
+        return {name, params: decode(input, cbor.decode(tx.params))}
+    }
+    catch (err) {
+        return null
+    }
 }
 
 module.exports = {
