@@ -34,7 +34,7 @@ async function run () {
     const state = head.Blocks[0].ParentStateRoot['/']
     console.log('height', head.Height, state)
     const verifiers = (await client.chainGetNode(`${state}/@Ha:t06/1/1`)).Obj
-    console.log(verifiers)
+    console.log(JSON.stringify(verifiers, null, 2))
     const dta = methods.decode(schema, verifiers)
     console.log(await dta.asObject(load))
     console.log(await dta.find(load, 't01004'))

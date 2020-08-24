@@ -10,22 +10,6 @@ function nextBits (obj, n) {
   return res
 }
 
-/*
-let obj = {left:64, num: 0x12345fffan}
-
-console.log(nextBits(obj, 5))
-console.log(nextBits(obj, 5))
-console.log(nextBits(obj, 5))
-console.log(nextBits(obj, 5))
-console.log(nextBits(obj, 5))
-
-console.log(nextBits(obj, 5))
-console.log(nextBits(obj, 5))
-console.log(nextBits(obj, 5))
-console.log(nextBits(obj, 5))
-console.log(nextBits(obj, 5))
-*/
-
 function indexForBitPos (bp, bitfield) {
   let acc = bitfield
   let idx = 0
@@ -39,45 +23,8 @@ function indexForBitPos (bp, bitfield) {
   return idx
 }
 
-// console.log("pos", indexForBitPos(10, 0xf0f0f00f0ff0f0n))
-
-/*
-console.log(readVarInt(Buffer.from("AOkH", "base64"), 1))
-console.log(readVarInt(Buffer.from("AFA=", "base64"), 1))
-
-console.log(Buffer.from("AATS", "base64"))
-
-console.log(Buffer.from("REAA", "base64"))
-const data = [
-  'REAA',
-  [
-    {
-      1: [
-        [
-          'ARiJj38k7tKKrHfwsOztHUhl+Z/j',
-          'AATS',
-        ],
-      ],
-    },
-    {
-      1: [
-        [
-          'AOkH',
-          '',
-        ],
-      ],
-    },
-    {
-      1: [
-        [
-          'AFA=',
-          '',
-        ],
-      ],
-    },
-  ],
-]
-*/
+exports.nextBits = nextBits
+exports.indexForBitPos = indexForBitPos
 
 function getBit (b, n) {
   return Number((b >> n) & 0x1n)
@@ -99,7 +46,6 @@ async function getValue (n, load, hv, key) {
   }
   if (c[1]) {
     for (const [k, v] of c[1]) {
-      // console.log(`key ${addressToString(k)} value ${bytesToBig(Buffer.from(v, "base64"), 0)}`)
       if (k === key.toString('base64')) return Buffer.from(v, 'base64')
     }
   }
@@ -151,6 +97,8 @@ function parseNode (data) {
     bitfield: bytesToBig(Buffer.from(data[0], 'base64')),
   }
 }
+
+exports.parseNode = parseNode
 
 function print (k, v) {
   console.log(address.encode('t', new address.Address(k)), bytesToBig(v))
@@ -227,6 +175,6 @@ function readVarInt (bytes, offset) {
   return res
 }
 
-exports.readVarInt = function (bytes) {
-  return readVarInt(bytes, 0)
+exports.readVarInt = function (bytes, offset) {
+  return readVarInt(bytes, offset || 0)
 }
