@@ -18,4 +18,5 @@ jobs:
         git submodule update
         npm i
         npm build
+        npm ci
 
