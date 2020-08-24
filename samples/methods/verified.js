@@ -5,7 +5,6 @@ const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
 const hamt = require('../../hamt/hamt')
 // const CID = require('cids')
 const fs = require('fs')
-const address = require('@openworklabs/filecoin-address')
 const constants = require('../constants')
 
 const endpointUrl = constants.lotus_endpoint
@@ -33,13 +32,8 @@ async function run () {
     console.log(JSON.stringify(verified, null, 2))
     await hamt.printData(verified, load)
 
-    var verifiedArray = []
-    verifiedArray = await hamt.buildArrayData(verified, load)
+    console.log(await hamt.buildArrayData(verified, load))
 
-    /*
-      let res = await hamt.find(verified, load, Buffer.from(address.newFromString('t1m3xb2aitedgcbwsm7lmsfysgnht22dlp4rkxaqi').str))
-      console.log(hamt.bytesToBig(res))
-      */
     await new Promise(resolve => { setTimeout(resolve, 1000) })
   }
 }

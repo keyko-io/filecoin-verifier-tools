@@ -17,15 +17,11 @@ async function run () {
     },
   }), mockWallet)
 
-  var address = 't1rxk2ynia27jb6cs5r7xcgydm72p5ouu4js6lsbi'
-  var datacap = 10000000000000000000000n
-  // await api.verifyClient(address, datacap, 2)
-
   while (true) {
     var verifiers = await api.listVerifiers()
     var clients = await api.listVerifiedClients()
 
-    console.log('edfdf')
+    console.log(verifiers, clients)
 
     await new Promise(resolve => { setTimeout(resolve, 1000) })
   }

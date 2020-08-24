@@ -2,7 +2,6 @@ const signer = require('@zondax/filecoin-signing-tools')
 const fetch = require('node-fetch')
 const methods = require('../../filecoin/methods')
 const cbor = require('cbor')
-const constants = require('../constants')
 
 const mnemonic = 'robot matrix ribbon husband feature attitude noise imitate matrix shaft resist cliff lab now gold menu grocery truth deliver camp about stand consider number'
 const key = signer.keyDerive(mnemonic, "m/44'/1'/1/0/2", '')

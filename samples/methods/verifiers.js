@@ -3,7 +3,6 @@ const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
 const hamt = require('../../hamt/hamt')
-// const CID = require('cids')
 const fs = require('fs')
 const constants = require('../constants')
 
@@ -32,8 +31,7 @@ async function run () {
     console.log(JSON.stringify(verifiers, null, 2))
     await hamt.printData(verifiers, load)
 
-    var verifierArray = []
-    verifierArray = await hamt.buildArrayData(verifiers, load)
+    console.log(await hamt.buildArrayData(verifiers, load))
 
     await new Promise(resolve => { setTimeout(resolve, 1000) })
   }

@@ -27,11 +27,11 @@ const Transaction = sequelize.define('transaction', message.db)
 const Block = sequelize.define('block', message.block)
 
 async function handleMessages (height, blockhash, dta) {
-  if (dta[1] != 0) {
+  if (dta[1] !== 0) {
     for (const e of dta[2][2]) {
       const msg = (await client.chainGetNode(e['/'])).Obj
       let tx
-      if (msg.length == 2) {
+      if (msg.length === 2) {
         tx = methods.decode(message.message, hamt.makeBuffers(msg[0]))
       } else {
         tx = methods.decode(message.message, hamt.makeBuffers(msg))

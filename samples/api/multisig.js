@@ -1,4 +1,3 @@
-const fs = require('fs')
 const VerifyAPI = require('../../api/api.js')
 const MockWallet = require('../mockWallet')
 const constants = require('../constants')
