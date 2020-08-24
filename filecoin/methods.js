@@ -3,6 +3,21 @@ const signer = require("@keyko-io/filecoin-signing-tools/js")
 const cbor = require('cbor')
 const hamt = require('../hamt/hamt')
 const blake = require('blakejs')
+const address = require("@openworklabs/filecoin-address")
+
+function bytesToAddress(payload, testnet) {
+    let addr = new address.Address(payload)
+    if ((addr.protocol() == 2 || addr.protocol() == 1) && addr.payload().length != 20) {
+      throw new InvalidPayloadLength()
+    }
+    if (addr.protocol() == 3 && addr.payload().length != 46) {
+      throw new InvalidPayloadLength()
+    }
+    if (payload[0] > 3) {
+      throw new UnknownProtocolIndicator()
+    }
+    return address.encode(testnet ? 't' : 'f', addr)
+}
 
 async function signTx(client, indexAccount, walletContext, {to, method, params, value}) {
     const head = await client.chainHead()
@@ -106,7 +121,7 @@ function isType(schema) {
 
 function decode(schema, data) {
     if (schema === 'address') {
-        return signer.bytesToAddress(data, true)
+        return bytesToAddress(data, true)
     }
     if (schema === 'bigint') {
         return hamt.bytesToBig(data)
