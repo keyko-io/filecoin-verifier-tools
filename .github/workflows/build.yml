@@ -17,6 +17,6 @@ jobs:
         git submodule init
         git submodule update
         npm i
+        npm lint
         npm build
-        npm ci
 
