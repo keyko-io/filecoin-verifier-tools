@@ -104,21 +104,6 @@ function print (k, v) {
   console.log(address.encode('t', new address.Address(k)), bytesToBig(v))
 }
 
-/*
-function load () {
-  throw new Error('not implemented')
-}
-
-async function main () {
-  find({ bitWidth: 5, data: parseNode(data) }, Buffer.from('ARiJj38k7tKKrHfwsOztHUhl+Z/j', 'base64'))
-  find({ bitWidth: 5, data: parseNode(data) }, Buffer.from('AOkH', 'base64'))
-  find({ bitWidth: 5, data: parseNode(data) }, Buffer.from('AFA=', 'base64'))
-
-  forEach({ bitWidth: 5, data: parseNode(data) }, load, print)
-}
-*/
-// main()
-
 exports.find = async function (data, load, key) {
   const hash = bytesToBig(Buffer.from(sha256(key), 'hex'))
   return getValue({ bitWidth: 5, data: parseNode(data) }, load, { num: hash, left: 256 }, key)
