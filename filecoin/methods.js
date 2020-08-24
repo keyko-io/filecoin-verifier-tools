@@ -7,15 +7,6 @@ const address = require('@openworklabs/filecoin-address')
 
 function bytesToAddress (payload, testnet) {
   const addr = new address.Address(payload)
-  if ((addr.protocol() == 2 || addr.protocol() == 1) && addr.payload().length != 20) {
-    throw new InvalidPayloadLength()
-  }
-  if (addr.protocol() == 3 && addr.payload().length != 46) {
-    throw new InvalidPayloadLength()
-  }
-  if (payload[0] > 3) {
-    throw new UnknownProtocolIndicator()
-  }
   return address.encode(testnet ? 't' : 'f', addr)
 }
 
@@ -36,7 +27,7 @@ async function signTx (client, indexAccount, walletContext, { to, method, params
     gaspremium: '15000',
     gaslimit: 25000000,
     method: method,
-    params: params
+    params: params,
   }
 
   return walletContext.sign(msg, indexAccount)
@@ -49,7 +40,7 @@ async function sendTx (client, indexAccount, walletContext, obj) {
 }
 
 function pad (str) {
-  if (str.length % 2 == 0) return str
+  if (str.length % 2 === 0) return str
   else return '0' + str
 }
 
@@ -58,16 +49,18 @@ function encodeBig (bn) {
   return Buffer.from('00' + pad(bn.toString(16)), 'hex')
 }
 
+/*
 async function sendVerify (verified, cap) {
   // console.log([signer.addressAsBytes(verified), encodeBig(cap)])
   await sendTx('t06', 4, cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)]))
 }
+*/
 
 function encodeSend (to) {
   return {
     to,
     method: 0,
-    params: ''
+    params: '',
   }
 }
 
@@ -75,7 +68,7 @@ function encodeAddVerifier (verified, cap) {
   return {
     to: 't06',
     method: 2,
-    params: cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)])
+    params: cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)]),
   }
 }
 
@@ -83,7 +76,7 @@ function encodeAddVerifiedClient (verified, cap) {
   return {
     to: 't06',
     method: 4,
-    params: cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)])
+    params: cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)]),
   }
 }
 
@@ -92,7 +85,7 @@ function encodePropose (msig, msg) {
   return {
     to: msig,
     method: 2,
-    params: cbor.encode([signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params])
+    params: cbor.encode([signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params]),
   }
 }
 
@@ -106,7 +99,7 @@ function encodeApprove (msig, txid, from, msg) {
   return {
     to: msig,
     method: 3,
-    params: cbor.encode([txid, Buffer.from(hash, 'hex')])
+    params: cbor.encode([txid, Buffer.from(hash, 'hex')]),
   }
 }
 
@@ -153,7 +146,7 @@ function decode (schema, data) {
           res[decode(schema.key, k)] = decode(schema.value, v)
         })
         return res
-      }
+      },
     }
   }
   if (schema instanceof Array) {
@@ -163,7 +156,7 @@ function decode (schema, data) {
     if (schema[0] === 'cbor') {
       return decode(schema[1], cbor.decode(data))
     }
-    if (schema.length != data.length) throw new Error('schema and data length do not match')
+    if (schema.length !== data.length) throw new Error('schema and data length do not match')
     if (isType(schema[0])) {
       const res = []
       for (let i = 0; i < data.length; i++) {
@@ -210,7 +203,7 @@ function encode (schema, data) {
     if (schema[0] === 'cbor') {
       return cbor.encode(encode(schema[1], data))
     }
-    if (schema.length != data.length) throw new Error('schema and data length do not match')
+    if (schema.length !== data.length) throw new Error('schema and data length do not match')
     const res = []
     for (let i = 0; i < data.length; i++) {
       res.push(encode(schema[i], data[i]))
@@ -249,7 +242,7 @@ function actor (address, spec) {
         to: address,
         value: 0n,
         method: parseInt(num),
-        params: cbor.encode(params)
+        params: cbor.encode(params),
       }
     }
   }
@@ -268,10 +261,10 @@ const multisig = {
           to: 'address',
           value: 'bigint',
           method: 'int',
-          params: 'buffer'
-        }
-      }
-    }
+          params: 'buffer',
+        },
+      },
+    },
   },
   2: {
     name: 'propose',
@@ -279,9 +272,9 @@ const multisig = {
       to: 'address',
       value: 'bigint',
       method: 'int',
-      params: 'buffer'
-    }
-  }
+      params: 'buffer',
+    },
+  },
 }
 
 const pending = {
@@ -292,8 +285,8 @@ const pending = {
     sent: 'bigint',
     method: 'int',
     params: 'buffer',
-    signers: ['list', 'address']
-  }
+    signers: ['list', 'address'],
+  },
 }
 
 const verifreg = {
@@ -301,21 +294,21 @@ const verifreg = {
     name: 'addVerifier',
     input: {
       verifier: 'address',
-      cap: 'bigint'
-    }
+      cap: 'bigint',
+    },
   },
   4: {
     name: 'addVerifiedClient',
     input: {
       address: 'address',
-      cap: 'bigint'
-    }
-  }
+      cap: 'bigint',
+    },
+  },
 }
 
 const reg = {
   t080: multisig,
-  t06: verifreg
+  t06: verifreg,
 }
 
 function parse (tx) {
@@ -343,5 +336,5 @@ module.exports = {
   pending,
   rootkey: actor('t080', multisig),
   verifreg: actor('t06', verifreg),
-  parse
+  parse,
 }

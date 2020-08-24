@@ -14,7 +14,7 @@ async function run () {
   const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
     token: async () => {
       return fs.readFileSync(tokenPath)
-    }
+    },
   }), mockWallet)
 
   var address = 't1rxk2ynia27jb6cs5r7xcgydm72p5ouu4js6lsbi'

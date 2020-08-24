@@ -5,5 +5,5 @@ const postgres_conn_url = 'postgres://postgres:1234@localhost:5432/lotus'
 module.exports = {
   lotus_endpoint: lotus_endpoint,
   token_path: token_path,
-  postgres_conn_url: postgres_conn_url
+  postgres_conn_url: postgres_conn_url,
 }

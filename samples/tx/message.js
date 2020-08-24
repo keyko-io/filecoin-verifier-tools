@@ -11,65 +11,65 @@ exports.message = {
   gas_feecap: 'bigint',
   gas_premium: 'bigint',
   method: 'int',
-  params: 'buffer'
+  params: 'buffer',
 }
 
 exports.block = {
   height: {
-    type: Sequelize.INTEGER
+    type: Sequelize.INTEGER,
   },
   blockhash: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
   },
   timestamp: {
-    type: Sequelize.DECIMAL(100)
+    type: Sequelize.DECIMAL(100),
   },
   miner: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
   },
   parentweight: {
-    type: Sequelize.DECIMAL(100)
-  }
+    type: Sequelize.DECIMAL(100),
+  },
 }
 
 exports.db = {
   height: {
-    type: Sequelize.INTEGER
+    type: Sequelize.INTEGER,
   },
   txhash: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
   },
   blockhash: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
   },
   version: {
-    type: Sequelize.INTEGER
+    type: Sequelize.INTEGER,
   },
   to_address: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
   },
   from_address: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
   },
   nonce: {
-    type: Sequelize.INTEGER
+    type: Sequelize.INTEGER,
   },
   value: {
-    type: Sequelize.DECIMAL(100)
+    type: Sequelize.DECIMAL(100),
   },
   gas_feecap: {
-    type: Sequelize.DECIMAL(100)
+    type: Sequelize.DECIMAL(100),
   },
   gas_premium: {
-    type: Sequelize.DECIMAL(100)
+    type: Sequelize.DECIMAL(100),
   },
   gas_limit: {
-    type: Sequelize.BIGINT
+    type: Sequelize.BIGINT,
   },
   method: {
-    type: Sequelize.INTEGER
+    type: Sequelize.INTEGER,
   },
   params: {
-    type: Sequelize.BLOB
-  }
+    type: Sequelize.BLOB,
+  },
 }

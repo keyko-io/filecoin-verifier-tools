@@ -13,8 +13,8 @@ const multisig = {
     name: 'approve',
     input: {
       id: 'int',
-      hash: 'buffer'
-    }
+      hash: 'buffer',
+    },
   },
   2: {
     name: 'propose',
@@ -22,9 +22,9 @@ const multisig = {
       to: 'address',
       value: 'bigint',
       method: 'int',
-      params: 'buffer'
-    }
-  }
+      params: 'buffer',
+    },
+  },
 }
 
 const verifreg = {
@@ -32,14 +32,14 @@ const verifreg = {
     name: 'add verifier',
     input: {
       verifier: 'address',
-      cap: 'bigint'
-    }
-  }
+      cap: 'bigint',
+    },
+  },
 }
 
 const reg = {
   t080: multisig,
-  t06: verifreg
+  t06: verifreg,
 }
 
 function getMethod (to, method, params) {

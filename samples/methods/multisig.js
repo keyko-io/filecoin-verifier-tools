@@ -14,7 +14,7 @@ const tokenPath = constants.token_path
 const provider = new Provider(endpointUrl, {
   token: async () => {
     return fs.readFileSync(tokenPath)
-  }
+  },
 })
 
 const client = new LotusRPC(provider, { schema: testnet.fullNode })

@@ -10,7 +10,7 @@ class MockWallet {
     const accounts = []
     for (let i = nStart; i < nEnd; i += 1) {
       accounts.push(
-        signer.keyDerive(this.mnemonic, `${this.path}${i}`, '').address
+        signer.keyDerive(this.mnemonic, `${this.path}${i}`, '').address,
       )
     }
     return accounts
@@ -21,7 +21,7 @@ class MockWallet {
 
     return signer.transactionSignLotus(
       filecoinMessage,
-      private_hexstring
+      private_hexstring,
     )
   }
 }

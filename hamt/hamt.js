@@ -48,7 +48,6 @@ console.log(readVarInt(Buffer.from("AFA=", "base64"), 1))
 console.log(Buffer.from("AATS", "base64"))
 
 console.log(Buffer.from("REAA", "base64"))
-*/
 const data = [
   'REAA',
   [
@@ -56,28 +55,29 @@ const data = [
       1: [
         [
           'ARiJj38k7tKKrHfwsOztHUhl+Z/j',
-          'AATS'
-        ]
-      ]
+          'AATS',
+        ],
+      ],
     },
     {
       1: [
         [
           'AOkH',
-          ''
-        ]
-      ]
+          '',
+        ],
+      ],
     },
     {
       1: [
         [
           'AFA=',
-          ''
-        ]
-      ]
-    }
-  ]
+          '',
+        ],
+      ],
+    },
+  ],
 ]
+*/
 
 function getBit (b, n) {
   return Number((b >> n) & 0x1n)
@@ -85,7 +85,7 @@ function getBit (b, n) {
 
 async function getValue (n, load, hv, key) {
   const idx = nextBits(hv, n.bitWidth)
-  if (getBit(n.data.bitfield, idx) == 0) {
+  if (getBit(n.data.bitfield, idx) === 0) {
     throw new Error('not found in bitfield')
   }
 
@@ -100,7 +100,7 @@ async function getValue (n, load, hv, key) {
   if (c[1]) {
     for (const [k, v] of c[1]) {
       // console.log(`key ${addressToString(k)} value ${bytesToBig(Buffer.from(v, "base64"), 0)}`)
-      if (k == key.toString('base64')) return Buffer.from(v, 'base64')
+      if (k === key.toString('base64')) return Buffer.from(v, 'base64')
     }
   }
   throw new Error('key not found')
@@ -148,22 +148,17 @@ exports.bytesToBig = bytesToBig
 function parseNode (data) {
   return {
     pointers: data[1],
-    bitfield: bytesToBig(Buffer.from(data[0], 'base64'))
+    bitfield: bytesToBig(Buffer.from(data[0], 'base64')),
   }
-}
-
-function load () {
-  throw new Error('not implemented')
-}
-
-function find (n, key) {
-  // console.log(hash(key).h1)
-  const hash = bytesToBig(Buffer.from(sha256(key), 'hex'))
-  return getValue(n, load, { num: bytesToBig(hash), left: 256 }, key)
 }
 
 function print (k, v) {
   console.log(address.encode('t', new address.Address(k)), bytesToBig(v))
+}
+
+/*
+function load () {
+  throw new Error('not implemented')
 }
 
 async function main () {
@@ -173,7 +168,7 @@ async function main () {
 
   forEach({ bitWidth: 5, data: parseNode(data) }, load, print)
 }
-
+*/
 // main()
 
 exports.find = async function (data, load, key) {

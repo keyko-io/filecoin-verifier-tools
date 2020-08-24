@@ -37,8 +37,8 @@ async function run () {
     try {
       const lst = await Transaction.findAll({
         where: {
-          from_address: address
-        }
+          from_address: address,
+        },
       })
       const process = tx => {
         tx.params = Buffer.from(tx.params).toString('base64')

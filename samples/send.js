@@ -9,7 +9,7 @@ const endpointUrl = 'ws://localhost:1234/rpc/v0'
 const provider = new Provider(endpointUrl, {
   token: async () => {
     return fs.readFileSync('/home/sami/.lotus/token')
-  }
+  },
 })
 
 const client = new LotusRPC(provider, { schema: testnet.fullNode })

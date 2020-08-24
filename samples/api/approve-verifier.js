@@ -14,7 +14,7 @@ const mockWallet = new MockWallet(mnemonic, path)
 const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
   token: async () => {
     return fs.readFileSync(tokenPath)
-  }
+  },
 }), mockWallet)
 
 async function main () {
