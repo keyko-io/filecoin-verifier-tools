@@ -1,5 +1,4 @@
-const signer = require("@keyko-io/filecoin-signing-tools/js")
-const signer2 = require("@zondax/filecoin-signing-tools")
+const signer = require("@zondax/filecoin-signing-tools")
 
 class MockWallet {
 
@@ -26,7 +25,7 @@ class MockWallet {
 
         const private_hexstring = signer.keyDerive(this.mnemonic, this.path + indexAccount.toString(), '').private_hexstring
 
-        return signer2.transactionSignLotus(
+        return signer.transactionSignLotus(
           filecoinMessage,
           private_hexstring
         )

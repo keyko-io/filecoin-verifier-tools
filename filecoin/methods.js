@@ -1,5 +1,5 @@
 
-const signer = require("@keyko-io/filecoin-signing-tools/js")
+const signer = require("@zondax/filecoin-signing-tools")
 const cbor = require('cbor')
 const hamt = require('../hamt/hamt')
 const blake = require('blakejs')

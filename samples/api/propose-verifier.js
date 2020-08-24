@@ -1,7 +1,6 @@
 const VerifyAPI = require('../../api/api.js')
 const MockWallet = require('../mockWallet')
 const fs = require('fs')
-const signer = require("@keyko-io/filecoin-signing-tools/js")
 const constants = require("../constants")
 
 let endpointUrl = constants.lotus_endpoint
