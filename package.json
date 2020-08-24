@@ -6,6 +6,9 @@
     "type": "git",
     "url": "git+https://github.com/keyko-io/filecoin-verifier-tools.git"
   },
+  "scripts": {
+    "lint": "eslint ."
+  },
   "keywords": [],
   "author": "Keyko <root@keyko.io>",
   "license": "Apache-2.0",
