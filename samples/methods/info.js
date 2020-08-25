@@ -17,7 +17,7 @@ const provider = new Provider(endpointUrl, {
 
 const client = new LotusRPC(provider, { schema: testnet.fullNode })
 
-async function load (a) {
+async function load(a) {
   const res = await client.chainGetNode(a)
   return res.Obj
 }
@@ -28,7 +28,7 @@ const schema = {
   value: 'bigint',
 }
 
-async function run () {
+async function run() {
   while (true) {
     const head = await client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']

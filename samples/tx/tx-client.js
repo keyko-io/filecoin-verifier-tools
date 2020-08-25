@@ -41,13 +41,13 @@ const reg = {
   t06: verifreg,
 }
 
-function getMethod (to, method, params) {
+function getMethod(to, method, params) {
   const actor = reg[to]
   const { name, input } = actor[method]
   return { name, params: methods.decode(input, cbor.decode(params)) }
 }
 
-function handleTx (tx) {
+function handleTx(tx) {
   console.log(tx)
   const { name, params } = getMethod(tx.to_address, tx.method, Buffer.from(tx.params, 'base64'))
   console.log(name, params)
@@ -56,7 +56,7 @@ function handleTx (tx) {
   }
 }
 
-async function main () {
+async function main() {
   const res = await fetch(`http://localhost:3000/from/${key.address}`)
   const lst = (await res.json()).txs
   lst.forEach(handleTx)

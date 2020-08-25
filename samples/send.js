@@ -18,7 +18,7 @@ const mnemonic = 'robot matrix ribbon husband feature attitude noise imitate mat
 const key = signer.keyDerive(mnemonic, "m/44'/1'/1/0/2", '')
 console.log('address', key.address)
 
-async function main () {
+async function main() {
   await methods.sendTx(client, key, methods.encodeSend('t01000'))
   process.exit(0)
 }

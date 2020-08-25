@@ -26,7 +26,7 @@ const sequelize = new Sequelize(postgresConnUrl)
 
 const Transaction = sequelize.define('transaction', message.db)
 
-async function run () {
+async function run() {
   await sequelize.authenticate()
   Transaction.sync()
   app.get('/', (_, res) => res.json({ message: 'Hello World' }))

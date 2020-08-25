@@ -6,27 +6,27 @@ const { NodejsProvider } = require('@filecoin-shipyard/lotus-client-provider-nod
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 
 class VerifyAPI {
-  constructor (lotusClient, walletContext) {
+  constructor(lotusClient, walletContext) {
     this.client = lotusClient
     this.walletContext = walletContext
   }
 
-  static standAloneProvider (lotusEndpoint, token) {
+  static standAloneProvider(lotusEndpoint, token) {
     var provider = new NodejsProvider(lotusEndpoint, token)
     return new LotusRPC(provider, { schema: testnet.fullNode })
   }
 
-  static browserProvider (lotusEndpoint, token) {
+  static browserProvider(lotusEndpoint, token) {
     var provider = new BrowserProvider(lotusEndpoint, token)
     return new LotusRPC(provider, { schema: testnet.fullNode })
   }
 
-  async load (a) {
+  async load(a) {
     const res = await this.client.chainGetNode(a)
     return res.Obj
   }
 
-  async listVerifiers () {
+  async listVerifiers() {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
     const verifiers = (await this.client.chainGetNode(`${state}/@Ha:t06/1/1`)).Obj
@@ -41,13 +41,13 @@ class VerifyAPI {
     return returnList
   }
 
-  async checkVerifier (verifierAddress) {
+  async checkVerifier(verifierAddress) {
     // empty array if not verifier is present
     return this.listVerifiers
       .filter(verifier => verifier[0].toString() === verifierAddress)
   }
 
-  async proposeVerifier (verifierAccount, datacap, indexAccount) {
+  async proposeVerifier(verifierAccount, datacap, indexAccount) {
     if (typeof this.walletContext === 'undefined' || !this.walletContext) { throw new Error('No wallet context defined in API') }
 
     // Not address but account in the form "t01004", for instance
@@ -58,7 +58,7 @@ class VerifyAPI {
     return res['/']
   }
 
-  async approveVerifier (verifierAccount, datacap, fromAccount, transactionId, indexAccount) {
+  async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, indexAccount) {
     if (typeof this.walletContext === 'undefined' || !this.walletContext) { throw new Error('No wallet context defined in API') }
 
     // Not address but account in the form "t01003", for instance
@@ -74,7 +74,7 @@ class VerifyAPI {
     return res['/']
   }
 
-  async listVerifiedClients () {
+  async listVerifiedClients() {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
     const verified = (await this.client.chainGetNode(`${state}/@Ha:t06/1/2`)).Obj
@@ -89,12 +89,12 @@ class VerifyAPI {
     return returnList
   }
 
-  async checkClient (clientAddress) {
+  async checkClient(clientAddress) {
     return this.listVerifiedClients
       .filter(client => client[0].toString() === clientAddress)
   }
 
-  async verifyClient (clientAddress, datacap, indexAccount) {
+  async verifyClient(clientAddress, datacap, indexAccount) {
     if (typeof this.walletContext === 'undefined' || !this.walletContext) { throw new Error('No wallet context defined in API') }
     const arg = methods.verifreg.addVerifiedClient(clientAddress, datacap)
     const res = await methods.sendTx(this.client, indexAccount, this.walletContext, arg)
@@ -103,7 +103,7 @@ class VerifyAPI {
     return res['/']
   }
 
-  async pendingRootTransactions () {
+  async pendingRootTransactions() {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
     const data = (await this.client.chainGetNode(`${state}/@Ha:t080/1/6`)).Obj

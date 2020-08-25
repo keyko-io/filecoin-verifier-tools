@@ -1,12 +1,12 @@
 const signer = require('@zondax/filecoin-signing-tools')
 
 class MockWallet {
-  constructor (mnemonic, path) {
+  constructor(mnemonic, path) {
     this.mnemonic = mnemonic
     this.path = path
   }
 
-  async getAccounts (nStart = 0, nEnd = 5) {
+  async getAccounts(nStart = 0, nEnd = 5) {
     const accounts = []
     for (let i = nStart; i < nEnd; i += 1) {
       accounts.push(
@@ -16,7 +16,7 @@ class MockWallet {
     return accounts
   }
 
-  async sign (filecoinMessage, indexAccount) {
+  async sign(filecoinMessage, indexAccount) {
     const private_hexstring = signer.keyDerive(this.mnemonic, this.path + indexAccount.toString(), '').private_hexstring
 
     return signer.transactionSignLotus(

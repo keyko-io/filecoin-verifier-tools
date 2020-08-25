@@ -26,7 +26,7 @@ const client = new LotusRPC(provider, { schema: testnet.fullNode })
 const Transaction = sequelize.define('transaction', message.db)
 const Block = sequelize.define('block', message.block)
 
-async function handleMessages (height, blockhash, dta) {
+async function handleMessages(height, blockhash, dta) {
   if (dta[1] !== 0) {
     for (const e of dta[2][2]) {
       const msg = (await client.chainGetNode(e['/'])).Obj
@@ -44,7 +44,7 @@ async function handleMessages (height, blockhash, dta) {
 
 const sleep = async (ms) => await new Promise(resolve => { setTimeout(resolve, ms) })
 
-async function indexHeight (i) {
+async function indexHeight(i) {
   const ts = await client.chainGetTipSetByHeight(i, null)
   // TODO: handle other blocks in tipset
   for (let j = 0; j < ts.Blocks.length; j++) {
@@ -61,7 +61,7 @@ async function indexHeight (i) {
   }
 }
 
-async function run () {
+async function run() {
   await sequelize.authenticate()
 
   await Transaction.sync()

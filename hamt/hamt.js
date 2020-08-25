@@ -3,14 +3,14 @@ const address = require('@openworklabs/filecoin-address')
 const sha256 = require('js-sha256')
 
 // Get n next bits
-function nextBits (obj, n) {
+function nextBits(obj, n) {
   // if (obj.left < n) throw new Error("out of bits")
   const res = (obj.num >> BigInt(obj.left - n)) & BigInt((1 << n) - 1)
   obj.left -= n
   return res
 }
 
-function indexForBitPos (bp, bitfield) {
+function indexForBitPos(bp, bitfield) {
   let acc = bitfield
   let idx = 0
   while (bp > 0) {
@@ -26,11 +26,11 @@ function indexForBitPos (bp, bitfield) {
 exports.nextBits = nextBits
 exports.indexForBitPos = indexForBitPos
 
-function getBit (b, n) {
+function getBit(b, n) {
   return Number((b >> n) & 0x1n)
 }
 
-async function getValue (n, load, hv, key) {
+async function getValue(n, load, hv, key) {
   const idx = nextBits(hv, n.bitWidth)
   if (getBit(n.data.bitfield, idx) === 0) {
     throw new Error('not found in bitfield')
@@ -52,7 +52,7 @@ async function getValue (n, load, hv, key) {
   throw new Error('key not found')
 }
 
-function makeBuffers (obj) {
+function makeBuffers(obj) {
   if (typeof obj === 'string') {
     return Buffer.from(obj, 'base64')
   }
@@ -66,7 +66,7 @@ function makeBuffers (obj) {
 
 exports.makeBuffers = makeBuffers
 
-async function forEach (n, load, cb) {
+async function forEach(n, load, cb) {
   for (const c of n.data.pointers) {
     if (c[0]) {
       const child = await load(c[0]['/'])
@@ -80,7 +80,7 @@ async function forEach (n, load, cb) {
   }
 }
 
-function bytesToBig (p) {
+function bytesToBig(p) {
   let acc = 0n
   for (let i = 0; i < p.length; i++) {
     acc *= 256n
@@ -91,7 +91,7 @@ function bytesToBig (p) {
 
 exports.bytesToBig = bytesToBig
 
-function parseNode (data) {
+function parseNode(data) {
   return {
     pointers: data[1],
     bitfield: bytesToBig(Buffer.from(data[0], 'base64')),
@@ -100,7 +100,7 @@ function parseNode (data) {
 
 exports.parseNode = parseNode
 
-function print (k, v) {
+function print(k, v) {
   console.log(address.encode('t', new address.Address(k)), bytesToBig(v))
 }
 
@@ -133,7 +133,7 @@ exports.buildArrayData = async function (data, load) {
   return dataArray
 }
 
-async function addToArray (n, load, dataArray) {
+async function addToArray(n, load, dataArray) {
   for (const c of n.data.pointers) {
     if (c[0]) {
       const child = await load(c[0]['/'])
@@ -147,7 +147,7 @@ async function addToArray (n, load, dataArray) {
   }
 }
 
-function readVarInt (bytes, offset) {
+function readVarInt(bytes, offset) {
   let res = 0n
   let acc = 1n
   for (let i = offset; i < bytes.length; i++) {
