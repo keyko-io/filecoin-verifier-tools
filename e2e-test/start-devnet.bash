@@ -26,7 +26,7 @@ configure_lotus() {
   jq '. + {VerifregRootKey: {Type: "multisig", Balance: "50000000000000000000000000", Meta: { Signers: ["t1vzw5hg23fn7ob4gfpzmzej7h76h6gjr3572elvi", "t1pnzozdkjnmtmnh6i3ufl7ianvwl2lq7tybazudy"], Threshold: 2 }}}' localnet.json > localnet2.json
 
   cp localnet2.json localnet.json
-  tmux new-session -s lotus  -t lotus:3 -n script -d bash balances.sh
+  tmux new-session -s lotus -n script -d bash balances.sh
 
   sleep 5
 #  $LOTUS_BIN daemon --lotus-make-genesis=dev.gen --genesis-template=localnet.json --bootstrap=false &
