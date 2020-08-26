@@ -22,7 +22,7 @@ async function signTx(client, indexAccount, walletContext, { to, method, params,
     to: to,
     from: address,
     nonce: state.Nonce,
-    value: value || '123456789',
+    value: value || '0',
     gasfeecap: '1000000000',
     gaspremium: '15000',
     gaslimit: 25000000,
@@ -61,6 +61,7 @@ function encodeSend(to) {
     to,
     method: 0,
     params: '',
+    value: 0n,
   }
 }
 
@@ -69,6 +70,7 @@ function encodeAddVerifier(verified, cap) {
     to: 't06',
     method: 2,
     params: cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)]),
+    value: 0n,
   }
 }
 
@@ -77,6 +79,7 @@ function encodeAddVerifiedClient(verified, cap) {
     to: 't06',
     method: 4,
     params: cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)]),
+    value: 0n,
   }
 }
 
@@ -86,6 +89,7 @@ function encodePropose(msig, msg) {
     to: msig,
     method: 2,
     params: cbor.encode([signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params]),
+    value: 0n,
   }
 }
 
@@ -100,6 +104,7 @@ function encodeApprove(msig, txid, from, msg) {
     to: msig,
     method: 3,
     params: cbor.encode([txid, Buffer.from(hash, 'hex')]),
+    value: 0n,
   }
 }
 
@@ -187,6 +192,9 @@ function encode(schema, data) {
   }
   if (schema === 'bigint') {
     return encodeBig(data)
+  }
+  if (schema === 'int' || typeof data === 'string') {
+    return parseInt(data)
   }
   if (schema === 'int' || schema === 'buffer') {
     return data
@@ -281,8 +289,8 @@ const pending = {
   type: 'hamt',
   key: 'bigint-signed',
   value: {
-    target: 'address',
-    sent: 'bigint',
+    to: 'address',
+    value: 'bigint',
     method: 'int',
     params: 'buffer',
     signers: ['list', 'address'],
@@ -313,7 +321,7 @@ const reg = {
 
 function parse(tx) {
   try {
-    const actor = reg[tx.target]
+    const actor = reg[tx.to]
     const { name, input } = actor[tx.method]
     return { name, params: decode(input, cbor.decode(tx.params)) }
   } catch (err) {

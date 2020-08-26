@@ -58,6 +58,12 @@ class VerifyAPI {
     return res['/']
   }
 
+  async send(tx, indexAccount) {
+    if (typeof this.walletContext === 'undefined' || !this.walletContext) { throw new Error('No wallet context defined in API') }
+    const res = await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
+    return res['/']
+  }
+
   async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, indexAccount) {
     if (typeof this.walletContext === 'undefined' || !this.walletContext) { throw new Error('No wallet context defined in API') }
 
@@ -112,9 +118,9 @@ class VerifyAPI {
     const returnList = []
     for (const [k, v] of Object.entries(obj)) {
       const parsed = methods.parse(v)
-      console.log(parsed)
       returnList.push({
         id: k,
+        tx: { ...v, from: v.signers[0] },
         parsed,
         signers: v.signers,
       })
