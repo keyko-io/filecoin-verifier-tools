@@ -71,6 +71,8 @@ main() {
 
   configure_lotus
 
+  sleep 10
+
   echo "Token for node: $(cat ~/.lotus/token)"
   echo "Token for miner: $(cat ~/.lotusminer/token)"
 

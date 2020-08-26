@@ -44,7 +44,7 @@ RUN npm i -g yarn
 
 RUN apt-get -y install git
 
-RUN git clone https://github.com/keyko-io/filecoin-verifier-tools/ --depth 1
+RUN git clone https://github.com/keyko-io/filecoin-verifier-tools/ --depth 1 --branch mrsmkl/add-tests
 
 RUN cd filecoin-verifier-tools/ && \
     git submodule init && \
@@ -53,6 +53,7 @@ RUN cd filecoin-verifier-tools/ && \
 
 COPY entrypoint.bash /bin/entrypoint
 COPY rootkey1 /rootkey1
+COPY dddd /dddd
 COPY setup.sh /bin/setup.sh
 
 # API port
@@ -65,3 +66,5 @@ EXPOSE 2345/tcp
 
 ENTRYPOINT ["/bin/entrypoint"]
 
+# docker build . -t mrsmkl/lotus:20-08-26
+# docker run --name lotus --rm -ti --network host mrsmkl/lotus:20-08-26
