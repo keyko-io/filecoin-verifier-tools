@@ -117,6 +117,9 @@ function isType(schema) {
 }
 
 function decode(schema, data) {
+  if (schema === 'address' && typeof data === 'string') {
+    return bytesToAddress(Buffer.from(data, 'base64'), true)
+  }
   if (schema === 'address') {
     return bytesToAddress(data, true)
   }
