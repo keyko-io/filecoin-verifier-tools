@@ -55,19 +55,22 @@ configure_lotus() {
 #  $LOTUS_MINER run --nosync
 }
 
-purge_local_dirs() {
-  echo -e "\nRemoving local state\n"
-  rm -rf ~/.lotus || true
-  rm -rf ~/.lotusstorage || true
-  rm -rf ~/.lotusminer || true
-  rm -rf ~/.genesis-sectors || true
+restart_lotus() {
+  tmux new-session -s lotus -n script -d bash -c "sleep 10000000"
+  tmux new-window -t lotus:1 -n daemon -d $LOTUS_BIN daemon --genesis=dev.gen --bootstrap=false
+  $LOTUS_BIN wait-api
+  tmux new-window -t lotus:2 -n miner -d $LOTUS_MINER run --nosync
 }
 
 main() {
 
   echo -e "\nUsing Lotus Path: $LOTUS_PATH \n"
 
-  configure_lotus
+  if [ -f ~/.lotusminer/token ]; then
+    restart_lotus
+  else
+    configure_lotus
+  fi
 
   sleep 10
 
