@@ -50,6 +50,7 @@ configure_lotus() {
 
   sleep 3
   echo -e "\nStarting up the miner:\n"
+  cp ~/config-miner.toml ~/.lotusminer/config.toml
   tmux new-window -t lotus:2 -n miner -d $LOTUS_MINER run --nosync
 #  $LOTUS_MINER run --nosync
 }
@@ -65,9 +66,6 @@ purge_local_dirs() {
 main() {
 
   echo -e "\nUsing Lotus Path: $LOTUS_PATH \n"
-
-  echo -e "Purging"
-  purge_local_dirs
 
   configure_lotus
 

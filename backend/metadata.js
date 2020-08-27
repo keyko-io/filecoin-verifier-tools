@@ -23,6 +23,20 @@ const VerifierMetadata = sequelize.define('VerifierMetadata', {
   },
 })
 
+function makeMessage(from, data) {
+  return {
+    to: 't080',
+    from,
+    nonce: 0,
+    value: '0',
+    gasfeecap: '0',
+    gaspremium: '0',
+    gaslimit: 0,
+    method: 0,
+    params: Buffer.from(JSON,
+  }
+}
+
 function getPayloadSECP256K1(uncompressedPublicKey) {
   const blakeCtx = blake.blake2bInit(20)
   blake.blake2bUpdate(blakeCtx, uncompressedPublicKey)

@@ -55,16 +55,18 @@ COPY entrypoint.bash /bin/entrypoint
 COPY rootkey1 /rootkey1
 COPY dddd /dddd
 COPY setup.sh /bin/setup.sh
+COPY config.toml /root/.lotus/config.toml
+COPY config-miner.toml /root/config-miner.toml
 
 # API port
-EXPOSE 1234/tcp
+EXPOSE 1234
 
 # P2P port
-EXPOSE 1235/tcp
+EXPOSE 1235
 
-EXPOSE 2345/tcp
+EXPOSE 2345
 
 ENTRYPOINT ["/bin/entrypoint"]
 
 # docker build . -t mrsmkl/lotus:20-08-26
-# docker run --name lotus --rm -ti --network host mrsmkl/lotus:20-08-26
+# docker run --name lotus --rm -ti -p 1234:1234 -p 2345:2345  mrsmkl/lotus:20-08-26

@@ -7,7 +7,6 @@ const Sequelize = require('sequelize')
 const constants = require('../samples/constants')
 const fs = require('fs')
 const methods = require('../filecoin/methods')
-const { rootkey } = require('../filecoin/methods')
 
 const endpointUrl = constants.lotus_endpoint
 const tokenPath = constants.token_path
@@ -32,6 +31,9 @@ const Users = sequelize.define('users', {
   address: {
     type: Sequelize.STRING,
   },
+  key: {
+    type: Sequelize.STRING,
+  },
   kind: {
     type: Sequelize.STRING,
   },
@@ -52,16 +54,29 @@ async function getRootKeys() {
   return methods.decode(['list', 'address'], data[0])
 }
 
+async function getKey(addr) {
+  try {
+    const head = await client.chainHead()
+    const state = head.Blocks[0].ParentStateRoot['/']
+    const data = (await client.chainGetNode(`${state}/@Ha:${addr}/1`)).Obj
+    return methods.decode('address', data[0])
+  }
+  catch (err) {
+    console.log(`Cannot find key for ${addr} ${err}`)
+    return null
+  }
+}
+
 async function run() {
   await Users.sync()
   const verifiers = await getVerifiers()
   const rootkeys = await getRootKeys()
   for (const v of verifiers) {
-    const obj = new Users({ address: v, kind: 'verifier' })
+    const obj = new Users({ address: v, kind: 'verifier', key: await getKey(v) })
     await obj.save()
   }
   for (const v of rootkeys) {
-    const obj = new Users({ address: v, kind: 'rootkey' })
+    const obj = new Users({ address: v, kind: 'rootkey', key: await getKey(v) })
     await obj.save()
   }
   process.exit(0)
