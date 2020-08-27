@@ -3,15 +3,14 @@
 const Sequelize = require('sequelize')
 const constants = require('../samples/constants')
 const jayson = require('jayson')
-const secp256k1 = require('secp256k1')
-const blake = require('blakejs')
 const signer = require('@zondax/filecoin-signing-tools')
-const address = require('@openworklabs/filecoin-address')
+const offchainMessage = require('./offchain-message')
+const schema = require('./schema')
 
 const postgresConnUrl = constants.postgres_conn_url
 const sequelize = new Sequelize(postgresConnUrl)
 
-const VerifierMetadata = sequelize.define('VerifierMetadata', {
+const VerifierMetadata = sequelize.define('verifiers', {
   address: {
     type: Sequelize.STRING,
   },
@@ -23,59 +22,72 @@ const VerifierMetadata = sequelize.define('VerifierMetadata', {
   },
 })
 
-function makeMessage(from, data) {
-  return {
-    to: 't080',
-    from,
-    nonce: 0,
-    value: '0',
-    gasfeecap: '0',
-    gaspremium: '0',
-    gaslimit: 0,
-    method: 0,
-    params: Buffer.from(JSON,
+const ClientMetadata = sequelize.define('clients', {
+  address: {
+    type: Sequelize.STRING,
+  },
+  email: {
+    type: Sequelize.TEXT,
+  },
+  description: {
+    type: Sequelize.TEXT,
+  },
+  source: {
+    type: Sequelize.STRING,
+  },
+})
+
+const Users = sequelize.define('users', schema.users)
+
+async function addVerifierMetadata(msg) {
+  const data = offchainMessage.readMessage(msg)
+  const res = await Users.findAll({
+    where: {
+      key: data.source,
+      kind: 'rootkey',
+    },
+  })
+  if (res.length === 0) {
+    throw new Error('Source is not a rootkey')
   }
+  const obj = new VerifierMetadata(data)
+  await obj.save()
 }
 
-function getPayloadSECP256K1(uncompressedPublicKey) {
-  const blakeCtx = blake.blake2bInit(20)
-  blake.blake2bUpdate(blakeCtx, uncompressedPublicKey)
-  return Buffer.from(blake.blake2bFinal(blakeCtx))
-}
-
-function getDigest({ address, source, description }) {
-  const blakeCtx = blake.blake2bInit(32)
-  blake.blake2bUpdate(blakeCtx, JSON.stringify({ address, source, description }))
-  return Buffer.from(blake.blake2bFinal(blakeCtx))
-}
-
-function signMessage(msg, privateKey) {
-  const signature = secp256k1.ecdsaSign(getDigest(msg), Buffer.from(privateKey, 'hex'))
-
-  return { recid: signature.recid, signature: Buffer.from(signature.signature).toString('base64') }
-}
-
-function checkSignature(msg) {
-  const digest = getDigest(msg)
-  const publicKey = secp256k1.ecdsaRecover(
-    Buffer.from(msg.signature.signature, 'base64'),
-    msg.signature.recid,
-    digest,
-    false,
-  )
-  const payload = getPayloadSECP256K1(Buffer.from(publicKey))
-  if (address.encode('t', address.newAddress(1, payload)) !== msg.source) {
-    throw new Error('Signature didn\'t match')
+async function addClientMetadata(msg) {
+  const data = offchainMessage.readMessage(msg)
+  const res = await Users.findAll({
+    where: {
+      key: data.source,
+      kind: 'verifier',
+    },
+  })
+  if (res.length === 0) {
+    throw new Error('Source is not a verifier')
   }
+  const obj = new ClientMetadata(data)
+  await obj.save()
 }
 
 // create a server
 const server = jayson.server({
   addVerifierMetadata: async function (msg, callback) {
-    checkSignature(msg)
-    const obj = new VerifierMetadata(msg)
-    await obj.save()
-    callback(null, null)
+    try {
+      await addVerifierMetadata(msg)
+      callback(null, 'ok')
+    } catch (err) {
+      console.log('Cannot add metadata', err)
+      callback(err, null)
+    }
+  },
+  addClientMetadata: async function (msg, callback) {
+    try {
+      await addClientMetadata(msg)
+      callback(null, 'ok')
+    } catch (err) {
+      console.log('Cannot add metadata', err)
+      callback(err, null)
+    }
   },
 })
 
@@ -91,12 +103,14 @@ async function run() {
     source: key.address,
     description: 'something',
   }
-  msg.signature = signMessage(msg, key.private_hexstring)
-  console.log(JSON.stringify(msg))
-  checkSignature(msg)
+  const res = offchainMessage.signMessage(msg, key)
+  console.log(JSON.stringify(res))
+  const asd = offchainMessage.readMessage(res)
+  console.log(asd)
 
   await sequelize.authenticate()
   VerifierMetadata.sync()
+  ClientMetadata.sync()
   server.http().listen(port)
 }
 

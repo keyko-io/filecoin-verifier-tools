@@ -7,6 +7,7 @@ const Sequelize = require('sequelize')
 const constants = require('../samples/constants')
 const fs = require('fs')
 const methods = require('../filecoin/methods')
+const schema = require('./schema')
 
 const endpointUrl = constants.lotus_endpoint
 const tokenPath = constants.token_path
@@ -27,17 +28,7 @@ async function load(a) {
 const postgresConnUrl = constants.postgres_conn_url
 const sequelize = new Sequelize(postgresConnUrl)
 
-const Users = sequelize.define('users', {
-  address: {
-    type: Sequelize.STRING,
-  },
-  key: {
-    type: Sequelize.STRING,
-  },
-  kind: {
-    type: Sequelize.STRING,
-  },
-})
+const Users = sequelize.define('users', schema.users)
 
 async function getVerifiers() {
   const head = await client.chainHead()
@@ -60,8 +51,7 @@ async function getKey(addr) {
     const state = head.Blocks[0].ParentStateRoot['/']
     const data = (await client.chainGetNode(`${state}/@Ha:${addr}/1`)).Obj
     return methods.decode('address', data[0])
-  }
-  catch (err) {
+  } catch (err) {
     console.log(`Cannot find key for ${addr} ${err}`)
     return null
   }

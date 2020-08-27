@@ -1,11 +1,11 @@
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
-const hamt = require('../../hamt/hamt')
-const methods = require('../../filecoin/methods')
+const hamt = require('../hamt/hamt')
+const methods = require('../filecoin/methods')
 const fs = require('fs')
-const message = require('./message')
-const constants = require('../constants')
+const schema = require('./schema')
+const constants = require('../samples/constants')
 
 const Sequelize = require('sequelize')
 
@@ -23,8 +23,8 @@ const provider = new Provider(endpointUrl, {
 
 const client = new LotusRPC(provider, { schema: testnet.fullNode })
 
-const Transaction = sequelize.define('transaction', message.db)
-const Block = sequelize.define('block', message.block)
+const Transaction = sequelize.define('transaction', schema.db)
+const Block = sequelize.define('block', schema.block)
 
 async function handleMessages(height, blockhash, dta) {
   if (dta[1] !== 0) {
@@ -32,9 +32,9 @@ async function handleMessages(height, blockhash, dta) {
       const msg = (await client.chainGetNode(e['/'])).Obj
       let tx
       if (msg.length === 2) {
-        tx = methods.decode(message.message, hamt.makeBuffers(msg[0]))
+        tx = methods.decode(schema.message, hamt.makeBuffers(msg[0]))
       } else {
-        tx = methods.decode(message.message, hamt.makeBuffers(msg))
+        tx = methods.decode(schema.message, hamt.makeBuffers(msg))
       }
       const obj = new Transaction({ ...tx, height, txhash: e['/'], blockhash })
       await obj.save()

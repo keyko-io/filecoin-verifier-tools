@@ -73,3 +73,15 @@ exports.db = {
     type: Sequelize.BLOB,
   },
 }
+
+exports.users = {
+  address: {
+    type: Sequelize.STRING,
+  },
+  key: {
+    type: Sequelize.STRING,
+  },
+  kind: {
+    type: Sequelize.STRING,
+  },
+}
