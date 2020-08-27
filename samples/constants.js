@@ -1,4 +1,4 @@
-const lotus_endpoint = 'http://localhost:1234/rpc/v0'
+const lotus_endpoint = 'ws://localhost:1234/rpc/v0'
 const token_path = `${process.env.HOME}/.lotus/token`
 const postgres_conn_url = 'postgres://postgres:1234@localhost:5432/lotus'
 

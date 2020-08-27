@@ -55,7 +55,7 @@ COPY entrypoint.bash /bin/entrypoint
 COPY rootkey1 /rootkey1
 COPY dddd /dddd
 COPY setup.sh /bin/setup.sh
-COPY config.toml /root/.lotus/config.toml
+COPY config.toml /root/config.toml
 COPY config-miner.toml /root/config-miner.toml
 
 # API port
