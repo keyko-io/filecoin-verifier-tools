@@ -1,7 +1,6 @@
 const VerifyAPI = require('../../api/api.js')
 const MockWallet = require('../mockWallet')
 const fs = require('fs')
-const methods = require('../../filecoin/methods')
 const constants = require('../constants')
 
 const endpointUrl = constants.lotus_endpoint
