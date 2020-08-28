@@ -129,8 +129,11 @@ function decode(schema, data) {
   if (schema === 'bigint-signed') {
     return hamt.bytesToBig(data) / 2n
   }
-  if (schema === 'int' || schema === 'buffer') {
+  if (schema === 'int' || schema === 'buffer' || schema === 'bool') {
     return data
+  }
+  if (schema === 'cid') {
+    return data['/']
   }
   if (schema.type === 'hash') {
     return data

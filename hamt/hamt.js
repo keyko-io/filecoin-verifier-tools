@@ -1,5 +1,4 @@
 const address = require('@openworklabs/filecoin-address')
-// const hash = require('./hash').hash
 const sha256 = require('js-sha256')
 
 // Get n next bits
@@ -56,12 +55,10 @@ function makeBuffers(obj) {
   if (typeof obj === 'string') {
     return Buffer.from(obj, 'base64')
   }
-  if (typeof obj === 'number') {
-    return obj
-  }
   if (obj instanceof Array) {
     return obj.map(makeBuffers)
   }
+  return obj
 }
 
 exports.makeBuffers = makeBuffers
