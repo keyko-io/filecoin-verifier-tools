@@ -7,7 +7,7 @@
     "url": "git+https://github.com/keyko-io/filecoin-verifier-tools.git"
   },
   "scripts": {
-    "test": "jest",
+    "test": "npx jest",
     "lint": "eslint ."
   },
   "keywords": [],
@@ -33,6 +33,7 @@
     "express": "^4.17.1",
     "ipld-dag-cbor": "^0.16.0",
     "jayson": "^3.3.4",
+    "jest": "^26.4.2",
     "js-sha256": "^0.9.0",
     "murmurhash3js-revisited": "^3.0.0",
     "node-fetch": "^2.6.0",
