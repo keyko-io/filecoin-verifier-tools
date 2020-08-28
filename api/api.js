@@ -44,7 +44,7 @@ class VerifyAPI {
   async checkVerifier (verifierAddress) {
     // empty array if not verifier is present
     return this.listVerifiers
-      .filter(verifier => verifier[0].toString() === verifierAddress)
+      .filter(({ verifier }) => verifier.toString() === verifierAddress)
   }
 
   async proposeVerifier (verifierAccount, datacap, indexAccount) {
