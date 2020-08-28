@@ -1,19 +1,22 @@
 
-const signer = require('@zondax/filecoin-signing-tools')
+const signer = require('@zondax/filecoin-signing-tools/js')
 const cbor = require('cbor')
 const hamt = require('../hamt/hamt')
 const blake = require('blakejs')
 const address = require('@openworklabs/filecoin-address')
 
-function bytesToAddress (payload, testnet) {
+function bytesToAddress(payload, testnet) {
   const addr = new address.Address(payload)
   return address.encode(testnet ? 't' : 'f', addr)
 }
 
-async function signTx (client, indexAccount, walletContext, { to, method, params, value }) {
+function addressAsBytes(str) {
+  return Buffer.from((address.newFromString(str)).str, 'binary')
+}
+
+async function signTx(client, indexAccount, walletContext, { to, method, params, value }) {
   const head = await client.chainHead()
   const address = (await walletContext.getAccounts())[indexAccount]
-  console.log('address form wallet: ' + address)
 
   const state = await client.stateGetActor(address, head.Cids)
   // console.log("params", params)
@@ -22,7 +25,7 @@ async function signTx (client, indexAccount, walletContext, { to, method, params
     to: to,
     from: address,
     nonce: state.Nonce,
-    value: value || '123456789',
+    value: value || '0',
     gasfeecap: '1000000000',
     gaspremium: '15000',
     gaslimit: 25000000,
@@ -33,18 +36,18 @@ async function signTx (client, indexAccount, walletContext, { to, method, params
   return walletContext.sign(msg, indexAccount)
 }
 
-async function sendTx (client, indexAccount, walletContext, obj) {
+async function sendTx(client, indexAccount, walletContext, obj) {
   const tx = await signTx(client, indexAccount, walletContext, obj)
   console.log('going to send', tx)
   return await client.mpoolPush(JSON.parse(tx))
 }
 
-function pad (str) {
+function pad(str) {
   if (str.length % 2 === 0) return str
   else return '0' + str
 }
 
-function encodeBig (bn) {
+function encodeBig(bn) {
   if (bn.toString() === '0') return Buffer.from('')
   return Buffer.from('00' + pad(bn.toString(16)), 'hex')
 }
@@ -56,54 +59,59 @@ async function sendVerify (verified, cap) {
 }
 */
 
-function encodeSend (to) {
+function encodeSend(to) {
   return {
     to,
     method: 0,
     params: '',
+    value: 0n,
   }
 }
 
-function encodeAddVerifier (verified, cap) {
+function encodeAddVerifier(verified, cap) {
   return {
     to: 't06',
     method: 2,
     params: cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)]),
+    value: 0n,
   }
 }
 
-function encodeAddVerifiedClient (verified, cap) {
+function encodeAddVerifiedClient(verified, cap) {
   return {
     to: 't06',
     method: 4,
     params: cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)]),
+    value: 0n,
   }
 }
 
-function encodePropose (msig, msg) {
+function encodePropose(msig, msg) {
   // console.log("encpro", [signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params])
   return {
     to: msig,
     method: 2,
     params: cbor.encode([signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params]),
+    value: 0n,
   }
 }
 
-function encodeProposalHashdata (from, msg) {
+function encodeProposalHashdata(from, msg) {
   return cbor.encode([signer.addressAsBytes(from), signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params])
 }
 
-function encodeApprove (msig, txid, from, msg) {
+function encodeApprove(msig, txid, from, msg) {
   const hashData = encodeProposalHashdata(from, msg)
   const hash = blake.blake2bHex(hashData, null, 32)
   return {
     to: msig,
     method: 3,
     params: cbor.encode([txid, Buffer.from(hash, 'hex')]),
+    value: 0n,
   }
 }
 
-function isType (schema) {
+function isType(schema) {
   if (schema === 'address' || schema === 'bigint' || schema === 'int' || schema === 'buffer') return true
   if (schema instanceof Array) {
     if (schema[0] === 'list' || schema[0] === 'cbor') return true
@@ -111,7 +119,10 @@ function isType (schema) {
   return false
 }
 
-function decode (schema, data) {
+function decode(schema, data) {
+  if (schema === 'address' && typeof data === 'string') {
+    return bytesToAddress(Buffer.from(data, 'base64'), true)
+  }
   if (schema === 'address') {
     return bytesToAddress(data, true)
   }
@@ -121,8 +132,11 @@ function decode (schema, data) {
   if (schema === 'bigint-signed') {
     return hamt.bytesToBig(data) / 2n
   }
-  if (schema === 'int' || schema === 'buffer') {
+  if (schema === 'int' || schema === 'buffer' || schema === 'bool') {
     return data
+  }
+  if (schema === 'cid') {
+    return data['/']
   }
   if (schema.type === 'hash') {
     return data
@@ -181,12 +195,15 @@ function decode (schema, data) {
   throw new Error(`Unknown type ${schema}`)
 }
 
-function encode (schema, data) {
+function encode(schema, data) {
   if (schema === 'address') {
-    return signer.addressAsBytes(data)
+    return addressAsBytes(data)
   }
   if (schema === 'bigint') {
     return encodeBig(data)
+  }
+  if (schema === 'int' || typeof data === 'string') {
+    return parseInt(data)
   }
   if (schema === 'int' || schema === 'buffer') {
     return data
@@ -227,7 +244,7 @@ function encode (schema, data) {
   throw new Error(`Unknown type ${schema}`)
 }
 
-function actor (address, spec) {
+function actor(address, spec) {
   const res = {}
   for (const [num, method] of Object.entries(spec)) {
     res[method.name] = function (data) {
@@ -281,8 +298,8 @@ const pending = {
   type: 'hamt',
   key: 'bigint-signed',
   value: {
-    target: 'address',
-    sent: 'bigint',
+    to: 'address',
+    value: 'bigint',
     method: 'int',
     params: 'buffer',
     signers: ['list', 'address'],
@@ -311,9 +328,9 @@ const reg = {
   t06: verifreg,
 }
 
-function parse (tx) {
+function parse(tx) {
   try {
-    const actor = reg[tx.target]
+    const actor = reg[tx.to]
     const { name, input } = actor[tx.method]
     return { name, params: decode(input, cbor.decode(tx.params)) }
   } catch (err) {

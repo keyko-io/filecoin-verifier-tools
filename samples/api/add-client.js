@@ -16,7 +16,7 @@ const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
   },
 }), mockWallet)
 
-async function main () {
+async function main() {
   await api.verifyClient(process.argv[2], 10000000000000000000000n, 2)
   process.exit(0)
 }

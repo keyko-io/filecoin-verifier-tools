@@ -3,6 +3,7 @@ module.exports = {
     node: true,
     commonjs: true,
     es2020: true,
+    jest: true,
   },
   extends: [
     'standard',
@@ -13,5 +14,6 @@ module.exports = {
   rules: {
     camelcase: 'off',
     'comma-dangle': ['error', 'always-multiline'],
+    'space-before-function-paren': ['error', { anonymous: 'always', named: 'never', asyncArrow: 'always' }],
   },
 }

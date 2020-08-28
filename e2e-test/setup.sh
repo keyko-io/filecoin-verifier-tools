@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export JSDIR=../
+export JSDIR=/filecoin-verifier-tools/
 
 sleep 20
 

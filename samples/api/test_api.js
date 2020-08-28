@@ -3,7 +3,7 @@ const VerifyAPI = require('../../api/api.js')
 const MockWallet = require('../mockWallet')
 const constants = require('../constants')
 
-async function run () {
+async function run() {
   const endpointUrl = constants.lotus_endpoint
   const tokenPath = constants.token_path
 
