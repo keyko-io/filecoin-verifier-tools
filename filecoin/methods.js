@@ -1,5 +1,5 @@
 
-const signer = require('@zondax/filecoin-signing-tools')
+const signer = require('@zondax/filecoin-signing-tools/js')
 const cbor = require('cbor')
 const hamt = require('../hamt/hamt')
 const blake = require('blakejs')
@@ -10,10 +10,13 @@ function bytesToAddress(payload, testnet) {
   return address.encode(testnet ? 't' : 'f', addr)
 }
 
+function addressAsBytes(str) {
+  return Buffer.from((address.newFromString(str)).str, 'binary')
+}
+
 async function signTx(client, indexAccount, walletContext, { to, method, params, value }) {
   const head = await client.chainHead()
   const address = (await walletContext.getAccounts())[indexAccount]
-  console.log('address form wallet: ' + address)
 
   const state = await client.stateGetActor(address, head.Cids)
   // console.log("params", params)
@@ -194,7 +197,7 @@ function decode(schema, data) {
 
 function encode(schema, data) {
   if (schema === 'address') {
-    return signer.addressAsBytes(data)
+    return addressAsBytes(data)
   }
   if (schema === 'bigint') {
     return encodeBig(data)

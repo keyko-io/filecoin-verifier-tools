@@ -1,4 +1,4 @@
-const signer = require('@zondax/filecoin-signing-tools')
+const signer = require('@zondax/filecoin-signing-tools/js')
 
 class MockWallet {
   constructor(mnemonic, path) {

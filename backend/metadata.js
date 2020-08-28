@@ -3,7 +3,7 @@
 const Sequelize = require('sequelize')
 const constants = require('../samples/constants')
 const jayson = require('jayson')
-const signer = require('@zondax/filecoin-signing-tools')
+const signer = require('@zondax/filecoin-signing-tools/js')
 const offchainMessage = require('./offchain-message')
 const schema = require('./schema')
 
