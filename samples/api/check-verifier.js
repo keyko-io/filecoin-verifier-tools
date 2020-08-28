@@ -16,7 +16,7 @@ const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
   },
 }), mockWallet)
 
-async function main () {
+async function main() {
   const lst = await api.listVerifiers()
   console.log(lst)
   for (const { verifier } of lst) {
