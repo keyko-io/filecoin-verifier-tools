@@ -1,4 +1,4 @@
-name: Build
+name: Test
 
 on: [push, pull_request]
 
@@ -12,9 +12,8 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '10.x'
-    - name: Build
+    - name: Lint
       run: |
-        npm i
-        npm run lint
-        npm build
+        npm ci
+        npm run test
 
