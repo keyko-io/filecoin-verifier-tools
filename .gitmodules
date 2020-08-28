@@ -1,3 +1,0 @@
-[submodule "deps/filecoin-signing-tools"]
-	path = deps/filecoin-signing-tools
-	url = https://github.com/keyko-io/filecoin-signing-tools.git
