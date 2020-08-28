@@ -44,11 +44,9 @@ RUN npm i -g yarn
 
 RUN apt-get -y install git
 
-RUN git clone https://github.com/keyko-io/filecoin-verifier-tools/ --depth 1 --branch mrsmkl/add-tests
+RUN git clone https://github.com/keyko-io/filecoin-verifier-tools/ --depth 1 --branch mrsmkl/backend
 
 RUN cd filecoin-verifier-tools/ && \
-    git submodule init && \
-    git submodule update && \
     yarn
 
 COPY entrypoint.bash /bin/entrypoint

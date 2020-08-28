@@ -1,5 +1,5 @@
 
-const signer = require('@zondax/filecoin-signing-tools')
+const signer = require('@zondax/filecoin-signing-tools/js')
 
 function makeMessage(data) {
   return {
