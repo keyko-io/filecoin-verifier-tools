@@ -36,10 +36,21 @@ async function signTx(client, indexAccount, walletContext, { to, method, params,
   return walletContext.sign(msg, indexAccount)
 }
 
+// returns tx hash
 async function sendTx(client, indexAccount, walletContext, obj) {
   const tx = await signTx(client, indexAccount, walletContext, obj)
   console.log('going to send', tx)
   return await client.mpoolPush(JSON.parse(tx))
+}
+
+async function getReceipt(client, id) {
+  while (true) {
+    const res = await client.stateSearchMsg({ '/': id })
+    if (res && res.Receipt) {
+      return res.Receipt
+    }
+    await new Promise(resolve => { setTimeout(resolve, 1000) })
+  }
 }
 
 function pad(str) {
@@ -51,13 +62,6 @@ function encodeBig(bn) {
   if (bn.toString() === '0') return Buffer.from('')
   return Buffer.from('00' + pad(bn.toString(16)), 'hex')
 }
-
-/*
-async function sendVerify (verified, cap) {
-  // console.log([signer.addressAsBytes(verified), encodeBig(cap)])
-  await sendTx('t06', 4, cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)]))
-}
-*/
 
 function encodeSend(to) {
   return {
@@ -349,6 +353,7 @@ module.exports = {
   decode,
   encode,
   actor,
+  getReceipt,
   multisig,
   pending,
   rootkey: actor('t080', multisig),
