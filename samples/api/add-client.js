@@ -17,7 +17,10 @@ const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
 }), mockWallet)
 
 async function main() {
-  await api.verifyClient(process.argv[2], 10000000000000000000000n, 2)
+  const id = await api.verifyClient(process.argv[2], 10000000000000000000000n, 2)
+  console.log('sent transaction', id)
+  const receipt = await api.getReceipt(id)
+  console.log('got receipt', receipt)
   process.exit(0)
 }
 

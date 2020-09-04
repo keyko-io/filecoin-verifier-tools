@@ -38,7 +38,7 @@ configure_lotus() {
 
   cp ~/config.toml ~/.lotus/config.toml
   sleep 5
-#  $LOTUS_BIN daemon --lotus-make-genesis=dev.gen --genesis-template=localnet.json --bootstrap=false &
+#  $LOTUS_BIN daemon --lotus-make-genesis=dev.gen --genesis-template=localnet.json --bootstrap=false
   tmux new-window -t lotus:1 -n daemon -d $LOTUS_BIN daemon --lotus-make-genesis=dev.gen --genesis-template=localnet.json --bootstrap=false
 
   $LOTUS_BIN wait-api

@@ -29,7 +29,7 @@ configure_lotus() {
   tmux new-session -s lotus -n script -d bash balances.sh
 
   sleep 5
-#  $LOTUS_BIN daemon --lotus-make-genesis=dev.gen --genesis-template=localnet.json --bootstrap=false &
+#  $LOTUS_BIN daemon --lotus-make-genesis=dev.gen --genesis-template=localnet.json --bootstrap=false
   tmux new-window -t lotus:1 -n daemon -d $LOTUS_BIN daemon --lotus-make-genesis=dev.gen --genesis-template=localnet.json --bootstrap=false
 
   $LOTUS_BIN wait-api

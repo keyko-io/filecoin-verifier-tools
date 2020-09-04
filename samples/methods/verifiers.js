@@ -24,7 +24,9 @@ async function load(a) {
 
 async function run() {
   while (true) {
+    console.log('here')
     const head = await client.chainHead()
+    console.log('height', head.Height)
     const state = head.Blocks[0].ParentStateRoot['/']
     console.log('height', head.Height, state)
     const verifiers = (await client.chainGetNode(`${state}/@Ha:t06/1/1`)).Obj

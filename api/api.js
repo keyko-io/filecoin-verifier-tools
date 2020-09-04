@@ -64,6 +64,10 @@ class VerifyAPI {
     return res['/']
   }
 
+  async getReceipt(id) {
+    return methods.getReceipt(this.client, id)
+  }
+
   async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, indexAccount) {
     if (typeof this.walletContext === 'undefined' || !this.walletContext) { throw new Error('No wallet context defined in API') }
 
