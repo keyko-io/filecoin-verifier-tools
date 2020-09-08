@@ -1,5 +1,5 @@
 
-const signer = require('@zondax/filecoin-signing-tools/js')
+const signer = require('@zondax/filecoin-signing-tools')
 const cbor = require('cbor')
 const hamt = require('../hamt/hamt')
 const blake = require('blakejs')
@@ -30,7 +30,7 @@ async function signTx(client, indexAccount, walletContext, { to, method, params,
     gaspremium: '15000',
     gaslimit: 25000000,
     method: method,
-    params: params,
+    params: params.toString('base64'),
   }
 
   return walletContext.sign(msg, indexAccount)

@@ -1,4 +1,4 @@
-const signer = require('@zondax/filecoin-signing-tools/js')
+const signer = require('@zondax/filecoin-signing-tools')
 
 class MockWallet {
   constructor(mnemonic, path) {
@@ -19,9 +19,11 @@ class MockWallet {
   async sign(filecoinMessage, indexAccount) {
     const private_hexstring = signer.keyDerive(this.mnemonic, this.path + indexAccount.toString(), '').private_hexstring
 
+    console.log(private_hexstring)
+
     return signer.transactionSignLotus(
       filecoinMessage,
-      private_hexstring,
+      Buffer.from(private_hexstring, 'hex'),
     )
   }
 }
