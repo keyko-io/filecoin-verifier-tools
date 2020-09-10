@@ -204,6 +204,10 @@ function decode(schema, data) {
   throw new Error(`Unknown type ${schema}`)
 }
 
+function wrapDecode(schema, data) {
+  return decode(schema, hamt.makeBuffers(data))
+}
+
 function encode(schema, data) {
   if (schema === 'address') {
     return addressAsBytes(data)
@@ -405,7 +409,7 @@ module.exports = {
   encodeAddVerifiedClient,
   sendTx,
   signTx,
-  decode,
+  decode: wrapDecode,
   encode,
   actor,
   getReceipt,

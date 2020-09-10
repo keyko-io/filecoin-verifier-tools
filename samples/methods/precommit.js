@@ -1,5 +1,6 @@
 
 const methods = require('../../filecoin/methods')
+const hamt = require('../../hamt/hamt')
 const { make } = require('../../filecoin/get-data')
 
 /*
@@ -62,6 +63,28 @@ const schema = {
   },
 }
 
+const power = {
+  TotalRawBytePower: 'bigint',
+  TotalBytesCommitted: 'bigint',
+  TotalQualityAdjPower: 'bigint',
+  TotalQABytesCommitted: 'bigint',
+  TotalPledgeCollateral: 'bigint',
+  ThisEpochRawBytePower: 'bigint',
+  ThisEpochQualityAdjPower: 'bigint',
+  ThisEpochPledgeCollateral: 'bigint',
+  ThisEpochQAPowerSmoothed: {
+    a: 'bigint',
+    b: 'bigint',
+  },
+  miner_count: 'int',
+  MinerAboveMinPowerCount: 'int',
+  cronevent: 'cid',
+  first: 'int',
+  last: 'int',
+  Claims: 'cid',
+  Proof: 'bool',
+}
+
 async function main() {
   if (process.argv.length < 3) {
     console.log('Usage: node samples/methods/precommit.js miner-address')
@@ -71,6 +94,8 @@ async function main() {
   // console.log(await obj.asObject())
   const { getData, load } = make('ws://localhost:1234/rpc/v0')
   const data = await getData(`@Ha:${process.argv[2]}/1/5`)
+  const data2 = await getData('@Ha:t04/1')
+  console.log(methods.decode(power, data2))
   console.log(await methods.decode(schema, data).asObject(load))
   process.exit(0)
 }
