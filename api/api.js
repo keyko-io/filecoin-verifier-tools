@@ -99,6 +99,16 @@ class VerifyAPI {
     return returnList
   }
 
+  async actorAddress(str) {
+    const head = await this.client.chainHead()
+    return this.client.stateLookupID(str, head.Cids)
+  }
+
+  async actorKey(str) {
+    const head = await this.client.chainHead()
+    return this.client.stateAccountKey(str, head.Cids)
+  }
+
   async checkClient(clientAddress) {
     return this.listVerifiedClients
       .filter(client => client[0].toString() === clientAddress)

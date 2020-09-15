@@ -21,6 +21,9 @@ async function run() {
 
     console.log(verifiers, clients)
 
+    console.log('actor', await api.actorAddress('t1cncuf2kvfzsmsij3opaypup527ounnpwhiicdci'))
+    console.log('actor', await api.actorKey('t0102'))
+
     await new Promise(resolve => { setTimeout(resolve, 1000) })
   }
 }
