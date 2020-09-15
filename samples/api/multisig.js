@@ -5,9 +5,7 @@ const constants = require('../constants')
 async function run() {
   const endpointUrl = constants.lotus_endpoint
 
-  const mnemonic = 'exit mystery juice city argue breeze film learn orange dynamic marine diary antenna road couple surge marine assume loop thought leader liquid rotate believe'
-  const path = "m/44'/1'/1/0/"
-  const mockWallet = new MockWallet(mnemonic, path)
+  const mockWallet = new MockWallet(constants.verifier_mnemonic, constants.path)
 
   const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl), mockWallet)
 
