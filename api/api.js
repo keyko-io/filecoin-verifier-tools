@@ -99,6 +99,14 @@ class VerifyAPI {
     return returnList
   }
 
+  async listRootkeys() {
+    const head = await this.client.chainHead()
+    const state = head.Blocks[0].ParentStateRoot['/']
+    const data = (await this.client.chainGetNode(`${state}/@Ha:t080/1`)).Obj
+    const info = methods.decode(methods.msig_state, data)
+    return info.signers
+  }
+
   async actorAddress(str) {
     const head = await this.client.chainHead()
     return this.client.stateLookupID(str, head.Cids)

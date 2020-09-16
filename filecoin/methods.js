@@ -124,6 +124,7 @@ function isType(schema) {
 }
 
 function decode(schema, data) {
+//  console.log(schema, data)
   if (schema === 'address' && typeof data === 'string') {
     return bytesToAddress(Buffer.from(data, 'base64'), true)
   }
@@ -170,6 +171,9 @@ function decode(schema, data) {
   if (schema instanceof Array) {
     if (schema[0] === 'list') {
       return data.map(a => decode(schema[1], a))
+    }
+    if (schema[0] === 'ref') {
+      return async load => decode(schema[1], await load(data['/']))
     }
     if (schema[0] === 'cbor') {
       return decode(schema[1], cbor.decode(data))
@@ -310,6 +314,16 @@ const pending = {
   },
 }
 
+const msig_state = {
+  signers: ['list', 'address'],
+  threshold: 'int',
+  next_txn_id: 'int',
+  initial_balance: 'bigint',
+  start_epoch: 'int',
+  unlock_duration: 'int',
+  pending: ['ref', pending],
+}
+
 const verifreg = {
   2: {
     name: 'addVerifier',
@@ -358,5 +372,6 @@ module.exports = {
   pending,
   rootkey: actor('t080', multisig),
   verifreg: actor('t06', verifreg),
+  msig_state,
   parse,
 }

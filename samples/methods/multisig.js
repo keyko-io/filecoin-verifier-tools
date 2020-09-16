@@ -27,10 +27,11 @@ async function run() {
     const head = await client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
     console.log('height', head.Height, state)
-    const data = (await client.chainGetNode(`${state}/@Ha:t080/1/6`)).Obj
+    const data = (await client.chainGetNode(`${state}/@Ha:t080/1`)).Obj
     console.log(JSON.stringify(data, null, 2))
-    const info = methods.decode(methods.pending, data)
-    const obj = await info.asObject(load)
+    const info = methods.decode(methods.msig_state, data)
+    console.log(info)
+    const obj = await (await info.pending(load)).asObject(load)
     for (const [k, v] of Object.entries(obj)) {
       console.log(k, v, methods.parse(v))
     }

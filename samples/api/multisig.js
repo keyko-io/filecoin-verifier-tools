@@ -17,6 +17,8 @@ async function run() {
 
     console.log(await api.listVerifiers())
 
+    console.log(await api.listRootkeys())
+
     await new Promise(resolve => { setTimeout(resolve, 1000) })
   }
 }
