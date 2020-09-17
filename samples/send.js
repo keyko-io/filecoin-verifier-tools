@@ -3,20 +3,22 @@ const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-pr
 const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
 const fs = require('fs')
 const signer = require('@zondax/filecoin-signing-tools/js')
-const methods = require('../methods')
+const methods = require('../filecoin/methods')
+const constants = require('./constants')
 
-const endpointUrl = 'ws://localhost:1234/rpc/v0'
-const provider = new Provider(endpointUrl, {
+const provider = new Provider(constants.lotus_endpoint, {
   token: async () => {
-    return fs.readFileSync('/home/sami/.lotus/token')
+    return fs.readFileSync(constants.token_path)
   },
 })
 
 const client = new LotusRPC(provider, { schema: testnet.fullNode })
 
-const mnemonic = 'robot matrix ribbon husband feature attitude noise imitate matrix shaft resist cliff lab now gold menu grocery truth deliver camp about stand consider number'
-const key = signer.keyDerive(mnemonic, "m/44'/1'/1/0/2", '')
-console.log('address', key.address)
+const key = signer.keyDerive(constants.verifier_mnemonic, `${constants.path}/2`, '')
+console.log('verifier address', key.address)
+
+const key2 = signer.keyDerive(constants.rootkey_mnemonic, `${constants.path}/2`, '')
+console.log('rootkey address', key2.address)
 
 async function main() {
   await methods.sendTx(client, key, methods.encodeSend('t01000'))
