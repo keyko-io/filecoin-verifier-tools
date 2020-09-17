@@ -21,14 +21,29 @@ async function signTx(client, indexAccount, walletContext, { to, method, params,
   const state = await client.stateGetActor(address, head.Cids)
   // console.log("params", params)
   // console.log("state", state)
+  const estimation_msg = {
+    To: to,
+    From: address,
+    Nonce: state.Nonce,
+    Value: value || '0',
+    GasFeeCap: '0',
+    GasPremium: '0',
+    GasLimit: 0,
+    Method: method,
+    Params: params.toString('base64'),
+  }
+
+  const res = await client.gasEstimateMessageGas(estimation_msg, { MaxFee: '10000000000000000' }, head.Cids)
+  console.log(res)
+
   const msg = {
     to: to,
     from: address,
     nonce: state.Nonce,
     value: value || '0',
-    gasfeecap: '1000000000',
-    gaspremium: '15000',
-    gaslimit: 25000000,
+    gasfeecap: res.GasFeeCap,
+    gaspremium: res.GasPremium,
+    gaslimit: res.GasLimit,
     method: method,
     params: params,
   }
