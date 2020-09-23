@@ -21,14 +21,29 @@ async function signTx(client, indexAccount, walletContext, { to, method, params,
   const state = await client.stateGetActor(address, head.Cids)
   // console.log("params", params)
   // console.log("state", state)
+  const estimation_msg = {
+    To: to,
+    From: address,
+    Nonce: state.Nonce,
+    Value: value || '0',
+    GasFeeCap: '0',
+    GasPremium: '0',
+    GasLimit: 0,
+    Method: method,
+    Params: params.toString('base64'),
+  }
+
+  const res = await client.gasEstimateMessageGas(estimation_msg, { MaxFee: '10000000000000000' }, head.Cids)
+  console.log(res)
+
   const msg = {
     to: to,
     from: address,
     nonce: state.Nonce,
     value: value || '0',
-    gasfeecap: '1000000000',
-    gaspremium: '15000',
-    gaslimit: 25000000,
+    gasfeecap: res.GasFeeCap,
+    gaspremium: res.GasPremium,
+    gaslimit: res.GasLimit,
     method: method,
     params: params,
   }
@@ -61,6 +76,11 @@ function pad(str) {
 function encodeBig(bn) {
   if (bn.toString() === '0') return Buffer.from('')
   return Buffer.from('00' + pad(bn.toString(16)), 'hex')
+}
+
+function encodeBigKey(bn) {
+  if (bn.toString() === '0') return Buffer.from('')
+  return Buffer.from(pad(bn.toString(16)), 'hex')
 }
 
 function encodeSend(to) {
@@ -210,10 +230,16 @@ function encode(schema, data) {
   if (schema === 'bigint') {
     return encodeBig(data)
   }
+  if (schema === 'bigint-key') {
+    return encodeBigKey(data)
+  }
   if (schema === 'int' || typeof data === 'string') {
     return parseInt(data)
   }
   if (schema === 'int' || schema === 'buffer') {
+    return data
+  }
+  if (schema === 'bool') {
     return data
   }
   if (schema.type === 'hash') {
@@ -300,11 +326,54 @@ const multisig = {
       params: 'buffer',
     },
   },
+  4: {
+    name: 'cancel',
+    input: {
+      id: 'int',
+      hash: {
+        type: 'hash',
+        input: {
+          from: 'address',
+          to: 'address',
+          value: 'bigint',
+          method: 'int',
+          params: 'buffer',
+        },
+      },
+    },
+  },
+  5: {
+    name: 'addSigner',
+    input: {
+      signer: 'address',
+      increase: 'bool',
+    },
+  },
+  6: {
+    name: 'removeSigner',
+    input: {
+      signer: 'address',
+      decrease: 'bool',
+    },
+  },
+  7: {
+    name: 'swapSigner',
+    input: {
+      from: 'address',
+      to: 'address',
+    },
+  },
+  8: {
+    name: 'changeNumApprovalsThreshold',
+    input: {
+      newThreshold: 'int',
+    },
+  },
 }
 
 const pending = {
   type: 'hamt',
-  key: 'bigint-signed',
+  key: 'bigint',
   value: {
     to: 'address',
     value: 'bigint',
@@ -350,7 +419,8 @@ function parse(tx) {
   try {
     const actor = reg[tx.to]
     const { name, input } = actor[tx.method]
-    return { name, params: decode(input, cbor.decode(tx.params)) }
+    const params = decode(input, cbor.decode(tx.params))
+    return { name, params, parsed: params && parse(params) }
   } catch (err) {
     return null
   }
