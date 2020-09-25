@@ -21,14 +21,29 @@ async function signTx(client, indexAccount, walletContext, { to, method, params,
   const state = await client.stateGetActor(address, head.Cids)
   // console.log("params", params)
   // console.log("state", state)
+  const estimation_msg = {
+    To: to,
+    From: address,
+    Nonce: state.Nonce,
+    Value: value || '0',
+    GasFeeCap: '0',
+    GasPremium: '0',
+    GasLimit: 0,
+    Method: method,
+    Params: params.toString('base64'),
+  }
+
+  const res = await client.gasEstimateMessageGas(estimation_msg, { MaxFee: '10000000000000000' }, head.Cids)
+  console.log(res)
+
   const msg = {
     to: to,
     from: address,
     nonce: state.Nonce,
     value: value || '0',
-    gasfeecap: '1000000000',
-    gaspremium: '15000',
-    gaslimit: 25000000,
+    gasfeecap: res.GasFeeCap,
+    gaspremium: res.GasPremium,
+    gaslimit: res.GasLimit,
     method: method,
     params: params,
   }
@@ -129,6 +144,7 @@ function isType(schema) {
 }
 
 function decode(schema, data) {
+//  console.log(schema, data)
   if (schema === 'address' && typeof data === 'string') {
     return bytesToAddress(Buffer.from(data, 'base64'), true)
   }
@@ -175,6 +191,9 @@ function decode(schema, data) {
   if (schema instanceof Array) {
     if (schema[0] === 'list') {
       return data.map(a => decode(schema[1], a))
+    }
+    if (schema[0] === 'ref') {
+      return async load => decode(schema[1], await load(data['/']))
     }
     if (schema[0] === 'cbor') {
       return decode(schema[1], cbor.decode(data))
@@ -364,6 +383,16 @@ const pending = {
   },
 }
 
+const msig_state = {
+  signers: ['list', 'address'],
+  threshold: 'int',
+  next_txn_id: 'int',
+  initial_balance: 'bigint',
+  start_epoch: 'int',
+  unlock_duration: 'int',
+  pending: ['ref', pending],
+}
+
 const verifreg = {
   2: {
     name: 'addVerifier',
@@ -413,5 +442,6 @@ module.exports = {
   pending,
   rootkey: actor('t080', multisig),
   verifreg: actor('t06', verifreg),
+  msig_state,
   parse,
 }

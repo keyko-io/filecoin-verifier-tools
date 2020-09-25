@@ -11,7 +11,7 @@ lotus chain head
 export MAIN=$(cat localnet.json | jq -r '.Accounts | .[0] | .Meta .Owner')
 
 export ROOT1=t1vzw5hg23fn7ob4gfpzmzej7h76h6gjr3572elvi # t0101
-export ROOT2=t1pnzozdkjnmtmnh6i3ufl7ianvwl2lq7tybazudy # t0102
+export ROOT2=t1cncuf2kvfzsmsij3opaypup527ounnpwhiicdci # t0102
 
 # Send funds to root key
 lotus send --from $MAIN $ROOT1 5000000
@@ -20,7 +20,7 @@ lotus send --from $MAIN $ROOT2 5000000
 lotus send --from $MAIN $(lotus wallet new) 12
 lotus send --from $MAIN $(lotus wallet new) 12
 
-export VERIFIER=t1o4kevzztyeoojfxhessab7phnm5jajgxdlguq5q
+export VERIFIER=t1us742aljq3rregf6eldkdbi2ymsnfifhq7meyly
 export VERIFIER2=$(lotus wallet new)
 export CLIENT=$(lotus wallet new)
 

@@ -7,9 +7,7 @@ async function run() {
   const endpointUrl = constants.lotus_endpoint
   const tokenPath = constants.token_path
 
-  const mnemonic = 'exit mystery juice city argue breeze film learn orange dynamic marine diary antenna road couple surge marine assume loop thought leader liquid rotate believe'
-  const path = "m/44'/1'/1/0/"
-  const mockWallet = new MockWallet(mnemonic, path)
+  const mockWallet = new MockWallet(constants.verifier_mnemonic, constants.path)
 
   const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
     token: async () => {
@@ -22,6 +20,9 @@ async function run() {
     var clients = await api.listVerifiedClients()
 
     console.log(verifiers, clients)
+
+    console.log('actor', await api.actorAddress('t1cncuf2kvfzsmsij3opaypup527ounnpwhiicdci'))
+    console.log('actor', await api.actorKey('t0102'))
 
     await new Promise(resolve => { setTimeout(resolve, 1000) })
   }

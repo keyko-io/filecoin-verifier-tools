@@ -94,7 +94,7 @@ const server = jayson.server({
 const port = 3000
 
 const mnemonic = 'exit mystery juice city argue breeze film learn orange dynamic marine diary antenna road couple surge marine assume loop thought leader liquid rotate believe'
-const path = "m/44'/1'/1/0/2"
+const path = "m/44'/1'/0/0/2"
 
 async function run() {
   const key = signer.keyDerive(mnemonic, path, '')
