@@ -149,6 +149,25 @@ class VerifyAPI {
     }
     return returnList
   }
+
+  async pendingTransactions(addr) {
+    const head = await this.client.chainHead()
+    const state = head.Blocks[0].ParentStateRoot['/']
+    const data = (await this.client.chainGetNode(`${state}/@Ha:${addr}/1/6`)).Obj
+    const info = methods.decode(methods.pending, data)
+    const obj = await info.asObject(this.load)
+    const returnList = []
+    for (const [k, v] of Object.entries(obj)) {
+      const parsed = methods.parse(v)
+      returnList.push({
+        id: parseInt(k)/2,
+        tx: { ...v, from: v.signers[0] },
+        parsed,
+        signers: v.signers,
+      })
+    }
+    return returnList
+  }
 }
 
 module.exports = VerifyAPI

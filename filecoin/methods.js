@@ -4,6 +4,8 @@ const cbor = require('cbor')
 const hamt = require('../hamt/hamt')
 const blake = require('blakejs')
 const address = require('@openworklabs/filecoin-address')
+const CID = require('cids')
+const multihashes = require('multihashes')
 
 function bytesToAddress(payload, testnet) {
   const addr = new address.Address(payload)
@@ -32,6 +34,8 @@ async function signTx(client, indexAccount, walletContext, { to, method, params,
     Method: method,
     Params: params.toString('base64'),
   }
+
+  console.log(estimation_msg)
 
   const res = await client.gasEstimateMessageGas(estimation_msg, { MaxFee: '10000000000000000' }, head.Cids)
   console.log(res)
@@ -144,7 +148,7 @@ function isType(schema) {
 }
 
 function decode(schema, data) {
-//  console.log(schema, data)
+  // console.log(schema, data)
   if (schema === 'address' && typeof data === 'string') {
     return bytesToAddress(Buffer.from(data, 'base64'), true)
   }
@@ -159,6 +163,9 @@ function decode(schema, data) {
   }
   if (schema === 'int' || schema === 'buffer' || schema === 'bool') {
     return data
+  }
+  if (schema === 'cid' && data instanceof cbor.Tagged && data.tag === 42) {
+    return new CID(data.value.slice(1))
   }
   if (schema === 'cid') {
     return data['/']
@@ -238,6 +245,9 @@ function encode(schema, data) {
   }
   if (schema === 'int' || schema === 'buffer') {
     return data
+  }
+  if (schema === 'cid') {
+    return new cbor.Tagged(42, Buffer.concat([Buffer.from([0]), data.bytes]))
   }
   if (schema === 'bool') {
     return data
@@ -371,6 +381,22 @@ const multisig = {
   },
 }
 
+const init = {
+  2: {
+    name: 'exec',
+    input: {
+      cid: 'cid',
+      params: 'buffer',
+    },
+  }
+}
+
+const msig_constructor = ['cbor', {
+  signers: ['list', 'address'],
+  threshold: 'int',
+  unlockDuration: 'int',
+}]
+
 const pending = {
   type: 'hamt',
   key: 'bigint',
@@ -413,6 +439,7 @@ const verifreg = {
 const reg = {
   t080: multisig,
   t06: verifreg,
+  t01: init,
 }
 
 function parse(tx) {
@@ -425,6 +452,8 @@ function parse(tx) {
     return null
   }
 }
+
+const multisigCID = new CID(1, 'raw', multihashes.encode(Buffer.from('fil/1/multisig'), 'identity'))
 
 module.exports = {
   encodeSend,
@@ -439,9 +468,12 @@ module.exports = {
   actor,
   getReceipt,
   multisig,
+  multisigCID,
   pending,
   rootkey: actor('t080', multisig),
   verifreg: actor('t06', verifreg),
+  init: actor('t01', init),
+  msig_constructor,
   msig_state,
   parse,
 }

@@ -3,6 +3,7 @@ const Sequelize = require('sequelize')
 const constants = require('../samples/constants')
 const schema = require('./schema')
 const methods = require('../filecoin/methods')
+const cbor = require('cbor')
 
 const postgresConnUrl = constants.postgres_conn_url
 const sequelize = new Sequelize(postgresConnUrl)
@@ -16,7 +17,7 @@ async function run() {
 
   const res = await Transaction.findAll({
     where: {
-      to_address: 't080',
+      to_address: 't01',
     },
     order: ['height'],
   })
@@ -24,8 +25,11 @@ async function run() {
   // console.log(res)
 
   for (const { dataValues } of res) {
-    // console.log(dataValues)
-    console.log(methods.parse({ ...dataValues, to: dataValues.to_address }))
+    console.log(dataValues)
+    let res = methods.parse({ ...dataValues, to: dataValues.to_address })
+    console.log(res)
+    console.log(res.params.cid)
+    console.log(methods.decode(['cbor', {signers: ['list', 'address'], threshold: 'int', unlockDuration: 'int'}], res.params.params))
   }
 
   sequelize.close()

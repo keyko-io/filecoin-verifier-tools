@@ -23,7 +23,7 @@ configure_lotus() {
   echo -e "\nCreate the genesis block and start up the first node:\n"
   $LOTUS_SEED genesis new localnet.json
   $LOTUS_SEED genesis add-miner localnet.json ~/.genesis-sectors/pre-seal-t01000.json
-  jq '. + {VerifregRootKey: {Type: "multisig", Balance: "50000000000000000000000000", Meta: { Signers: ["t1cncuf2kvfzsmsij3opaypup527ounnpwhiicdci"], Threshold: 2 }}}' localnet.json > localnet2.json
+  jq '. + {VerifregRootKey: {Type: "multisig", Balance: "50000000000000000000000000", Meta: { Signers: ["t1cncuf2kvfzsmsij3opaypup527ounnpwhiicdci"], Threshold: 1 }}}' localnet.json > localnet2.json
 
   cp localnet2.json localnet.json
   tmux new-session -s lotus -n script -d bash balances.sh

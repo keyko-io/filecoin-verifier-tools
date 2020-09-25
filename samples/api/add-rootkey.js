@@ -19,7 +19,7 @@ const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
 }), mockWallet)
 
 async function main() {
-  const tx = methods.rootkey.addSigner('t01012', false)
+  const tx = methods.rootkey.addSigner(process.argv[2], false)
   console.log(tx)
   const tx2 = methods.rootkey.propose(tx)
   console.log(tx2)
