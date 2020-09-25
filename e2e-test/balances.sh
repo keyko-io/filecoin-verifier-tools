@@ -41,20 +41,21 @@ done
 # export PARAM=$(lotus-shed verifreg add-verifier --dry t01003 100000000000000000000000000000000000000000)
 # export PARAM2=$(lotus-shed verifreg add-verifier --dry t01004 100000000000000000000000000000000000000000)
 
-lotus msig propose --from $ROOT1 t080 t06 0 2 824300eb0753000125dfa371a19e6f7cb54395ca0000000000
-lotus msig inspect t080
+#lotus msig propose --from $ROOT1 t080 t06 0 2 824300eb0753000125dfa371a19e6f7cb54395ca0000000000
+#lotus msig inspect t080
 
-node $JSDIR/samples/api/approve-pending.js
+#node $JSDIR/samples/api/approve-pending.js
 
-sleep 5
-lotus-shed verifreg list-verifiers
+#sleep 5
+#lotus-shed verifreg list-verifiers
 
 node $JSDIR/samples/api/propose-verifier.js t01004
+node $JSDIR/samples/api/propose-verifier.js t01003
 sleep 15
 lotus msig inspect t080
 sleep 15
 lotus msig inspect t080
-lotus msig approve --from $ROOT1 t080 1 $ROOT2 t06 0 2 824300ec0753000125dfa371a19e6f7cb54395ca0000000000
+#lotus msig approve --from $ROOT1 t080 1 $ROOT2 t06 0 2 824300ec0753000125dfa371a19e6f7cb54395ca0000000000
 
 lotus-shed verifreg list-verifiers
 
