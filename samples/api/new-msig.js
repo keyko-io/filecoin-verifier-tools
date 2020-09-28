@@ -15,7 +15,7 @@ const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
 }), mockWallet)
 
 async function main() {
-  let accts = await mockWallet.getAccounts()
+  const accts = await mockWallet.getAccounts()
   console.log(accts)
   const textile = accts[3]
   const slate = accts[4]
@@ -27,7 +27,7 @@ async function main() {
   console.log('M1', m1_addr)
 
   // add this to M0
-  let receipt3 = await api.multisigAdd(m0_addr, m1_addr, 3)
+  const receipt3 = await api.multisigAdd(m0_addr, m1_addr, 3)
   console.log(receipt3)
 
   process.exit(0)

@@ -3,7 +3,6 @@ const Sequelize = require('sequelize')
 const constants = require('../samples/constants')
 const schema = require('./schema')
 const methods = require('../filecoin/methods')
-const cbor = require('cbor')
 
 const postgresConnUrl = constants.postgres_conn_url
 const sequelize = new Sequelize(postgresConnUrl)
@@ -26,10 +25,10 @@ async function run() {
 
   for (const { dataValues } of res) {
     console.log(dataValues)
-    let res = methods.parse({ ...dataValues, to: dataValues.to_address })
+    const res = methods.parse({ ...dataValues, to: dataValues.to_address })
     console.log(res)
     console.log(res.params.cid)
-    console.log(methods.decode(['cbor', {signers: ['list', 'address'], threshold: 'int', unlockDuration: 'int'}], res.params.params))
+    console.log(methods.decode(['cbor', { signers: ['list', 'address'], threshold: 'int', unlockDuration: 'int' }], res.params.params))
   }
 
   sequelize.close()

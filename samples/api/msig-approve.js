@@ -1,5 +1,4 @@
 const VerifyAPI = require('../../api/api.js')
-const methods = require('../../filecoin/methods.js')
 const MockWallet = require('../mockWallet')
 const fs = require('fs')
 const constants = require('../constants')
@@ -17,9 +16,9 @@ const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
 
 async function main() {
   const msig = 't01018'
-  let lst = await api.pendingTransactions(msig)
+  const lst = await api.pendingTransactions(msig)
 
-  for (let tx of lst) {
+  for (const tx of lst) {
     console.log(tx)
     await api.approvePending(msig, tx, 3)
   }

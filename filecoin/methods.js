@@ -388,7 +388,7 @@ const init = {
       cid: 'cid',
       params: 'buffer',
     },
-  }
+  },
 }
 
 const msig_constructor = ['cbor', {

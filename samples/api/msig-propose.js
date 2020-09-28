@@ -1,5 +1,4 @@
 const VerifyAPI = require('../../api/api.js')
-const methods = require('../../filecoin/methods.js')
 const MockWallet = require('../mockWallet')
 const fs = require('fs')
 const constants = require('../constants')

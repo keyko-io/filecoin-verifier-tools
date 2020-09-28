@@ -133,29 +133,29 @@ class VerifyAPI {
   }
 
   async approvePending(msig, tx, from) {
-    let m1_actor = methods.actor(msig, methods.multisig)
+    const m1_actor = methods.actor(msig, methods.multisig)
     await this.send(m1_actor.approve(parseInt(tx.id), tx.tx), from)
   }
 
   async multisigProposeClient(m0_addr, m1_addr, client, amount, from) {
-    let m0_actor = methods.actor(m0_addr, methods.multisig)
-    let m1_actor = methods.actor(m1_addr, methods.multisig)
+    const m0_actor = methods.actor(m0_addr, methods.multisig)
+    const m1_actor = methods.actor(m1_addr, methods.multisig)
     const tx = methods.verifreg.addVerifiedClient(client, amount)
     return await this.send(m1_actor.propose(m0_actor.propose(tx)), from)
   }
 
   async newMultisig(signers, threshold, from) {
     const tx = methods.init.exec(methods.multisigCID, methods.encode(methods.msig_constructor, [signers, threshold, 0]))
-    let txid = await this.send(tx, from)
-    let receipt = await this.getReceipt(txid)
-    let [addr] = methods.decode(['list', 'address'],cbor.decode(Buffer.from(receipt.Return, 'base64')))
+    const txid = await this.send(tx, from)
+    const receipt = await this.getReceipt(txid)
+    const [addr] = methods.decode(['list', 'address'], cbor.decode(Buffer.from(receipt.Return, 'base64')))
     return addr
   }
 
   async multisigAdd(addr, signer, from) {
-    let actor = methods.actor(addr, methods.multisig)
-    let tx = actor.propose(actor.addSigner(signer, false))
-    let txid = await this.send(tx, from)
+    const actor = methods.actor(addr, methods.multisig)
+    const tx = actor.propose(actor.addSigner(signer, false))
+    const txid = await this.send(tx, from)
     return this.getReceipt(txid)
   }
 
@@ -188,7 +188,7 @@ class VerifyAPI {
     for (const [k, v] of Object.entries(obj)) {
       const parsed = methods.parse(v)
       returnList.push({
-        id: parseInt(k)/2,
+        id: parseInt(k) / 2,
         tx: { ...v, from: v.signers[0] },
         parsed,
         signers: v.signers,
