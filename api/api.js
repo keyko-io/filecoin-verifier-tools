@@ -4,6 +4,7 @@ const methods = require('../filecoin/methods')
 const { BrowserProvider } = require('@filecoin-shipyard/lotus-client-provider-browser')
 const { NodejsProvider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
+const cbor = require('cbor')
 
 class VerifyAPI {
   constructor(lotusClient, walletContext) {
@@ -129,6 +130,33 @@ class VerifyAPI {
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
     return res['/']
+  }
+
+  async approvePending(msig, tx, from) {
+    let m1_actor = methods.actor(msig, methods.multisig)
+    await this.send(m1_actor.approve(parseInt(tx.id), tx.tx), from)
+  }
+
+  async multisigProposeClient(m0_addr, m1_addr, client, amount, from) {
+    let m0_actor = methods.actor(m0_addr, methods.multisig)
+    let m1_actor = methods.actor(m1_addr, methods.multisig)
+    const tx = methods.verifreg.addVerifiedClient(client, amount)
+    return await this.send(m1_actor.propose(m0_actor.propose(tx)), from)
+  }
+
+  async newMultisig(signers, threshold, from) {
+    const tx = methods.init.exec(methods.multisigCID, methods.encode(methods.msig_constructor, [signers, threshold, 0]))
+    let txid = await this.send(tx, from)
+    let receipt = await this.getReceipt(txid)
+    let [addr] = methods.decode(['list', 'address'],cbor.decode(Buffer.from(receipt.Return, 'base64')))
+    return addr
+  }
+
+  async multisigAdd(addr, signer, from) {
+    let actor = methods.actor(addr, methods.multisig)
+    let tx = actor.propose(actor.addSigner(signer, false))
+    let txid = await this.send(tx, from)
+    return this.getReceipt(txid)
   }
 
   async pendingRootTransactions() {

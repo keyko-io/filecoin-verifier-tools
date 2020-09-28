@@ -444,7 +444,7 @@ const reg = {
 
 function parse(tx) {
   try {
-    const actor = reg[tx.to]
+    const actor = reg[tx.to] || multisig
     const { name, input } = actor[tx.method]
     const params = decode(input, cbor.decode(tx.params))
     return { name, params, parsed: params && parse(params) }

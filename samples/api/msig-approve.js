@@ -16,14 +16,12 @@ const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
 }), mockWallet)
 
 async function main() {
-  let m0_actor = methods.actor('t01022', methods.multisig)
-  let m1_actor = methods.actor('t01023', methods.multisig)
+  const msig = 't01018'
+  let lst = await api.pendingTransactions(msig)
 
-  let lst = await api.pendingTransactions('t01023')
-
-  console.log(lst)
   for (let tx of lst) {
-    await api.send(m1_actor.approve(parseInt(tx.id), tx.tx), 3)
+    console.log(tx)
+    await api.approvePending(msig, tx, 3)
   }
 
   process.exit(0)
