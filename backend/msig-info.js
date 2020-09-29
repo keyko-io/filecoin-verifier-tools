@@ -16,7 +16,7 @@ async function run() {
 
   const res = await Transaction.findAll({
     where: {
-      to_address: 't080',
+      to_address: 't01',
     },
     order: ['height'],
   })
@@ -24,8 +24,11 @@ async function run() {
   // console.log(res)
 
   for (const { dataValues } of res) {
-    // console.log(dataValues)
-    console.log(methods.parse({ ...dataValues, to: dataValues.to_address }))
+    console.log(dataValues)
+    const res = methods.parse({ ...dataValues, to: dataValues.to_address })
+    console.log(res)
+    console.log(res.params.cid)
+    console.log(methods.decode(['cbor', { signers: ['list', 'address'], threshold: 'int', unlockDuration: 'int' }], res.params.params))
   }
 
   sequelize.close()
