@@ -4,10 +4,9 @@ const { parseIssue } = require('./issue-parser')
 
 describe('parseIssue()', () => {
   it('we can parse an issue including the right data', () => {
-
     const issueContent = fs.readFileSync(
       path.resolve(__dirname, '../samples/utils/datacap_request.test.md'),
-      { encoding: 'utf8' }
+      { encoding: 'utf8' },
     )
     const parsedResult = parseIssue(issueContent)
 
