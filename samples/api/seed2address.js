@@ -1,7 +1,6 @@
 const MockWallet = require('../mockWallet')
+const constants = require('../constants')
 
-const mnemonic = 'sail surprise observe size vague cactus slice certain task target job bomb artefact jazz outside theme banner grow motor face mirror dry exact super'
-const path = "m/44'/1'/1/0/"
-const mockWallet = new MockWallet(mnemonic, path)
+const mockWallet = new MockWallet(constants.rootkey_mnemonic, constants.path)
 
 console.log(mockWallet.getAccounts())

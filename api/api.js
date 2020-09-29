@@ -4,6 +4,7 @@ const methods = require('../filecoin/methods')
 const { BrowserProvider } = require('@filecoin-shipyard/lotus-client-provider-browser')
 const { NodejsProvider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
+const cbor = require('cbor')
 
 class VerifyAPI {
   constructor(lotusClient, walletContext) {
@@ -131,6 +132,33 @@ class VerifyAPI {
     return res['/']
   }
 
+  async approvePending(msig, tx, from) {
+    const m1_actor = methods.actor(msig, methods.multisig)
+    await this.send(m1_actor.approve(parseInt(tx.id), tx.tx), from)
+  }
+
+  async multisigProposeClient(m0_addr, m1_addr, client, amount, from) {
+    const m0_actor = methods.actor(m0_addr, methods.multisig)
+    const m1_actor = methods.actor(m1_addr, methods.multisig)
+    const tx = methods.verifreg.addVerifiedClient(client, amount)
+    return await this.send(m1_actor.propose(m0_actor.propose(tx)), from)
+  }
+
+  async newMultisig(signers, threshold, from) {
+    const tx = methods.init.exec(methods.multisigCID, methods.encode(methods.msig_constructor, [signers, threshold, 0]))
+    const txid = await this.send(tx, from)
+    const receipt = await this.getReceipt(txid)
+    const [addr] = methods.decode(['list', 'address'], cbor.decode(Buffer.from(receipt.Return, 'base64')))
+    return addr
+  }
+
+  async multisigAdd(addr, signer, from) {
+    const actor = methods.actor(addr, methods.multisig)
+    const tx = actor.propose(actor.addSigner(signer, false))
+    const txid = await this.send(tx, from)
+    return this.getReceipt(txid)
+  }
+
   async pendingRootTransactions() {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
@@ -142,6 +170,25 @@ class VerifyAPI {
       const parsed = methods.parse(v)
       returnList.push({
         id: k,
+        tx: { ...v, from: v.signers[0] },
+        parsed,
+        signers: v.signers,
+      })
+    }
+    return returnList
+  }
+
+  async pendingTransactions(addr) {
+    const head = await this.client.chainHead()
+    const state = head.Blocks[0].ParentStateRoot['/']
+    const data = (await this.client.chainGetNode(`${state}/@Ha:${addr}/1/6`)).Obj
+    const info = methods.decode(methods.pending, data)
+    const obj = await info.asObject(this.load)
+    const returnList = []
+    for (const [k, v] of Object.entries(obj)) {
+      const parsed = methods.parse(v)
+      returnList.push({
+        id: parseInt(k) / 2,
         tx: { ...v, from: v.signers[0] },
         parsed,
         signers: v.signers,
