@@ -24,17 +24,15 @@ export VERIFIER=t1us742aljq3rregf6eldkdbi2ymsnfifhq7meyly
 export VERIFIER2=$(lotus wallet new)
 export CLIENT=$(lotus wallet new)
 
-export TEXTILE=t1h6tinlpvveqhpt6gdsjgndq4ocd2s7h4quediha
-export SLATE=t1we63b6yzqusmcfwgtvcqe2snwa7t252c5lg2aja
-
 # Send funds to verifier
 lotus send --from $MAIN $VERIFIER 5000000
 lotus send --from $MAIN $VERIFIER2 5000000
-lotus send --from $MAIN $TEXTILE 5000000
-lotus send --from $MAIN $SLATE 5000000
 
 # Send funds to client
 lotus send --from $MAIN $CLIENT 5000000
+
+lotus send --from $MAIN t1h6tinlpvveqhpt6gdsjgndq4ocd2s7h4quediha 5000000
+lotus send --from $MAIN t1we63b6yzqusmcfwgtvcqe2snwa7t252c5lg2aja 5000000
 
 while [ "5000000 FIL" != "$(lotus wallet balance $ROOT2)" ]
 do
@@ -61,13 +59,6 @@ node $JSDIR/samples/api/propose-verifier.js t01003
 sleep 15
 lotus msig inspect t080
 #lotus msig approve --from $ROOT1 t080 1 $ROOT2 t06 0 2 824300ec0753000125dfa371a19e6f7cb54395ca0000000000
-
-export M0=$(lotus msig create --from $TEXTILE --required 1 $TEXTILE | awk '{print $4}')
-node $JSDIR/samples/api/propose-verifier.js $M0
-sleep 15
-lotus msig inspect t080
-
-export M1=$(lotus msig create --from $TEXTILE --required 2 $TEXTILE $SLATE | awk '{print $4}')
 
 lotus-shed verifreg list-verifiers
 
