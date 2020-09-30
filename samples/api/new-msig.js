@@ -19,7 +19,7 @@ async function main() {
   console.log(accts)
   const textile = accts[3]
 
-  const m0_addr = await api.newMultisig([textile], 1, 3)
+  const m0_addr = await api.newMultisig([textile], 1, 0n, 3)
   console.log('M0', m0_addr)
 
   /*
