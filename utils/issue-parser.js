@@ -1,8 +1,8 @@
 
 function parseIssue(issueContent) {
-  const regexName = /###\s*Organization\sName\n\n^>\s*(.*)/m
-  const regexAddress = /###\s*Address\n\n^>\s*(.*)/m
-  const regexDatacap = /###\s*Datacap\sRequested\n\n^>\s*(.*)/m
+  const regexName = /\s*Organization\sName\W*^>\s*(.*)/m
+  const regexAddress = /###\s*Address\W*^>\s*(.*)/m
+  const regexDatacap = /###\s*Datacap\sRequested\W*^>\s*(.*)/m
   const regexInfo = /##\s*Additional\sInformation([\s\S]*)##\sDisclaimer/gm
 
   const name = matchGroup(regexName, issueContent)
