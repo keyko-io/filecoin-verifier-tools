@@ -108,6 +108,21 @@ class VerifyAPI {
     return info.signers
   }
 
+  async listSigners(addr) {
+    const head = await this.client.chainHead()
+    const state = head.Blocks[0].ParentStateRoot['/']
+    const data = (await this.client.chainGetNode(`${state}/@Ha:${addr}/1`)).Obj
+    const info = methods.decode(methods.msig_state, data)
+    return info.signers
+  }
+
+  async actorType(addr) {
+    const head = await this.client.chainHead()
+    const state = head.Blocks[0].ParentStateRoot['/']
+    const data = (await this.client.chainGetNode(`${state}/@Ha:${addr}/0`)).Obj
+    return data
+  }
+
   async actorAddress(str) {
     const head = await this.client.chainHead()
     return this.client.stateLookupID(str, head.Cids)

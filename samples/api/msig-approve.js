@@ -15,12 +15,13 @@ const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
 }), mockWallet)
 
 async function main() {
-  const msig = 't01018'
+  const msig = 't01014'
   const lst = await api.pendingTransactions(msig)
 
   for (const tx of lst) {
     console.log(tx)
-    await api.approvePending(msig, tx, 3)
+    console.log(tx.parsed.parsed)
+    // await api.approvePending(msig, tx, 3)
   }
 
   process.exit(0)
