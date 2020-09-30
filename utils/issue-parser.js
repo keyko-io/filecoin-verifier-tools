@@ -14,6 +14,7 @@ function parseIssue(issueContent) {
     return {
       correct: true,
       errorMessage: '',
+      errorDetails: '',
       name: name,
       address: address,
       datacap: datacap,
@@ -21,10 +22,17 @@ function parseIssue(issueContent) {
     }
   }
 
+  let errorMessage = ''
+  if (name == null) { errorMessage += 'We could not find your **Name** in the information provided\n' }
+  if (address == null) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
+  if (datacap == null) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
+  if (additionalInfo == null) { errorMessage += 'We could not find any **additionalInformation** in the information provided\n' }
+
   return {
     correct: false,
-    errorMessage: `Unable to find required attributes.
-      Found: name= ${name},
+    errorMessage: errorMessage,
+    errorDetails: `Unable to find required attributes.
+      The name= ${name},
       address= ${address},
       datacap= ${datacap},
       additionalInformation= ${additionalInfo}`,
