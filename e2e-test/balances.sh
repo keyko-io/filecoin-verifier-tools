@@ -31,8 +31,8 @@ lotus send --from $MAIN $VERIFIER2 5000000
 # Send funds to client
 lotus send --from $MAIN $CLIENT 5000000
 
-lotus send --from $MAIN t1h6tinlpvveqhpt6gdsjgndq4ocd2s7h4quediha 5000000
-lotus send --from $MAIN t1we63b6yzqusmcfwgtvcqe2snwa7t252c5lg2aja 5000000
+lotus send --from $MAIN t1o47ee4dqp6fn7hacdalcai5seoxtms2327bpccq 5000000
+lotus send --from $MAIN t1gechnbsldgbqan4q2dwjsicbh25n5xvvdzhqd3y 5000000
 
 while [ "5000000 FIL" != "$(lotus wallet balance $ROOT2)" ]
 do
@@ -40,6 +40,9 @@ do
  lotus wallet balance $ROOT2
 done
 
+node $JSDIR/samples/api/new-msig.js
+
+sleep 15
 
 # export PARAM=$(lotus-shed verifreg add-verifier --dry t01003 100000000000000000000000000000000000000000)
 # export PARAM2=$(lotus-shed verifreg add-verifier --dry t01004 100000000000000000000000000000000000000000)
@@ -52,6 +55,9 @@ done
 #sleep 5
 #lotus-shed verifreg list-verifiers
 
+node $JSDIR/samples/api/propose-verifier.js t01008
+lotus msig inspect t080
+sleep 15
 node $JSDIR/samples/api/propose-verifier.js t01004
 lotus msig inspect t080
 sleep 15
