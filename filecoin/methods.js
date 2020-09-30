@@ -155,6 +155,9 @@ function decode(schema, data) {
   if (schema === 'address') {
     return bytesToAddress(data, true)
   }
+  if (schema === 'bigint' && typeof data === 'string') {
+    return hamt.bytesToBig(Buffer.from(data, 'base64'))
+  }
   if (schema === 'bigint') {
     return hamt.bytesToBig(data)
   }

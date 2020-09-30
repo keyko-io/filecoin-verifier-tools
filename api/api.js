@@ -162,7 +162,7 @@ class VerifyAPI {
   }
 
   async newMultisig(signers, threshold, cap, from) {
-    const tx = methods.init.exec(methods.multisigCID, methods.encode(methods.msig_constructor, [signers, threshold, 0]))
+    const tx = methods.init.exec(methods.multisigCID, methods.encode(methods.msig_constructor, [signers, threshold, cap]))
     const txid = await this.send({...tx, value: cap}, from)
     const receipt = await this.getReceipt(txid)
     const [addr] = methods.decode(['list', 'address'], cbor.decode(Buffer.from(receipt.Return, 'base64')))
@@ -193,6 +193,13 @@ class VerifyAPI {
       })
     }
     return returnList
+  }
+
+  async multisigInfo(addr) {
+    const head = await this.client.chainHead()
+    const state = head.Blocks[0].ParentStateRoot['/']
+    const data = (await this.client.chainGetNode(`${state}/@Ha:${addr}/1`)).Obj
+    return methods.decode(methods.msig_state, data)
   }
 
   async pendingTransactions(addr) {
