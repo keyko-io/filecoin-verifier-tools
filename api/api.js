@@ -53,7 +53,7 @@ class VerifyAPI {
     if (typeof this.walletContext === 'undefined' || !this.walletContext) { throw new Error('No wallet context defined in API') }
 
     // Not address but account in the form "t01004", for instance
-    const tx = methods.rootkey.propose(this.methods.verifreg.addVerifier(verifierAccount, datacap))
+    const tx = this.methods.rootkey.propose(this.methods.verifreg.addVerifier(verifierAccount, datacap))
     const res = await this.methods.sendTx(this.client, indexAccount, this.walletContext, tx)
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
@@ -130,8 +130,15 @@ class VerifyAPI {
   }
 
   async actorKey(str) {
-    const head = await this.client.chainHead()
-    return this.client.stateAccountKey(str, head.Cids)
+    try {
+      const head = await this.client.chainHead()
+      const res = await this.client.stateAccountKey(str, head.Cids)
+      return res
+    }
+    catch (err) {
+      console.log('Cannot convert to key', err)
+      return str
+    }
   }
 
   async checkClient(clientAddress) {

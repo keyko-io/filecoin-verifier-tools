@@ -462,8 +462,8 @@ function make(testnet) {
 
   async function buildArrayData(data, load) {
     var dataArray = []
-    await forEach(data, load, function (k, v) {
-      dataArray.push([bytesToAddress(k), bytesToBig(v)])
+    await hamt.forEach(data, load, function (k, v) {
+      dataArray.push([bytesToAddress(k), hamt.bytesToBig(v)])
     })
     return dataArray
   }
