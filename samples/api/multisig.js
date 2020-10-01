@@ -19,6 +19,8 @@ async function run() {
 
     console.log(await api.listRootkeys())
 
+    console.log(await api.multisigInfo('t01018'))
+
     await new Promise(resolve => { setTimeout(resolve, 1000) })
   }
 }

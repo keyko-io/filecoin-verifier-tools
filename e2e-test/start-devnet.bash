@@ -47,6 +47,8 @@ configure_lotus() {
   echo -e "\nStarting up the miner:\n"
   tmux new-window -t lotus:2 -n miner -d $LOTUS_MINER run --nosync
 #  $LOTUS_MINER run --nosync
+
+  tmux new-window -t lotus:3 -n service -d bash run-service.sh
 }
 
 purge_local_dirs() {

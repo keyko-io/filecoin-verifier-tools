@@ -27,7 +27,7 @@ async function signTx(client, indexAccount, walletContext, { to, method, params,
     To: to,
     From: address,
     Nonce: state.Nonce,
-    Value: value || '0',
+    Value: value.toString() || '0',
     GasFeeCap: '0',
     GasPremium: '0',
     GasLimit: 0,
@@ -44,7 +44,7 @@ async function signTx(client, indexAccount, walletContext, { to, method, params,
     to: to,
     from: address,
     nonce: state.Nonce,
-    value: value || '0',
+    value: value.toString() || '0',
     gasfeecap: res.GasFeeCap,
     gaspremium: res.GasPremium,
     gaslimit: res.GasLimit,
@@ -154,6 +154,9 @@ function decode(schema, data) {
   }
   if (schema === 'address') {
     return bytesToAddress(data, true)
+  }
+  if (schema === 'bigint' && typeof data === 'string') {
+    return hamt.bytesToBig(Buffer.from(data, 'base64'))
   }
   if (schema === 'bigint') {
     return hamt.bytesToBig(data)
