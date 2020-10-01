@@ -1,5 +1,4 @@
 const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
-const hamt = require('../hamt/hamt')
 const methods = require('../filecoin/methods')
 const { BrowserProvider } = require('@filecoin-shipyard/lotus-client-provider-browser')
 const { NodejsProvider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
@@ -134,8 +133,7 @@ class VerifyAPI {
       const head = await this.client.chainHead()
       const res = await this.client.stateAccountKey(str, head.Cids)
       return res
-    }
-    catch (err) {
+    } catch (err) {
       console.log('Cannot convert to key', err)
       return str
     }
