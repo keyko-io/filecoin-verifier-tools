@@ -31,8 +31,8 @@ lotus send --from $MAIN $VERIFIER2 5000000
 # Send funds to client
 lotus send --from $MAIN $CLIENT 5000000
 
-lotus send --from $MAIN t1o47ee4dqp6fn7hacdalcai5seoxtms2327bpccq 5000000
-lotus send --from $MAIN t1gechnbsldgbqan4q2dwjsicbh25n5xvvdzhqd3y 5000000
+lotus send --from $MAIN t1o47ee4dqp6fn7hacdalcai5seoxtms2327bpccq 5000000 # slate
+lotus send --from $MAIN t1gechnbsldgbqan4q2dwjsicbh25n5xvvdzhqd3y 5000000 # textile
 
 while [ "5000000 FIL" != "$(lotus wallet balance $ROOT2)" ]
 do
@@ -41,21 +41,9 @@ do
 done
 
 node $JSDIR/samples/api/new-msig.js
-
 sleep 15
 
-# export PARAM=$(lotus-shed verifreg add-verifier --dry t01003 100000000000000000000000000000000000000000)
-# export PARAM2=$(lotus-shed verifreg add-verifier --dry t01004 100000000000000000000000000000000000000000)
-
-#lotus msig propose --from $ROOT1 t080 t06 0 2 824300eb0753000125dfa371a19e6f7cb54395ca0000000000
-#lotus msig inspect t080
-
-#node $JSDIR/samples/api/approve-pending.js
-
-#sleep 5
-#lotus-shed verifreg list-verifiers
-
-node $JSDIR/samples/api/propose-verifier.js t01008
+node $JSDIR/samples/api/propose-verifier.js t01009
 lotus msig inspect t080
 sleep 15
 node $JSDIR/samples/api/propose-verifier.js t01004
@@ -64,11 +52,15 @@ sleep 15
 node $JSDIR/samples/api/propose-verifier.js t01003
 sleep 15
 lotus msig inspect t080
-#lotus msig approve --from $ROOT1 t080 1 $ROOT2 t06 0 2 824300ec0753000125dfa371a19e6f7cb54395ca0000000000
+
+curl -H "Content-Type: application/json" -d '{"applicationAddress": "t01007", "applicationId": 1, "datetimeRequested": 1}' localhost:3001/verifier/app/register
+sleep 15
+lotus msig inspect t01009
+lotus msig inspect t01010
+
+curl -H "Content-Type: application/json" -d '{"clientAddress": "t01007", "datetimeRequested": 1}' localhost:3001/verifier/client/datacap
 
 lotus-shed verifreg list-verifiers
-
-# lotus-shed verifreg verify-client --from $VERIFIER $CLIENT 10000000000000000000000000000000000000000
 
 node $JSDIR/samples/api/add-client.js t01005
 sleep 15
@@ -76,9 +68,6 @@ lotus-shed verifreg list-clients
 node $JSDIR/samples/api/add-client.js t01006
 sleep 15
 lotus-shed verifreg list-clients
-#node $JSDIR/samples/api/add-client.js $CLIENT
-#sleep 15
-#lotus-shed verifreg list-clients
 
 export DATA=$(lotus client import dddd | awk '{print $NF}')
 
