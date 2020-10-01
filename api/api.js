@@ -7,7 +7,8 @@ const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const cbor = require('cbor')
 
 class VerifyAPI {
-  constructor(lotusClient, walletContext) {
+  constructor(lotusClient, walletContext, testnet = true) {
+    this.methods = testnet ? methods.testnet : methods.mainnet
     this.client = lotusClient
     this.walletContext = walletContext
   }
@@ -31,7 +32,7 @@ class VerifyAPI {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
     const verifiers = (await this.client.chainGetNode(`${state}/@Ha:t06/1/1`)).Obj
-    const listOfVerifiers = await hamt.buildArrayData(verifiers, this.load)
+    const listOfVerifiers = await this.methods.buildArrayData(verifiers, this.load)
     const returnList = []
     for (const [key, value] of listOfVerifiers) {
       returnList.push({
@@ -52,8 +53,8 @@ class VerifyAPI {
     if (typeof this.walletContext === 'undefined' || !this.walletContext) { throw new Error('No wallet context defined in API') }
 
     // Not address but account in the form "t01004", for instance
-    const tx = methods.rootkey.propose(methods.verifreg.addVerifier(verifierAccount, datacap))
-    const res = await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
+    const tx = methods.rootkey.propose(this.methods.verifreg.addVerifier(verifierAccount, datacap))
+    const res = await this.methods.sendTx(this.client, indexAccount, this.walletContext, tx)
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
     return res['/']
@@ -61,25 +62,25 @@ class VerifyAPI {
 
   async send(tx, indexAccount) {
     if (typeof this.walletContext === 'undefined' || !this.walletContext) { throw new Error('No wallet context defined in API') }
-    const res = await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
+    const res = await this.methods.sendTx(this.client, indexAccount, this.walletContext, tx)
     return res['/']
   }
 
   async getReceipt(id) {
-    return methods.getReceipt(this.client, id)
+    return this.methods.getReceipt(this.client, id)
   }
 
   async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, indexAccount) {
     if (typeof this.walletContext === 'undefined' || !this.walletContext) { throw new Error('No wallet context defined in API') }
 
     // Not address but account in the form "t01003", for instance
-    const add = methods.verifreg.addVerifier(verifierAccount, datacap)
+    const add = this.methods.verifreg.addVerifier(verifierAccount, datacap)
 
-    // let tx = methods.rootkey.approve(0, {...add, from: "t01001"})
-    const tx = methods.rootkey.approve(parseInt(transactionId, 10), { ...add, from: fromAccount })
+    // let tx = this.methods.rootkey.approve(0, {...add, from: "t01001"})
+    const tx = this.methods.rootkey.approve(parseInt(transactionId, 10), { ...add, from: fromAccount })
     console.log(tx)
 
-    const res = await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
+    const res = await this.methods.sendTx(this.client, indexAccount, this.walletContext, tx)
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
     return res['/']
@@ -89,7 +90,7 @@ class VerifyAPI {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
     const verified = (await this.client.chainGetNode(`${state}/@Ha:t06/1/2`)).Obj
-    const listOfVerified = await hamt.buildArrayData(verified, this.load)
+    const listOfVerified = await this.methods.buildArrayData(verified, this.load)
     const returnList = []
     for (const [key, value] of listOfVerified) {
       returnList.push({
@@ -104,7 +105,7 @@ class VerifyAPI {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
     const data = (await this.client.chainGetNode(`${state}/@Ha:t080/1`)).Obj
-    const info = methods.decode(methods.msig_state, data)
+    const info = this.methods.decode(this.methods.msig_state, data)
     return info.signers
   }
 
@@ -112,7 +113,7 @@ class VerifyAPI {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
     const data = (await this.client.chainGetNode(`${state}/@Ha:${addr}/1`)).Obj
-    const info = methods.decode(methods.msig_state, data)
+    const info = this.methods.decode(this.methods.msig_state, data)
     return info.signers
   }
 
@@ -140,37 +141,37 @@ class VerifyAPI {
 
   async verifyClient(clientAddress, datacap, indexAccount) {
     if (typeof this.walletContext === 'undefined' || !this.walletContext) { throw new Error('No wallet context defined in API') }
-    const arg = methods.verifreg.addVerifiedClient(clientAddress, datacap)
-    const res = await methods.sendTx(this.client, indexAccount, this.walletContext, arg)
+    const arg = this.methods.verifreg.addVerifiedClient(clientAddress, datacap)
+    const res = await this.methods.sendTx(this.client, indexAccount, this.walletContext, arg)
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
     return res['/']
   }
 
   async approvePending(msig, tx, from) {
-    const m1_actor = methods.actor(msig, methods.multisig)
+    const m1_actor = this.methods.actor(msig, this.methods.multisig)
     await this.send(m1_actor.approve(parseInt(tx.id), tx.tx), from)
   }
 
   async multisigProposeClient(m0_addr, m1_addr, client, cap, from) {
     const amount = cap * 1000000000n
-    const m0_actor = methods.actor(m0_addr, methods.multisig)
-    const m1_actor = methods.actor(m1_addr, methods.multisig)
-    const tx = methods.verifreg.addVerifiedClient(client, amount)
-    const tx2 = {...m0_actor.propose(tx), value: cap}
+    const m0_actor = this.methods.actor(m0_addr, this.methods.multisig)
+    const m1_actor = this.methods.actor(m1_addr, this.methods.multisig)
+    const tx = this.methods.verifreg.addVerifiedClient(client, amount)
+    const tx2 = { ...m0_actor.propose(tx), value: cap }
     return await this.send(m1_actor.propose(tx2), from)
   }
 
   async newMultisig(signers, threshold, cap, from) {
-    const tx = methods.init.exec(methods.multisigCID, methods.encode(methods.msig_constructor, [signers, threshold, cap]))
-    const txid = await this.send({...tx, value: cap}, from)
+    const tx = this.methods.init.exec(this.methods.multisigCID, this.methods.encode(this.methods.msig_constructor, [signers, threshold, cap]))
+    const txid = await this.send({ ...tx, value: cap }, from)
     const receipt = await this.getReceipt(txid)
-    const [addr] = methods.decode(['list', 'address'], cbor.decode(Buffer.from(receipt.Return, 'base64')))
+    const [addr] = this.methods.decode(['list', 'address'], cbor.decode(Buffer.from(receipt.Return, 'base64')))
     return addr
   }
 
   async multisigAdd(addr, signer, from) {
-    const actor = methods.actor(addr, methods.multisig)
+    const actor = this.methods.actor(addr, this.methods.multisig)
     const tx = actor.propose(actor.addSigner(signer, false))
     const txid = await this.send(tx, from)
     return this.getReceipt(txid)
@@ -180,11 +181,11 @@ class VerifyAPI {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
     const data = (await this.client.chainGetNode(`${state}/@Ha:t080/1/6`)).Obj
-    const info = methods.decode(methods.pending, data)
+    const info = this.methods.decode(this.methods.pending, data)
     const obj = await info.asObject(this.load)
     const returnList = []
     for (const [k, v] of Object.entries(obj)) {
-      const parsed = methods.parse(v)
+      const parsed = this.methods.parse(v)
       returnList.push({
         id: k,
         tx: { ...v, from: v.signers[0] },
@@ -199,18 +200,18 @@ class VerifyAPI {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
     const data = (await this.client.chainGetNode(`${state}/@Ha:${addr}/1`)).Obj
-    return methods.decode(methods.msig_state, data)
+    return this.methods.decode(this.methods.msig_state, data)
   }
 
   async pendingTransactions(addr) {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
     const data = (await this.client.chainGetNode(`${state}/@Ha:${addr}/1/6`)).Obj
-    const info = methods.decode(methods.pending, data)
+    const info = this.methods.decode(this.methods.pending, data)
     const obj = await info.asObject(this.load)
     const returnList = []
     for (const [k, v] of Object.entries(obj)) {
-      const parsed = methods.parse(v)
+      const parsed = this.methods.parse(v)
       returnList.push({
         id: parseInt(k) / 2,
         tx: { ...v, from: v.signers[0] },

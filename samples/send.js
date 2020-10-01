@@ -3,7 +3,7 @@ const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-pr
 const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
 const fs = require('fs')
 const signer = require('@zondax/filecoin-signing-tools/js')
-const methods = require('../filecoin/methods')
+const methods = require('../filecoin/methods').testnet
 const constants = require('./constants')
 
 const provider = new Provider(constants.lotus_endpoint, {

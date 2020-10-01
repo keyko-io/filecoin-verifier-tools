@@ -3,7 +3,7 @@ const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
 const fs = require('fs')
-const methods = require('../../filecoin/methods')
+const methods = require('../../filecoin/methods').testnet
 const constants = require('../constants')
 
 const endpointUrl = constants.lotus_endpoint

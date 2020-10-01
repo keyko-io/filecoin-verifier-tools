@@ -2,7 +2,7 @@
 const Sequelize = require('sequelize')
 const constants = require('../samples/constants')
 const schema = require('./schema')
-const methods = require('../filecoin/methods')
+const methods = require('../filecoin/methods').testnet
 
 const postgresConnUrl = constants.postgres_conn_url
 const sequelize = new Sequelize(postgresConnUrl)

@@ -1,5 +1,5 @@
 
-const { encodeAddVerifier, encodeAddVerifiedClient, verifreg, decode, encodePropose, rootkey, multisig, encodeApprove } = require('./methods')
+const { encodeAddVerifier, encodeAddVerifiedClient, verifreg, decode, encodePropose, rootkey, multisig, encodeApprove } = require('./methods').testnet
 
 describe('encoding and decoding', () => {
   it('add verifier', () => {
