@@ -157,13 +157,13 @@ class VerifyAPI {
     const m0_actor = methods.actor(m0_addr, methods.multisig)
     const m1_actor = methods.actor(m1_addr, methods.multisig)
     const tx = methods.verifreg.addVerifiedClient(client, amount)
-    const tx2 = {...m0_actor.propose(tx), value: cap}
+    const tx2 = { ...m0_actor.propose(tx), value: cap }
     return await this.send(m1_actor.propose(tx2), from)
   }
 
   async newMultisig(signers, threshold, cap, from) {
     const tx = methods.init.exec(methods.multisigCID, methods.encode(methods.msig_constructor, [signers, threshold, cap]))
-    const txid = await this.send({...tx, value: cap}, from)
+    const txid = await this.send({ ...tx, value: cap }, from)
     const receipt = await this.getReceipt(txid)
     const [addr] = methods.decode(['list', 'address'], cbor.decode(Buffer.from(receipt.Return, 'base64')))
     return addr
