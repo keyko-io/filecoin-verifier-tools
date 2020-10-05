@@ -48,20 +48,22 @@ class VerifyAPI {
     return lst.filter(({ verifier }) => verifier.toString() === verifierAddress)
   }
 
-  async proposeVerifier(verifierAccount, datacap, indexAccount) {
-    if (typeof this.walletContext === 'undefined' || !this.walletContext) { throw new Error('No wallet context defined in API') }
+  checkWallet(wallet) {
+    if (!wallet && !this.walletContext) { throw new Error('No wallet context defined in API') }
+    return wallet || this.walletContext
+  }
 
+  async proposeVerifier(verifierAccount, datacap, indexAccount, wallet) {
     // Not address but account in the form "t01004", for instance
     const tx = methods.rootkey.propose(methods.verifreg.addVerifier(verifierAccount, datacap))
-    const res = await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
+    const res = await methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), tx)
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
     return res['/']
   }
 
-  async send(tx, indexAccount) {
-    if (typeof this.walletContext === 'undefined' || !this.walletContext) { throw new Error('No wallet context defined in API') }
-    const res = await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
+  async send(tx, indexAccount, wallet) {
+    const res = await methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), tx)
     return res['/']
   }
 
@@ -69,9 +71,7 @@ class VerifyAPI {
     return methods.getReceipt(this.client, id)
   }
 
-  async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, indexAccount) {
-    if (typeof this.walletContext === 'undefined' || !this.walletContext) { throw new Error('No wallet context defined in API') }
-
+  async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, indexAccount, wallet) {
     // Not address but account in the form "t01003", for instance
     const add = methods.verifreg.addVerifier(verifierAccount, datacap)
 
@@ -79,7 +79,7 @@ class VerifyAPI {
     const tx = methods.rootkey.approve(parseInt(transactionId, 10), { ...add, from: fromAccount })
     console.log(tx)
 
-    const res = await methods.sendTx(this.client, indexAccount, this.walletContext, tx)
+    const res = await methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), tx)
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
     return res['/']
@@ -138,41 +138,40 @@ class VerifyAPI {
       .filter(client => client[0].toString() === clientAddress)
   }
 
-  async verifyClient(clientAddress, datacap, indexAccount) {
-    if (typeof this.walletContext === 'undefined' || !this.walletContext) { throw new Error('No wallet context defined in API') }
+  async verifyClient(clientAddress, datacap, indexAccount, wallet) {
     const arg = methods.verifreg.addVerifiedClient(clientAddress, datacap)
-    const res = await methods.sendTx(this.client, indexAccount, this.walletContext, arg)
+    const res = await methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), arg)
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
     return res['/']
   }
 
-  async approvePending(msig, tx, from) {
+  async approvePending(msig, tx, from, wallet) {
     const m1_actor = methods.actor(msig, methods.multisig)
-    await this.send(m1_actor.approve(parseInt(tx.id), tx.tx), from)
+    await this.send(m1_actor.approve(parseInt(tx.id), tx.tx), from, wallet)
   }
 
-  async multisigProposeClient(m0_addr, m1_addr, client, cap, from) {
+  async multisigProposeClient(m0_addr, m1_addr, client, cap, from, wallet) {
     const amount = cap * 1000000000n
     const m0_actor = methods.actor(m0_addr, methods.multisig)
     const m1_actor = methods.actor(m1_addr, methods.multisig)
     const tx = methods.verifreg.addVerifiedClient(client, amount)
     const tx2 = { ...m0_actor.propose(tx), value: cap }
-    return await this.send(m1_actor.propose(tx2), from)
+    return await this.send(m1_actor.propose(tx2), from, wallet)
   }
 
-  async newMultisig(signers, threshold, cap, from) {
+  async newMultisig(signers, threshold, cap, from, wallet) {
     const tx = methods.init.exec(methods.multisigCID, methods.encode(methods.msig_constructor, [signers, threshold, cap]))
-    const txid = await this.send({ ...tx, value: cap }, from)
+    const txid = await this.send({ ...tx, value: cap }, from, wallet)
     const receipt = await this.getReceipt(txid)
     const [addr] = methods.decode(['list', 'address'], cbor.decode(Buffer.from(receipt.Return, 'base64')))
     return addr
   }
 
-  async multisigAdd(addr, signer, from) {
+  async multisigAdd(addr, signer, from, wallet) {
     const actor = methods.actor(addr, methods.multisig)
     const tx = actor.propose(actor.addSigner(signer, false))
-    const txid = await this.send(tx, from)
+    const txid = await this.send(tx, from, wallet)
     return this.getReceipt(txid)
   }
 
