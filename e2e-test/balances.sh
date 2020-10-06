@@ -34,10 +34,10 @@ lotus send --from $MAIN $CLIENT 5000000
 lotus send --from $MAIN t1o47ee4dqp6fn7hacdalcai5seoxtms2327bpccq 5000000 # slate
 lotus send --from $MAIN t1gechnbsldgbqan4q2dwjsicbh25n5xvvdzhqd3y 5000000 # textile
 
-while [ "5000000 FIL" != "$(lotus wallet balance $ROOT2)" ]
+while [ "5000000 FIL" != "$(lotus wallet balance t1gechnbsldgbqan4q2dwjsicbh25n5xvvdzhqd3y)" ]
 do
  sleep 1
- lotus wallet balance $ROOT2
+ lotus wallet balance t1gechnbsldgbqan4q2dwjsicbh25n5xvvdzhqd3y
 done
 
 node $JSDIR/samples/api/new-msig.js
@@ -53,12 +53,12 @@ node $JSDIR/samples/api/propose-verifier.js t01003
 sleep 15
 lotus msig inspect t080
 
-curl -H "Content-Type: application/json" -d '{"applicationAddress": "t01007", "applicationId": 1, "datetimeRequested": 1}' localhost:3001/verifier/app/register
+curl -H "Content-Type: application/json" -H "Authorization: Bearer $(cat ~/filecoin-verifier-service/token)" -d '{"applicationAddress": "t01007", "applicationId": 1, "datetimeRequested": 1}' localhost:3001/verifier/app/register
 sleep 15
 lotus msig inspect t01009
 lotus msig inspect t01010
 
-curl -H "Content-Type: application/json" -d "{\"clientAddress\": \"$(lotus wallet new)\", \"datetimeRequested\": 1}" localhost:3001/verifier/client/datacap
+curl -H "Content-Type: application/json" -H "Authorization: Bearer $(cat ~/filecoin-verifier-service/token)" -d "{\"clientAddress\": \"$(lotus wallet new)\", \"datetimeRequested\": 1}" localhost:3001/verifier/client/datacap
 
 lotus-shed verifreg list-verifiers
 
@@ -81,7 +81,6 @@ do
  lotus-miner sectors list
 done
 
-# curl -H "Content-Type: application/json" -H "Authorization: Bearer $(cat ~/.lotusminer/token)" -d '{"id": 1, "method": "Filecoin.SectorStartSealing", "params": [2]}' localhost:2345/rpc/v0
 lotus-miner sectors seal 2
 
 lotus-miner info

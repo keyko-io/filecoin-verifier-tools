@@ -3,4 +3,4 @@ const constants = require('../constants')
 
 const mockWallet = new MockWallet(constants.verifier_mnemonic, constants.path)
 
-console.log(mockWallet.getAccounts())
+console.log(mockWallet.getAccountInfo())
