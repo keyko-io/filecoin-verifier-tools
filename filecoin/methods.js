@@ -23,7 +23,7 @@ async function signTx(client, indexAccount, walletContext, { to, method, params,
   const state = await client.stateGetActor(address, head.Cids)
   let nonce = state.Nonce
   const pending = await client.mpoolPending(head.Cids)
-  for (const {Message: tx} of pending) {
+  for (const { Message: tx } of pending) {
     if (tx.From === address && tx.Nonce + 1 > nonce) {
       nonce = tx.Nonce + 1
     }
