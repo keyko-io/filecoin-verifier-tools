@@ -43,6 +43,9 @@ done
 node $JSDIR/samples/api/new-msig.js
 sleep 15
 
+rm ~/filecoin-verifier-service/app_msig_address
+tmux new-window -t lotus:4 -n appservice -d bash run-app-service.sh
+
 node $JSDIR/samples/api/propose-verifier.js t01009
 lotus msig inspect t080
 sleep 15
@@ -53,12 +56,11 @@ node $JSDIR/samples/api/propose-verifier.js t01003
 sleep 15
 lotus msig inspect t080
 
-curl -H "Content-Type: application/json" -H "Authorization: Bearer $(cat ~/filecoin-verifier-service/token)" -d '{"applicationAddress": "t01007", "applicationId": 1, "datetimeRequested": 1}' localhost:3001/verifier/app/register
-sleep 15
+sleep 30
 lotus msig inspect t01009
 lotus msig inspect t01010
 
-curl -H "Content-Type: application/json" -H "Authorization: Bearer $(cat ~/filecoin-verifier-service/token)" -d "{\"clientAddress\": \"$(lotus wallet new)\", \"datetimeRequested\": 1}" localhost:3001/verifier/client/datacap
+curl -H "Content-Type: application/json" -H "Authorization: Bearer $(cat ~/filecoin-verifier-service/token)" -d "{\"clientAddress\": \"$(lotus wallet new)\", \"datetimeRequested\": 1}" localhost:4001/verifier/client/datacap
 
 lotus-shed verifreg list-verifiers
 
