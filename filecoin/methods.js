@@ -169,6 +169,9 @@ function decode(schema, data) {
   if (schema === 'bigint-signed') {
     return hamt.bytesToBig(data) / 2n
   }
+  if (schema === 'bigint-key') {
+    return hamt.bytesToBig(data) / 2n
+  }
   if (schema === 'int' || schema === 'buffer' || schema === 'bool') {
     return data
   }

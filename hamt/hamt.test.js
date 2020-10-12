@@ -1,5 +1,5 @@
 
-const { nextBits, indexForBitPos, readVarInt, find, bytesToBig, buildArrayData } = require('./hamt')
+const { nextBits, indexForBitPos, readVarInt, find, bytesToBig, buildArrayData, makeBuffers } = require('./hamt')
 
 describe('nextBits()', () => {
   it('should work', () => {
@@ -66,6 +66,13 @@ describe('find()', () => {
   it('should work', async () => {
     const res = await find(data, load, Buffer.from('AOwH', 'base64'))
     expect(bytesToBig(res)).toBe(100000000000000000000000000000000000000000n)
+  })
+  it('should work', async () => {
+    const res = await find(makeBuffers(data), load, Buffer.from('AOwH', 'base64'))
+    expect(bytesToBig(res)).toBe(100000000000000000000000000000000000000000n)
+  })
+  it('handle not found', async () => {
+    await expect(async () => await find(data, load, Buffer.from('123456', 'hex'))).rejects.toThrow('not found in bitfield')
   })
 })
 

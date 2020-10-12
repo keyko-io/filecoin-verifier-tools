@@ -45,7 +45,7 @@ async function getValue(n, load, hv, key) {
   }
   if (c[1]) {
     for (const [k, v] of c[1]) {
-      if (k === key.toString('base64')) return Buffer.from(v, 'base64')
+      if (k === key.toString('base64')) return makeBuffers(v)
     }
   }
   throw new Error('key not found')
@@ -97,51 +97,23 @@ function parseNode(data) {
 
 exports.parseNode = parseNode
 
-function print(k, v) {
-  console.log(address.encode('t', new address.Address(k)), bytesToBig(v))
-}
-
 exports.find = async function (data, load, key) {
   const hash = bytesToBig(Buffer.from(sha256(key), 'hex'))
   return getValue({ bitWidth: 5, data: parseNode(data) }, load, { num: hash, left: 256 }, key)
 }
 
 exports.forEach = async function (data, load, cb) {
-  await forEach({ bitWidth: 5, data: parseNode(data) }, async a => {
-    return load(a)
-  },
-  cb)
-}
-
-exports.printData = async function (data, load) {
-  await forEach({ bitWidth: 5, data: parseNode(data) }, async a => {
-    return load(a)
-  },
-  print)
+  await forEach({ bitWidth: 5, data: parseNode(data) }, load, cb)
 }
 
 exports.buildArrayData = async function (data, load) {
   var dataArray = []
-  await addToArray({ bitWidth: 5, data: parseNode(data) }, async a => {
-    return load(a)
-  },
-  dataArray)
+  await forEach({ bitWidth: 5, data: parseNode(data) }, load,
+    (k, v) => {
+      dataArray.push([address.encode('t', new address.Address(k)), bytesToBig(makeBuffers(v))])
+    })
 
   return dataArray
-}
-
-async function addToArray(n, load, dataArray) {
-  for (const c of n.data.pointers) {
-    if (c[0]) {
-      const child = await load(c[0]['/'])
-      await addToArray({ bitWidth: n.bitWidth, data: parseNode(child) }, load, dataArray)
-    }
-    if (c[1]) {
-      for (const [k, v] of c[1]) {
-        await dataArray.push([address.encode('t', new address.Address(Buffer.from(k, 'base64'))), bytesToBig(makeBuffers(v))])
-      }
-    }
-  }
 }
 
 function readVarInt(bytes, offset) {
