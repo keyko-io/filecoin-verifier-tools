@@ -21,12 +21,17 @@ async function signTx(client, indexAccount, walletContext, { to, method, params,
   const address = (await walletContext.getAccounts())[indexAccount]
 
   const state = await client.stateGetActor(address, head.Cids)
-  // console.log("params", params)
-  // console.log("state", state)
+  let nonce = state.Nonce
+  const pending = await client.mpoolPending(head.Cids)
+  for (const { Message: tx } of pending) {
+    if (tx.From === address && tx.Nonce + 1 > nonce) {
+      nonce = tx.Nonce + 1
+    }
+  }
   const estimation_msg = {
     To: to,
     From: address,
-    Nonce: state.Nonce,
+    Nonce: nonce,
     Value: value.toString() || '0',
     GasFeeCap: '0',
     GasPremium: '0',
@@ -43,7 +48,7 @@ async function signTx(client, indexAccount, walletContext, { to, method, params,
   const msg = {
     to: to,
     from: address,
-    nonce: state.Nonce,
+    nonce: nonce,
     value: value.toString() || '0',
     gasfeecap: res.GasFeeCap,
     gaspremium: res.GasPremium,
@@ -162,6 +167,9 @@ function decode(schema, data) {
     return hamt.bytesToBig(data)
   }
   if (schema === 'bigint-signed') {
+    return hamt.bytesToBig(data) / 2n
+  }
+  if (schema === 'bigint-key') {
     return hamt.bytesToBig(data) / 2n
   }
   if (schema === 'int' || schema === 'buffer' || schema === 'bool') {
