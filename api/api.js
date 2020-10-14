@@ -30,7 +30,7 @@ class VerifyAPI {
   async listVerifiers() {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
-    const verifiers = (await this.client.chainGetNode(`${state}/@Ha:t06/1/1`)).Obj
+    const verifiers = (await this.client.chainGetNode(`${state}/1/@Ha:t06/1/1`)).Obj
     const listOfVerifiers = await hamt.buildArrayData(verifiers, this.load)
     const returnList = []
     for (const [key, value] of listOfVerifiers) {
@@ -88,7 +88,7 @@ class VerifyAPI {
   async listVerifiedClients() {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
-    const verified = (await this.client.chainGetNode(`${state}/@Ha:t06/1/2`)).Obj
+    const verified = (await this.client.chainGetNode(`${state}/1/@Ha:t06/1/2`)).Obj
     const listOfVerified = await hamt.buildArrayData(verified, this.load)
     const returnList = []
     for (const [key, value] of listOfVerified) {
@@ -103,7 +103,7 @@ class VerifyAPI {
   async listRootkeys() {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
-    const data = (await this.client.chainGetNode(`${state}/@Ha:t080/1`)).Obj
+    const data = (await this.client.chainGetNode(`${state}/1/@Ha:t080/1`)).Obj
     const info = methods.decode(methods.msig_state, data)
     return info.signers
   }
@@ -111,7 +111,7 @@ class VerifyAPI {
   async listSigners(addr) {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
-    const data = (await this.client.chainGetNode(`${state}/@Ha:${addr}/1`)).Obj
+    const data = (await this.client.chainGetNode(`${state}/1/@Ha:${addr}/1`)).Obj
     const info = methods.decode(methods.msig_state, data)
     return info.signers
   }
@@ -119,7 +119,7 @@ class VerifyAPI {
   async actorType(addr) {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
-    const data = (await this.client.chainGetNode(`${state}/@Ha:${addr}/0`)).Obj
+    const data = (await this.client.chainGetNode(`${state}/1/@Ha:${addr}/0`)).Obj
     return data
   }
 
@@ -156,12 +156,12 @@ class VerifyAPI {
     const m0_actor = methods.actor(m0_addr, methods.multisig)
     const m1_actor = methods.actor(m1_addr, methods.multisig)
     const tx = methods.verifreg.addVerifiedClient(client, amount)
-    const tx2 = { ...m0_actor.propose(tx), value: cap }
+    const tx2 = m0_actor.propose(tx)
     return await this.send(m1_actor.propose(tx2), from, wallet)
   }
 
   async newMultisig(signers, threshold, cap, from, wallet) {
-    const tx = methods.init.exec(methods.multisigCID, methods.encode(methods.msig_constructor, [signers, threshold, cap]))
+    const tx = methods.init.exec(methods.multisigCID, methods.encode(methods.msig_constructor, [signers, threshold, cap, 1000]))
     const txid = await this.send({ ...tx, value: cap }, from, wallet)
     const receipt = await this.getReceipt(txid)
     const [addr] = methods.decode(['list', 'address'], cbor.decode(Buffer.from(receipt.Return, 'base64')))
@@ -178,7 +178,7 @@ class VerifyAPI {
   async pendingRootTransactions() {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
-    const data = (await this.client.chainGetNode(`${state}/@Ha:t080/1/6`)).Obj
+    const data = (await this.client.chainGetNode(`${state}/1/@Ha:t080/1/6`)).Obj
     const info = methods.decode(methods.pending, data)
     const obj = await info.asObject(this.load)
     const returnList = []
@@ -197,21 +197,21 @@ class VerifyAPI {
   async multisigInfo(addr) {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
-    const data = (await this.client.chainGetNode(`${state}/@Ha:${addr}/1`)).Obj
+    const data = (await this.client.chainGetNode(`${state}/1/@Ha:${addr}/1`)).Obj
     return methods.decode(methods.msig_state, data)
   }
 
   async pendingTransactions(addr) {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
-    const data = (await this.client.chainGetNode(`${state}/@Ha:${addr}/1/6`)).Obj
+    const data = (await this.client.chainGetNode(`${state}/1/@Ha:${addr}/1/6`)).Obj
     const info = methods.decode(methods.pending, data)
     const obj = await info.asObject(this.load)
     const returnList = []
     for (const [k, v] of Object.entries(obj)) {
       const parsed = methods.parse(v)
       returnList.push({
-        id: parseInt(k) / 2,
+        id: parseInt(k),
         tx: { ...v, from: v.signers[0] },
         parsed,
         signers: v.signers,

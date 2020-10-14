@@ -409,6 +409,7 @@ const msig_constructor = ['cbor', {
   signers: ['list', 'address'],
   threshold: 'int',
   unlockDuration: 'int',
+  startEpoch: 'int',
 }]
 
 const pending = {
@@ -467,7 +468,7 @@ function parse(tx) {
   }
 }
 
-const multisigCID = new CID(1, 'raw', multihashes.encode(Buffer.from('fil/1/multisig'), 'identity'))
+const multisigCID = new CID(1, 'raw', multihashes.encode(Buffer.from('fil/2/multisig'), 'identity'))
 
 module.exports = {
   encodeSend,

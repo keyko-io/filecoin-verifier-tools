@@ -19,7 +19,8 @@ async function run() {
 
     console.log(await api.listRootkeys())
 
-    console.log(await api.multisigInfo('t01018'))
+    console.log(await api.multisigInfo('t01010'))
+    console.log(await api.pendingTransactions('t01010'))
 
     await new Promise(resolve => { setTimeout(resolve, 1000) })
   }
