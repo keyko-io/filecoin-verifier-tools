@@ -248,6 +248,9 @@ function encode(schema, data) {
   if (schema === 'bigint') {
     return encodeBig(data)
   }
+  if (schema === 'bigint-signed') {
+    return encodeBigKey(data)
+  }
   if (schema === 'bigint-key') {
     return encodeBigKey(data)
   }
@@ -410,7 +413,7 @@ const msig_constructor = ['cbor', {
 
 const pending = {
   type: 'hamt',
-  key: 'bigint',
+  key: 'bigint-signed',
   value: {
     to: 'address',
     value: 'bigint',
