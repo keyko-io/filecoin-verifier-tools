@@ -44,7 +44,7 @@ RUN npm i -g yarn
 
 RUN apt-get -y install git
 
-RUN git clone https://github.com/keyko-io/filecoin-verifier-tools/ --depth 1 --branch master
+RUN git clone https://github.com/keyko-io/filecoin-verifier-tools/ --depth 1 --branch mrsmkl/latest-lotus
 
 RUN cd filecoin-verifier-tools/ && \
     yarn
