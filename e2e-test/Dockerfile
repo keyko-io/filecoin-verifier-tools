@@ -10,7 +10,7 @@ RUN echo "Building lotus from branch $BRANCH"
 RUN apt-get update -y && \
     apt-get install sudo cron curl git mesa-opencl-icd ocl-icd-opencl-dev gcc git bzr jq pkg-config -y
 
-RUN git clone https://github.com/keyko-io/lotus.git --depth 1 --branch $BRANCH && \
+RUN git clone https://github.com/keyko-io/lotus.git  --depth 1 --branch $BRANCH && \
     cd lotus && \
     make clean && \
     make 2k lotus-shed && \
@@ -44,7 +44,7 @@ RUN npm i -g yarn
 
 RUN apt-get -y install git
 
-RUN git clone https://github.com/keyko-io/filecoin-verifier-tools/ --depth 1 --branch master
+RUN git clone https://github.com/keyko-io/filecoin-verifier-tools/ --depth 1 --branch mrsmkl/latest-lotus
 
 RUN cd filecoin-verifier-tools/ && \
     yarn

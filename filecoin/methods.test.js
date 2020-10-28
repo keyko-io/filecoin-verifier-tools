@@ -175,7 +175,7 @@ describe('encoding and decoding', () => {
   })
 
   it('msig constructor', () => {
-    expect(methods.encode(methods.msig_constructor, [['t080'], 1, 0n]).toString('hex')).toEqual('83814200500100')
+    expect(methods.encode(methods.msig_constructor, [['t080'], 1, 0n, 0n]).toString('hex')).toEqual('8481420050010000')
   })
 
   it('precommit info', async () => {
