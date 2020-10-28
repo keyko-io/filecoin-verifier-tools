@@ -1,6 +1,6 @@
 var fs = require('fs')
 var path = require('path')
-const { parseIssue } = require('./notary-issue-parser')
+const { parseIssue, parseApproveComment } = require('./notary-issue-parser')
 
 describe('parseIssue()', () => {
   it('we can parse an issue including the right data', () => {
@@ -9,8 +9,6 @@ describe('parseIssue()', () => {
       { encoding: 'utf8' },
     )
     const parsedResult = parseIssue(issueContent)
-
-    console.log(parsedResult)
 
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.name).toBe('Notary A')
@@ -27,4 +25,24 @@ describe('parseIssue()', () => {
     expect(parsedResult.correct).toBe(false)
     expect(parsedResult.errorMessage).not.toBe('')
   })
+})
+
+describe('parseApproved()', () => {
+
+    it('we can parse an approve comment including the right data', () => {
+        const commentContent = fs.readFileSync(
+          path.resolve(__dirname, '../samples/utils/notary_approved_comment.test.md'),
+          { encoding: 'utf8' },
+        )
+        const parsedResult = parseApproveComment(commentContent)
+    
+        console.log(parsedResult)
+    
+        expect(parsedResult.correct).toBe(true)
+        expect(parsedResult.approvedMessage).toBe(true)
+        expect(parsedResult.address).toBe('f1111222333')
+        expect(parsedResult.datacap).toBe('5TB')
+    
+      })
+
 })
