@@ -7,8 +7,7 @@
     "url": "git+https://github.com/keyko-io/filecoin-verifier-tools.git"
   },
   "scripts": {
-    "test": "npx jest",
-    "lint": "eslint ."
+    "test": "npx jest"
   },
   "keywords": [],
   "author": "Keyko <root@keyko.io>",
