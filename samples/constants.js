@@ -6,12 +6,14 @@ const rootkey_mnemonic = 'robot matrix ribbon husband feature attitude noise imi
 const nerpa_mnemonic = 'insane again foster foster garlic address stick caught style disorder fuel distance turtle actual clutch tilt spice lobster security rubber fog thank together bubble'
 
 const path = "m/44'/1'/0/0"
+const nerpa_path = "m/44'/1'/1/0"
 
 module.exports = {
   lotus_endpoint: lotus_endpoint,
   token_path: token_path,
   postgres_conn_url: postgres_conn_url,
   path,
+  nerpa_path,
   rootkey_mnemonic,
   verifier_mnemonic,
   nerpa_mnemonic,

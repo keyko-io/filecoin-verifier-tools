@@ -40,6 +40,19 @@ do
  lotus wallet balance t1gechnbsldgbqan4q2dwjsicbh25n5xvvdzhqd3y
 done
 
+sleep 10
+echo 1
+sleep 10
+echo 2
+sleep 10
+echo 3
+sleep 10
+echo 4
+sleep 10
+echo 5
+sleep 10
+echo 6
+
 node $JSDIR/samples/api/new-msig.js
 sleep 15
 
