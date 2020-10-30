@@ -1,4 +1,4 @@
-const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
+const { mainnet } = require('@filecoin-shipyard/lotus-client-schema')
 const hamt = require('../hamt/hamt')
 const methods = require('../filecoin/methods')
 const { BrowserProvider } = require('@filecoin-shipyard/lotus-client-provider-browser')
@@ -14,12 +14,12 @@ class VerifyAPI {
 
   static standAloneProvider(lotusEndpoint, token) {
     var provider = new NodejsProvider(lotusEndpoint, token)
-    return new LotusRPC(provider, { schema: testnet.fullNode })
+    return new LotusRPC(provider, { schema: mainnet.fullNode })
   }
 
   static browserProvider(lotusEndpoint, token) {
     var provider = new BrowserProvider(lotusEndpoint, token)
-    return new LotusRPC(provider, { schema: testnet.fullNode })
+    return new LotusRPC(provider, { schema: mainnet.fullNode })
   }
 
   async load(a) {

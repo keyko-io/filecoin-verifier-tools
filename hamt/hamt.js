@@ -1,4 +1,4 @@
-const address = require('@openworklabs/filecoin-address')
+const address = require('@glif/filecoin-address')
 const sha256 = require('js-sha256')
 
 // Get n next bits
