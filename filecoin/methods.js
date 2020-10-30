@@ -7,9 +7,9 @@ const address = require('@glif/filecoin-address')
 const CID = require('cids')
 const multihashes = require('multihashes')
 
-function bytesToAddress(payload, testnet) {
+function bytesToAddress(payload, test) {
   const addr = new address.Address(payload)
-  return address.encode(testnet ? 't' : 'f', addr)
+  return address.encode(test ? 't' : 'f', addr)
 }
 
 function addressAsBytes(str) {

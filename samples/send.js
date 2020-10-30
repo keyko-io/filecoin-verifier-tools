@@ -1,6 +1,6 @@
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
-const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
+const { mainnet } = require('@filecoin-shipyard/lotus-client-schema')
 const fs = require('fs')
 const signer = require('@zondax/filecoin-signing-tools/js')
 const methods = require('../filecoin/methods')
@@ -13,7 +13,7 @@ const provider = new Provider(constants.lotus_endpoint, {
   },
 })
 
-const client = new LotusRPC(provider, { schema: testnet.fullNode })
+const client = new LotusRPC(provider, { schema: mainnet.fullNode })
 
 const mockWallet = new MockWallet(constants.verifier_mnemonic, constants.path)
 
