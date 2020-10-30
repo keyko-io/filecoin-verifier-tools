@@ -32,7 +32,7 @@ async function run() {
   const head = await client.chainHead()
   const state = head.Blocks[0].ParentStateRoot['/']
   console.log('height', head.Height, state)
-  const clients = (await client.chainGetNode(`${state}/@Ha:t06/1/2`)).Obj
+  const clients = (await client.chainGetNode(`${state}/1/@Ha:t06/1/2`)).Obj
   // console.log(JSON.stringify(clients, null, 2))
   const dta = methods.decode(schema, clients)
   // console.log(await dta.asObject(load))

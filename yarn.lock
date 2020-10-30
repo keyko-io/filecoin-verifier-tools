@@ -295,6 +295,15 @@
   resolved "https://registry.yarnpkg.com/@filecoin-shipyard/lotus-client-schema/-/lotus-client-schema-0.0.14.tgz#c8f62fd87ca095be667102b52ffcad1c5f8d21fb"
   integrity sha512-qBWjM58nvnIh9YpiY1XZbmDH1J3h8lrVUCA9co4tr2LCRypGOZe7n+1GKMJAN0CnTQSnQRT6RW8uJdqBymY5qg==
 
+"@glif/filecoin-address@1.0.0-beta.5":
+  version "1.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@glif/filecoin-address/-/filecoin-address-1.0.0-beta.5.tgz#4cb72eadaf2fcac661c8db97a7bdddbd345aed84"
+  integrity sha512-30hUG9isF4XO3DjT47nWbTSY+7M30N/5+Q9nCTL8TjNwHlXzsStsHetPQJxn4sq7bzV2L8S+AbeeM3cFqbFrmA==
+  dependencies:
+    blakejs "1.1.0"
+    borc "2.1.1"
+    leb128 "0.0.5"
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
@@ -486,15 +495,6 @@
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@multiformats/base-x/-/base-x-4.0.1.tgz#95ff0fa58711789d53aefb2590a8b7a4e715d121"
   integrity sha512-eMk0b9ReBbV23xXU693TAIrLyeO5iTgBZGSJfpqriG8UkYvr/hC9u9pyMlAakDNHWmbhMZCDs6KQO0jzKD8OTw==
-
-"@openworklabs/filecoin-address@0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@openworklabs/filecoin-address/-/filecoin-address-0.0.10.tgz#2e3211a00800746ebb8753831eb788769f45bc79"
-  integrity sha512-zHzjW6G+/n46XcqqdfcAPumP5oS5V6ozFVKvFW5GXKJ0oLXwnEqoc0zWoodJXXA/7nDqbWxvH8/CSJysig8WTA==
-  dependencies:
-    blakejs "1.1.0"
-    borc "2.1.1"
-    leb128 "0.0.5"
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.1"

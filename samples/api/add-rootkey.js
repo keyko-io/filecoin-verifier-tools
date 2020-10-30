@@ -7,7 +7,7 @@ const constants = require('../constants')
 const endpointUrl = constants.lotus_endpoint
 const tokenPath = constants.token_path
 
-const mockWallet = new MockWallet(constants.nerpa_mnemonic, constants.nerpa_path)
+const mockWallet = new MockWallet(constants.rootkey_mnemonic, constants.rootkey_path)
 
 const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
   token: async () => {

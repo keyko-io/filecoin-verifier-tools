@@ -34,7 +34,7 @@ async function run() {
     console.log('height', head.Height)
     const state = head.Blocks[0].ParentStateRoot['/']
     console.log('height', head.Height, state)
-    const verifiers = (await client.chainGetNode(`${state}/@Ha:t06/1/1`)).Obj
+    const verifiers = (await client.chainGetNode(`${state}/1/@Ha:t06/1/1`)).Obj
     console.log(JSON.stringify(verifiers, null, 2))
     await hamt.forEach(verifiers, load, print)
 

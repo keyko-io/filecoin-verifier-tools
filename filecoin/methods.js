@@ -3,7 +3,7 @@ const signer = require('@zondax/filecoin-signing-tools/js')
 const cbor = require('cbor')
 const hamt = require('../hamt/hamt')
 const blake = require('blakejs')
-const address = require('@openworklabs/filecoin-address')
+const address = require('@glif/filecoin-address')
 const CID = require('cids')
 const multihashes = require('multihashes')
 
