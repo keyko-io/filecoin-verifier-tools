@@ -17,7 +17,6 @@ describe('parseIssue()', () => {
     expect(parsedResult.website).toBe('info.org')
     expect(parsedResult.region).toBe('[North America]')
     expect(parsedResult.useCases).toBe('[Developer Tools, Web 3.0]')
-
   })
 
   it('we can not parse an invalid issue', () => {
@@ -28,21 +27,18 @@ describe('parseIssue()', () => {
 })
 
 describe('parseApproved()', () => {
+  it('we can parse an approve comment including the right data', () => {
+    const commentContent = fs.readFileSync(
+      path.resolve(__dirname, '../samples/utils/notary_approved_comment.test.md'),
+      { encoding: 'utf8' },
+    )
+    const parsedResult = parseApproveComment(commentContent)
 
-    it('we can parse an approve comment including the right data', () => {
-        const commentContent = fs.readFileSync(
-          path.resolve(__dirname, '../samples/utils/notary_approved_comment.test.md'),
-          { encoding: 'utf8' },
-        )
-        const parsedResult = parseApproveComment(commentContent)
-    
-        console.log(parsedResult)
-    
-        expect(parsedResult.correct).toBe(true)
-        expect(parsedResult.approvedMessage).toBe(true)
-        expect(parsedResult.address).toBe('f1111222333')
-        expect(parsedResult.datacap).toBe('5TB')
-    
-      })
+    console.log(parsedResult)
 
+    expect(parsedResult.correct).toBe(true)
+    expect(parsedResult.approvedMessage).toBe(true)
+    expect(parsedResult.address).toBe('f1111222333')
+    expect(parsedResult.datacap).toBe('5TB')
+  })
 })
