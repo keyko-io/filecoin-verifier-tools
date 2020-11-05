@@ -5,7 +5,7 @@ const { parseIssue } = require('./issue-parser')
 describe('parseIssue()', () => {
   it('we can parse an issue including the right data', () => {
     const issueContent = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/datacap_request.test.md'),
+      path.resolve(__dirname, '../samples/utils/client_allocation_request.test.md'),
       { encoding: 'utf8' },
     )
     const parsedResult = parseIssue(issueContent)
@@ -14,7 +14,7 @@ describe('parseIssue()', () => {
     expect(parsedResult.name).toBe('Protocol Labs')
     expect(parsedResult.address).toBe('t0231874218')
     expect(parsedResult.datacap).toBe('10TB')
-    expect(parsedResult.additionalInformation).toContain('Is there any other information you can provide')
+    expect(parsedResult.website).toContain('https://protocol.ai/')
   })
 
   it('we can not parse an invalid issue', () => {
