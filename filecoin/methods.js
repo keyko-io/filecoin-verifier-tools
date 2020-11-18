@@ -8,7 +8,6 @@ const CID = require('cids')
 const multihashes = require('multihashes')
 
 function make(testnet) {
-
   function bytesToAddress(payload) {
     const addr = new address.Address(payload)
     return address.encode(testnet ? 't' : 'f', addr)
@@ -513,10 +512,9 @@ function make(testnet) {
     VERIFREG,
     INIT_ACTOR,
   }
-
 }
 
 module.exports = {
   mainnet: make(false),
-  testnet: make(true)
+  testnet: make(true),
 }
