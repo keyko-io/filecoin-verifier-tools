@@ -30,6 +30,12 @@ lotus send --from $MAIN $VERIFIER2 5000000
 
 # Send funds to client
 lotus send --from $MAIN $CLIENT 5000000
+lotus send --from $MAIN t1y4ih2ihcjc2kx25wudxke7upphnqaxcepd4idua 5000000
+
+lotus send --from $MAIN $(lotus wallet new) 12
+lotus send --from $MAIN $(lotus wallet new) 12
+lotus send --from $MAIN $(lotus wallet new) 12
+lotus send --from $MAIN $(lotus wallet new) 12
 
 while [ "5000000 FIL" != "$(lotus wallet balance $ROOT2)" ]
 do

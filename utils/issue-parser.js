@@ -1,33 +1,41 @@
 
 function parseIssue(issueContent) {
-  const regexName = /###\s*Organization\sName\n\n^>\s*(.*)/m
-  const regexAddress = /###\s*Address\n\n^>\s*(.*)/m
-  const regexDatacap = /###\s*Datacap\sRequested\n\n^>\s*(.*)/m
-  const regexInfo = /##\s*Additional\sInformation([\s\S]*)##\sDisclaimer/gm
+  const regexName = /-\s*Name:\s*(.*)/m
+  const regexAddress = /-\s*Addresses\s*to\s*be\s*Notarized:\s*(.*)/m
+  const regexDatacap = /-\s*DataCap\s*Requested:\s*(.*)/m
+  const regexWebsite = /-\s*Website\s*\/\s*Social\s*Media:\s*(.*)/m
 
   const name = matchGroup(regexName, issueContent)
   const address = matchGroup(regexAddress, issueContent)
   const datacap = matchGroup(regexDatacap, issueContent)
-  const additionalInfo = matchGroup(regexInfo, issueContent)
+  const website = matchGroup(regexWebsite, issueContent)
 
-  if (name != null && address != null && datacap != null && additionalInfo != null) {
+  if (name != null && address != null && datacap != null && website != null) {
     return {
       correct: true,
       errorMessage: '',
+      errorDetails: '',
       name: name,
       address: address,
       datacap: datacap,
-      additionalInformation: additionalInfo,
+      website: website,
     }
   }
 
+  let errorMessage = ''
+  if (name == null) { errorMessage += 'We could not find your **Name** in the information provided\n' }
+  if (address == null) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
+  if (datacap == null) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
+  if (website == null) { errorMessage += 'We could not find any **website /social media** in the information provided\n' }
+
   return {
     correct: false,
-    errorMessage: `Unable to find required attributes.
-      Found: name= ${name},
+    errorMessage: errorMessage,
+    errorDetails: `Unable to find required attributes.
+      The name= ${name},
       address= ${address},
       datacap= ${datacap},
-      additionalInformation= ${additionalInfo}`,
+      website= ${website}`,
   }
 }
 

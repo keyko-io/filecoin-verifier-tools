@@ -1,6 +1,6 @@
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
-const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
+const { mainnet } = require('@filecoin-shipyard/lotus-client-schema')
 const hamt = require('../hamt/hamt')
 const methods = require('../filecoin/methods').testnet
 const fs = require('fs')
@@ -21,7 +21,7 @@ const provider = new Provider(endpointUrl, {
   },
 })
 
-const client = new LotusRPC(provider, { schema: testnet.fullNode })
+const client = new LotusRPC(provider, { schema: mainnet.fullNode })
 
 const Transaction = sequelize.define('transaction', schema.db)
 const Block = sequelize.define('block', schema.block)

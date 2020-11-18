@@ -2,7 +2,7 @@
 
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
-const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
+const { mainnet } = require('@filecoin-shipyard/lotus-client-schema')
 const Sequelize = require('sequelize')
 const constants = require('../samples/constants')
 const fs = require('fs')
@@ -18,7 +18,7 @@ const provider = new Provider(endpointUrl, {
   },
 })
 
-const client = new LotusRPC(provider, { schema: testnet.fullNode })
+const client = new LotusRPC(provider, { schema: mainnet.fullNode })
 
 async function load(a) {
   const res = await client.chainGetNode(a)

@@ -3,11 +3,12 @@ const signer = require('@zondax/filecoin-signing-tools/js')
 const cbor = require('cbor')
 const hamt = require('../hamt/hamt')
 const blake = require('blakejs')
-const address = require('@openworklabs/filecoin-address')
+const address = require('@glif/filecoin-address')
 const CID = require('cids')
 const multihashes = require('multihashes')
 
 function make(testnet) {
+
   function bytesToAddress(payload) {
     const addr = new address.Address(payload)
     return address.encode(testnet ? 't' : 'f', addr)
@@ -22,12 +23,17 @@ function make(testnet) {
     const address = (await walletContext.getAccounts())[indexAccount]
 
     const state = await client.stateGetActor(address, head.Cids)
-    // console.log("params", params)
-    // console.log("state", state)
+    let nonce = state.Nonce
+    const pending = await client.mpoolPending(head.Cids)
+    for (const { Message: tx } of pending) {
+      if (tx.From === address && tx.Nonce + 1 > nonce) {
+        nonce = tx.Nonce + 1
+      }
+    }
     const estimation_msg = {
       To: to,
       From: address,
-      Nonce: state.Nonce,
+      Nonce: nonce,
       Value: value.toString() || '0',
       GasFeeCap: '0',
       GasPremium: '0',
@@ -44,7 +50,7 @@ function make(testnet) {
     const msg = {
       to: to,
       from: address,
-      nonce: state.Nonce,
+      nonce: nonce,
       value: value.toString() || '0',
       gasfeecap: res.GasFeeCap,
       gaspremium: res.GasPremium,
@@ -97,9 +103,13 @@ function make(testnet) {
     }
   }
 
+  const VERIFREG = testnet ? 't06' : 'f06'
+  const INIT_ACTOR = testnet ? 't01' : 'f01'
+  const ROOTKEY = testnet ? 't080' : 'f080'
+
   function encodeAddVerifier(verified, cap) {
     return {
-      to: 't06',
+      to: VERIFREG,
       method: 2,
       params: cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)]),
       value: 0n,
@@ -108,7 +118,7 @@ function make(testnet) {
 
   function encodeAddVerifiedClient(verified, cap) {
     return {
-      to: 't06',
+      to: VERIFREG,
       method: 4,
       params: cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)]),
       value: 0n,
@@ -116,7 +126,7 @@ function make(testnet) {
   }
 
   function encodePropose(msig, msg) {
-  // console.log("encpro", [signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params])
+    // console.log("encpro", [signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params])
     return {
       to: msig,
       method: 2,
@@ -149,12 +159,12 @@ function make(testnet) {
   }
 
   function decode(schema, data) {
-  // console.log(schema, data)
+    // console.log(schema, data)
     if (schema === 'address' && typeof data === 'string') {
-      return bytesToAddress(Buffer.from(data, 'base64'))
+      return bytesToAddress(Buffer.from(data, 'base64'), true)
     }
     if (schema === 'address') {
-      return bytesToAddress(data)
+      return bytesToAddress(data, true)
     }
     if (schema === 'bigint' && typeof data === 'string') {
       return hamt.bytesToBig(Buffer.from(data, 'base64'))
@@ -163,6 +173,9 @@ function make(testnet) {
       return hamt.bytesToBig(data)
     }
     if (schema === 'bigint-signed') {
+      return hamt.bytesToBig(data) / 2n
+    }
+    if (schema === 'bigint-key') {
       return hamt.bytesToBig(data) / 2n
     }
     if (schema === 'int' || schema === 'buffer' || schema === 'bool') {
@@ -240,6 +253,9 @@ function make(testnet) {
     }
     if (schema === 'bigint') {
       return encodeBig(data)
+    }
+    if (schema === 'bigint-signed') {
+      return encodeBigKey(data)
     }
     if (schema === 'bigint-key') {
       return encodeBigKey(data)
@@ -399,11 +415,12 @@ function make(testnet) {
     signers: ['list', 'address'],
     threshold: 'int',
     unlockDuration: 'int',
+    startEpoch: 'int',
   }]
 
   const pending = {
     type: 'hamt',
-    key: 'bigint',
+    key: 'bigint-signed',
     value: {
       to: 'address',
       value: 'bigint',
@@ -444,6 +461,9 @@ function make(testnet) {
     t080: multisig,
     t06: verifreg,
     t01: init,
+    f080: multisig,
+    f06: verifreg,
+    f01: init,
   }
 
   function parse(tx) {
@@ -457,7 +477,7 @@ function make(testnet) {
     }
   }
 
-  const multisigCID = new CID(1, 'raw', multihashes.encode(Buffer.from('fil/1/multisig'), 'identity'))
+  const multisigCID = new CID(1, 'raw', multihashes.encode(Buffer.from('fil/2/multisig'), 'identity'))
 
   async function buildArrayData(data, load) {
     var dataArray = []
@@ -467,8 +487,7 @@ function make(testnet) {
     return dataArray
   }
 
-  return {
-    buildArrayData,
+  module.exports = {
     encodeSend,
     encodeApprove,
     encodePropose,
@@ -483,16 +502,21 @@ function make(testnet) {
     multisig,
     multisigCID,
     pending,
-    rootkey: actor('t080', multisig),
-    verifreg: actor('t06', verifreg),
-    init: actor('t01', init),
+    rootkey: actor(ROOTKEY, multisig),
+    verifreg: actor(VERIFREG, verifreg),
+    init: actor(INIT_ACTOR, init),
     msig_constructor,
     msig_state,
     parse,
+    buildArrayData,
+    ROOTKEY,
+    VERIFREG,
+    INIT_ACTOR,
   }
+
 }
 
 module.exports = {
-  testnet: make(true),
   mainnet: make(false),
+  testnet: make(true)
 }

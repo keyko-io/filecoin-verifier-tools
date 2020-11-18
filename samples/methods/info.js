@@ -1,7 +1,7 @@
 
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
-const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
+const { mainnet } = require('@filecoin-shipyard/lotus-client-schema')
 const fs = require('fs')
 const methods = require('../../filecoin/methods').testnet
 const constants = require('../constants')
@@ -15,7 +15,7 @@ const provider = new Provider(endpointUrl, {
   },
 })
 
-const client = new LotusRPC(provider, { schema: testnet.fullNode })
+const client = new LotusRPC(provider, { schema: mainnet.fullNode })
 
 async function load(a) {
   const res = await client.chainGetNode(a)
@@ -32,7 +32,7 @@ async function run() {
   const head = await client.chainHead()
   const state = head.Blocks[0].ParentStateRoot['/']
   console.log('height', head.Height, state)
-  const clients = (await client.chainGetNode(`${state}/@Ha:t06/1/2`)).Obj
+  const clients = (await client.chainGetNode(`${state}/1/@Ha:t06/1/2`)).Obj
   // console.log(JSON.stringify(clients, null, 2))
   const dta = methods.decode(schema, clients)
   // console.log(await dta.asObject(load))
