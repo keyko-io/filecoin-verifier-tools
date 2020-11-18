@@ -486,7 +486,7 @@ function make(testnet) {
     return dataArray
   }
 
-  module.exports = {
+  return {
     encodeSend,
     encodeApprove,
     encodePropose,
