@@ -27,10 +27,14 @@ class VerifyAPI {
     return res.Obj
   }
 
-  async listVerifiers() {
+  async getPath(addr, path) {
     const head = await this.client.chainHead()
     const state = head.Blocks[0].ParentStateRoot['/']
-    const verifiers = (await this.client.chainGetNode(`${state}/1/@Ha:${this.methods.VERIFREG}/1/1`)).Obj
+    return (await this.client.chainGetNode(`${state}/1/@Ha:${addr}/${path}`)).Obj
+  }
+
+  async listVerifiers() {
+    const verifiers = await this.getPath(this.methods.VERIFREG, '1/1')
     const listOfVerifiers = await this.methods.buildArrayData(verifiers, this.load)
     const returnList = []
     for (const [key, value] of listOfVerifiers) {
@@ -86,9 +90,7 @@ class VerifyAPI {
   }
 
   async listVerifiedClients() {
-    const head = await this.client.chainHead()
-    const state = head.Blocks[0].ParentStateRoot['/']
-    const verified = (await this.client.chainGetNode(`${state}/1/@Ha:${this.methods.VERIFREG}/1/2`)).Obj
+    const verified = await this.getPath(this.methods.VERIFREG, '1/2')
     const listOfVerified = await this.methods.buildArrayData(verified, this.load)
     const returnList = []
     for (const [key, value] of listOfVerified) {
@@ -101,26 +103,19 @@ class VerifyAPI {
   }
 
   async listRootkeys() {
-    const head = await this.client.chainHead()
-    const state = head.Blocks[0].ParentStateRoot['/']
-    const data = (await this.client.chainGetNode(`${state}/1/@Ha:${this.methods.ROOTKEY}/1`)).Obj
+    const data = await this.getPath(this.methods.ROOTKEY, '1')
     const info = this.methods.decode(this.methods.msig_state, data)
     return info.signers
   }
 
   async listSigners(addr) {
-    const head = await this.client.chainHead()
-    const state = head.Blocks[0].ParentStateRoot['/']
-    const data = (await this.client.chainGetNode(`${state}/1/@Ha:${addr}/1`)).Obj
+    const data = await this.getPath(this.methods.ROOTKEY, '1')
     const info = this.methods.decode(this.methods.msig_state, data)
     return info.signers
   }
 
   async actorType(addr) {
-    const head = await this.client.chainHead()
-    const state = head.Blocks[0].ParentStateRoot['/']
-    const data = (await this.client.chainGetNode(`${state}/1/@Ha:${addr}/0`)).Obj
-    return data
+    return this.getPath(this.methods.ROOTKEY, '0')
   }
 
   async actorAddress(str) {
@@ -182,9 +177,7 @@ class VerifyAPI {
   }
 
   async pendingRootTransactions() {
-    const head = await this.client.chainHead()
-    const state = head.Blocks[0].ParentStateRoot['/']
-    const data = (await this.client.chainGetNode(`${state}/1/@Ha:${this.methods.ROOTKEY}/1/6`)).Obj
+    const data = await this.getPath(this.methods.ROOTKEY, '1/6')
     const info = this.methods.decode(this.methods.pending, data)
     const obj = await info.asObject(this.load)
     const returnList = []
@@ -201,16 +194,12 @@ class VerifyAPI {
   }
 
   async multisigInfo(addr) {
-    const head = await this.client.chainHead()
-    const state = head.Blocks[0].ParentStateRoot['/']
-    const data = (await this.client.chainGetNode(`${state}/1/@Ha:${addr}/1`)).Obj
+    const data = await this.getPath(addr, '1')
     return this.methods.decode(this.methods.msig_state, data)
   }
 
   async pendingTransactions(addr) {
-    const head = await this.client.chainHead()
-    const state = head.Blocks[0].ParentStateRoot['/']
-    const data = (await this.client.chainGetNode(`${state}/1/@Ha:${addr}/1/6`)).Obj
+    const data = await this.getPath(addr, '1/6')
     const info = this.methods.decode(this.methods.pending, data)
     const obj = await info.asObject(this.load)
     const returnList = []
