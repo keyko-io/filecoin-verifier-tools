@@ -1,5 +1,5 @@
 
-const methods = require('../../filecoin/methods')
+const methods = require('../../filecoin/methods').testnet
 const { make } = require('../../filecoin/get-data')
 
 /*

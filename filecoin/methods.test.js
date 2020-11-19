@@ -1,6 +1,6 @@
 
-const methods = require('./methods')
-const { encodeAddVerifier, encodeAddVerifiedClient, verifreg, decode, encodePropose, rootkey, multisig, encodeApprove } = require('./methods')
+const { encodeAddVerifier, encodeAddVerifiedClient, verifreg, decode, encodePropose, rootkey, multisig, encodeApprove } = require('./methods').testnet
+const methods = require('./methods').testnet
 
 const precommitData = [
   'Ag==',

@@ -6,7 +6,7 @@ const { mainnet } = require('@filecoin-shipyard/lotus-client-schema')
 const Sequelize = require('sequelize')
 const constants = require('../samples/constants')
 const fs = require('fs')
-const methods = require('../filecoin/methods')
+const methods = require('../filecoin/methods').testnet
 const schema = require('./schema')
 
 const endpointUrl = constants.lotus_endpoint
