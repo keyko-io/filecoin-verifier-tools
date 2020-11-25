@@ -5,7 +5,7 @@ cd ~/filecoin-verifier-service
 if [ -f app_msig_address ]; then
     echo "Using existing msig $(cat app_msig_address)"
 else
-    curl -H "Content-Type: application/json" -H "Authorization: Bearer $(cat ~/filecoin-verifier-service/token)" -d '{"applicationAddress": "t01007", "applicationId": 1, "datetimeRequested": 1}' localhost:3001/verifier/app/register | jq -r .appMsigAddress > app_msig_address
+    curl -H "Content-Type: application/json" -H "Authorization: Bearer $(cat ~/filecoin-verifier-service/token)" -d '{"applicationAddress": "t01007", "applicationId": 1, "datetimeRequested": 1}' localhost:3001/v1/verifier/app/register | jq -r .appMsigAddress > app_msig_address
     echo "Using new msig $(cat app_msig_address)"
 fi
 
