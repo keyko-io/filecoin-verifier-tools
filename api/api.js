@@ -103,19 +103,17 @@ class VerifyAPI {
   }
 
   async listRootkeys() {
-    const data = await this.getPath(this.methods.ROOTKEY, '1')
-    const info = this.methods.decode(this.methods.msig_state, data)
-    return info.signers
+    return this.listSigners(this.methods.ROOTKEY)
   }
 
   async listSigners(addr) {
-    const data = await this.getPath(this.methods.ROOTKEY, '1')
+    const data = await this.getPath(addr, '1')
     const info = this.methods.decode(this.methods.msig_state, data)
     return info.signers
   }
 
   async actorType(addr) {
-    return this.getPath(this.methods.ROOTKEY, '0')
+    return this.getPath(addr, '0')
   }
 
   async actorAddress(str) {
@@ -177,20 +175,7 @@ class VerifyAPI {
   }
 
   async pendingRootTransactions() {
-    const data = await this.getPath(this.methods.ROOTKEY, '1/6')
-    const info = this.methods.decode(this.methods.pending, data)
-    const obj = await info.asObject(this.load)
-    const returnList = []
-    for (const [k, v] of Object.entries(obj)) {
-      const parsed = this.methods.parse(v)
-      returnList.push({
-        id: k,
-        tx: { ...v, from: v.signers[0] },
-        parsed,
-        signers: v.signers,
-      })
-    }
-    return returnList
+    return this.pendingTransactions(this.methods.ROOTKEY)
   }
 
   async multisigInfo(addr) {
