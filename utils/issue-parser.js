@@ -4,11 +4,13 @@ function parseIssue(issueContent) {
   const regexAddress = /-\s*Addresses\s*to\s*be\s*Notarized:\s*(.*)/m
   const regexDatacap = /-\s*DataCap\s*Requested:\s*(.*)/m
   const regexWebsite = /-\s*Website\s*\/\s*Social\s*Media:\s*(.*)/m
+  const regexNotary = /-\s*Notary\s*Requested:\s*(.*)/m
 
   const name = matchGroup(regexName, issueContent)
   const address = matchGroup(regexAddress, issueContent)
   const datacap = matchGroup(regexDatacap, issueContent)
   const website = matchGroup(regexWebsite, issueContent)
+  const notary = matchGroup(regexNotary, issueContent)
 
   if (name != null && address != null && datacap != null && website != null) {
     return {
@@ -19,6 +21,7 @@ function parseIssue(issueContent) {
       address: address,
       datacap: datacap,
       website: website,
+      notary: notary,
     }
   }
 
