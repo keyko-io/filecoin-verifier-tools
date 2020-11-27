@@ -151,7 +151,7 @@ class VerifyAPI {
   }
 
   async multisigProposeClient(m0_addr, m1_addr, client, cap, from, wallet) {
-    const amount = cap * 1000000000n
+    const amount = cap * 1073741824n // 1 GiB
     const m0_actor = this.methods.actor(m0_addr, this.methods.multisig)
     const m1_actor = this.methods.actor(m1_addr, this.methods.multisig)
     const tx = this.methods.verifreg.addVerifiedClient(client, amount)
