@@ -5,6 +5,9 @@ const { NodejsProvider } = require('@filecoin-shipyard/lotus-client-provider-nod
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const cbor = require('cbor')
 
+const cacheAddress = {}
+const cacheKey = {}
+
 class VerifyAPI {
   constructor(lotusClient, walletContext, testnet = true) {
     this.methods = testnet ? methods.testnet : methods.mainnet
@@ -114,6 +117,33 @@ class VerifyAPI {
 
   async actorType(addr) {
     return this.getPath(addr, '0')
+  }
+
+  async cachedActorAddress(str) {
+    if (cacheAddress[str]) {
+      return cacheAddress[str]
+    }
+    try {
+      const head = await this.client.chainHead()
+      const ret = await this.client.stateLookupID(str, head.Cids)
+      cacheAddress[str] = ret
+      return ret
+    } catch (err) {
+      return str
+    }
+  }
+
+  async cachedActorKey(str) {
+    if (cacheKey[str]) {
+      return cacheKey[str]
+    }
+    try {
+      const head = await this.client.chainHead()
+      cacheKey[str] = await this.client.stateAccountKey(str, head.Cids)
+      return cacheKey[str]
+    } catch (err) {
+      return str
+    }
   }
 
   async actorAddress(str) {
