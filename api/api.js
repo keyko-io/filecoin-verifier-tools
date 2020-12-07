@@ -127,7 +127,7 @@ class VerifyAPI {
   }
 
   async cachedActorAddress(str) {
-    if(cacheAddress[str]){
+    if (cacheAddress[str]) {
       return cacheAddress[str]
     }
     try {
@@ -141,7 +141,7 @@ class VerifyAPI {
   }
 
   async cachedActorKey(str) {
-    if(cacheKey[str]){
+    if (cacheKey[str]) {
       return cacheKey[str]
     }
     try {
