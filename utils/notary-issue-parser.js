@@ -60,10 +60,10 @@ function matchGroup(regex, content) {
 }
 
 function matchAll(regex, content) {
-  let m
-  if ((m = [...content.matchAll(regex)]) !== null) {
+  var matches = [...content.matchAll(regex)]
+  if (matches !== null) {
     // each entry in the array has this form: Array ["#### Address > f1111222333", "", "f1111222333"]
-    return m.map( elem => elem[2])
+    return matches.map(elem => elem[2])
   }
 }
 
@@ -92,16 +92,15 @@ function parseApproveComment(commentContent) {
     }
   }
 
-  let errorMessage = '' 
+  let errorMessage = ''
   if (addresses == null) { errorMessage += 'We could not find the **Filecoin address** in the information provided in the comment\n' }
   if (datacaps == null) { errorMessage += 'We could not find the **Datacap** allocated in the information provided in the comment\n' }
   return {
     approvedMessage: true,
     correct: false,
     errorMessage: errorMessage,
-    errorDetails: "Unable to find required attributes.",
+    errorDetails: 'Unable to find required attributes.',
   }
-  
 }
 
 exports.parseIssue = parseIssue
