@@ -104,4 +104,4 @@ function parseApproveComment(commentContent) {
 }
 
 exports.parseIssue = parseIssue
-exports.parseApproveComment = parseApproveComment 
+exports.parseApproveComment = parseApproveComment
