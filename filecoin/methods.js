@@ -51,7 +51,7 @@ function make(testnet) {
       from: address,
       nonce: nonce,
       value: value.toString() || '0',
-      gasfeecap: '100000000000000000',
+      gasfeecap: res.GasFeeCap,
       gaspremium: res.GasPremium,
       gaslimit: res.GasLimit,
       method: method,
