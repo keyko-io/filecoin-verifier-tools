@@ -17,7 +17,7 @@ function make(testnet) {
     return Buffer.from((address.newFromString(str)).str, 'binary')
   }
 
-  async function signTx(client, indexAccount, walletContext, { to, method, params, value }) {
+  async function signTx(client, indexAccount, walletContext, { to, method, params, value, gas }) {
     const head = await client.chainHead()
     const address = (await walletContext.getAccounts())[indexAccount]
 
@@ -36,7 +36,7 @@ function make(testnet) {
       Value: value.toString() || '0',
       GasFeeCap: '0',
       GasPremium: '0',
-      GasLimit: 0,
+      GasLimit: gas || 0,
       Method: method,
       Params: params.toString('base64'),
     }
