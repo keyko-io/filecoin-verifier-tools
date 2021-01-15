@@ -248,6 +248,7 @@ function make(testnet) {
 
   function encode(schema, data) {
     if (schema === 'address') {
+      console.log(data)
       return addressAsBytes(data)
     }
     if (schema === 'bigint') {
@@ -456,6 +457,18 @@ function make(testnet) {
     },
   }
 
+  const table = {
+    type: 'hamt',
+    key: 'address',
+    value: 'bigint',
+  }
+
+  const verifreg_state = {
+    rootkey: 'address',
+    verifiers: ['ref', table],
+    clients: ['ref', table],
+  }
+
   const reg = {
     t080: multisig,
     t06: verifreg,
@@ -506,6 +519,7 @@ function make(testnet) {
     init: actor(INIT_ACTOR, init),
     msig_constructor,
     msig_state,
+    verifreg_state,
     parse,
     buildArrayData,
     ROOTKEY,

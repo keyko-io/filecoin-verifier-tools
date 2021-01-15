@@ -18,6 +18,7 @@ const provider = new Provider(endpointUrl, {
 const client = new LotusRPC(provider, { schema: mainnet.fullNode })
 
 async function load(a) {
+  console.log("here")
   const res = await client.chainGetNode(a)
   return res.Obj
 }
@@ -35,7 +36,7 @@ async function run() {
   const clients = (await client.chainGetNode(`${state}/1/@Ha:t06/1/2`)).Obj
   // console.log(JSON.stringify(clients, null, 2))
   const dta = methods.decode(schema, clients)
-  // console.log(await dta.asObject(load))
+  console.log(await dta.asObject(load))
   console.log(await dta.find(load, process.argv[2] || 't01004'))
 }
 

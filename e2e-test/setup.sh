@@ -60,7 +60,7 @@ sleep 15
 lotus msig inspect t080
 sleep 15
 lotus msig inspect t080
-lotus msig approve --from $ROOT1 t080 1 $ROOT2 t06 0 2 824300ec0753000125dfa371a19e6f7cb54395ca0000000000
+lotus msig approve --from $ROOT1 t080 1
 
 lotus-shed verifreg list-verifiers
 
@@ -79,24 +79,10 @@ lotus client local
 
 lotus client deal --verified-deal --from $CLIENT $DATA t01000 0.005 1000000
 
-while [ "3" != "$(lotus-miner sectors list | wc -l)" ]
+while true
 do
  sleep 10
  lotus-miner sectors list
+ lotus-miner sectors seal 2
 done
 
-# curl -H "Content-Type: application/json" -H "Authorization: Bearer $(cat ~/.lotusminer/token)" -d '{"id": 1, "method": "Filecoin.SectorStartSealing", "params": [2]}' localhost:2345/rpc/v0
-lotus-miner sectors seal 2
-
-lotus-miner info
-
-lotus-miner sectors list
-
-while [ "3" != "$(lotus-miner sectors list | grep Proving | wc -l)" ]
-do
- sleep 5
- lotus-miner sectors list | tail -n 1
- lotus-miner info | grep "Actual Power"
-done
-
-sleep 300000

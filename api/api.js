@@ -46,12 +46,6 @@ class VerifyAPI {
     return returnList
   }
 
-  async checkVerifier(verifierAddress) {
-    // empty array if not verifier is present
-    const lst = await this.listVerifiers()
-    return lst.filter(({ verifier }) => verifier.toString() === verifierAddress)
-  }
-
   checkWallet(wallet) {
     if (!wallet && !this.walletContext) { throw new Error('No wallet context defined in API') }
     return wallet || this.walletContext
@@ -134,9 +128,30 @@ class VerifyAPI {
     }
   }
 
-  async checkClient(clientAddress) {
-    return this.listVerifiedClients
-      .filter(client => client[0].toString() === clientAddress)
+  async checkClient(verified) {
+    try {
+      const data = await this.getPath(this.methods.VERIFREG, '1')
+      const info = this.methods.decode(this.methods.verifreg_state, data)
+      const clients = await info.clients(a => this.load(a))
+      const datacap = await clients.find(a => this.load(a), verified)
+      return [{verified, datacap}]
+    }
+    catch (err) {
+      return []
+    }
+  }
+
+  async checkVerifier(verifier) {
+    try {
+      const data = await this.getPath(this.methods.VERIFREG, '1')
+      const info = this.methods.decode(this.methods.verifreg_state, data)
+      const verifiers = await info.verifiers(a => this.load(a))
+      const datacap = await verifiers.find(a => this.load(a), verifier)
+      return [{verifier, datacap}]
+    }
+    catch (err) {
+      return []
+    }
   }
 
   async verifyClient(clientAddress, datacap, indexAccount, wallet) {
