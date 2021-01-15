@@ -134,9 +134,8 @@ class VerifyAPI {
       const info = this.methods.decode(this.methods.verifreg_state, data)
       const clients = await info.clients(a => this.load(a))
       const datacap = await clients.find(a => this.load(a), verified)
-      return [{verified, datacap}]
-    }
-    catch (err) {
+      return [{ verified, datacap }]
+    } catch (err) {
       return []
     }
   }
@@ -147,9 +146,8 @@ class VerifyAPI {
       const info = this.methods.decode(this.methods.verifreg_state, data)
       const verifiers = await info.verifiers(a => this.load(a))
       const datacap = await verifiers.find(a => this.load(a), verifier)
-      return [{verifier, datacap}]
-    }
-    catch (err) {
+      return [{ verifier, datacap }]
+    } catch (err) {
       return []
     }
   }

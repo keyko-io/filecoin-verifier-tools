@@ -18,7 +18,7 @@ const provider = new Provider(endpointUrl, {
 const client = new LotusRPC(provider, { schema: mainnet.fullNode })
 
 async function load(a) {
-  console.log("here")
+  console.log('here')
   const res = await client.chainGetNode(a)
   return res.Obj
 }
