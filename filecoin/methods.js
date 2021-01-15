@@ -43,7 +43,7 @@ function make(testnet) {
 
     console.log(estimation_msg)
 
-    const res = await client.gasEstimateMessageGas(estimation_msg, { MaxFee: '10000000000000000' }, head.Cids)
+    const res = await client.gasEstimateMessageGas(estimation_msg, { MaxFee: '100000000000000000' }, head.Cids)
     console.log(res)
 
     const msg = {
@@ -52,7 +52,7 @@ function make(testnet) {
       nonce: nonce,
       value: value.toString() || '0',
       gasfeecap: res.GasFeeCap,
-      gaspremium: res.GasPremium,
+      gaspremium: '20000000000000000',
       gaslimit: res.GasLimit,
       method: method,
       params: params,
