@@ -17,7 +17,7 @@ function make(testnet) {
     return Buffer.from((address.newFromString(str)).str, 'binary')
   }
 
-  async function signTx(client, indexAccount, walletContext, { to, method, params, value }) {
+  async function signTx(client, indexAccount, walletContext, { to, method, params, value, gas }) {
     const head = await client.chainHead()
     const address = (await walletContext.getAccounts())[indexAccount]
 
@@ -36,7 +36,7 @@ function make(testnet) {
       Value: value.toString() || '0',
       GasFeeCap: '0',
       GasPremium: '0',
-      GasLimit: 0,
+      GasLimit: gas || 0,
       Method: method,
       Params: params.toString('base64'),
     }
@@ -248,6 +248,7 @@ function make(testnet) {
 
   function encode(schema, data) {
     if (schema === 'address') {
+      console.log(data)
       return addressAsBytes(data)
     }
     if (schema === 'bigint') {
@@ -456,6 +457,18 @@ function make(testnet) {
     },
   }
 
+  const table = {
+    type: 'hamt',
+    key: 'address',
+    value: 'bigint',
+  }
+
+  const verifreg_state = {
+    rootkey: 'address',
+    verifiers: ['ref', table],
+    clients: ['ref', table],
+  }
+
   const reg = {
     t080: multisig,
     t06: verifreg,
@@ -506,6 +519,7 @@ function make(testnet) {
     init: actor(INIT_ACTOR, init),
     msig_constructor,
     msig_state,
+    verifreg_state,
     parse,
     buildArrayData,
     ROOTKEY,

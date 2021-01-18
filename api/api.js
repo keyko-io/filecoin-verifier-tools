@@ -49,28 +49,22 @@ class VerifyAPI {
     return returnList
   }
 
-  async checkVerifier(verifierAddress) {
-    // empty array if not verifier is present
-    const lst = await this.listVerifiers()
-    return lst.filter(({ verifier }) => verifier.toString() === verifierAddress)
-  }
-
   checkWallet(wallet) {
     if (!wallet && !this.walletContext) { throw new Error('No wallet context defined in API') }
     return wallet || this.walletContext
   }
 
-  async proposeVerifier(verifierAccount, datacap, indexAccount, wallet) {
+  async proposeVerifier(verifierAccount, datacap, indexAccount, wallet, { gas } = { gas: 0 }) {
     // Not address but account in the form "t01004", for instance
     const tx = this.methods.rootkey.propose(this.methods.verifreg.addVerifier(verifierAccount, datacap))
-    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), tx)
+    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas })
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
     return res['/']
   }
 
-  async send(tx, indexAccount, wallet) {
-    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), tx)
+  async send(tx, indexAccount, wallet, { gas } = { gas: 0 }) {
+    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas })
     return res['/']
   }
 
@@ -78,7 +72,7 @@ class VerifyAPI {
     return this.methods.getReceipt(this.client, id)
   }
 
-  async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, indexAccount, wallet) {
+  async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, indexAccount, wallet, { gas } = { gas: 0 }) {
     // Not address but account in the form "t01003", for instance
     const add = this.methods.verifreg.addVerifier(verifierAccount, datacap)
 
@@ -86,7 +80,7 @@ class VerifyAPI {
     const tx = this.methods.rootkey.approve(parseInt(transactionId, 10), { ...add, from: fromAccount })
     console.log(tx)
 
-    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), tx)
+    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas })
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
     return res['/']
@@ -162,14 +156,33 @@ class VerifyAPI {
     }
   }
 
-  async checkClient(clientAddress) {
-    return this.listVerifiedClients
-      .filter(client => client[0].toString() === clientAddress)
+  async checkClient(verified) {
+    try {
+      const data = await this.getPath(this.methods.VERIFREG, '1')
+      const info = this.methods.decode(this.methods.verifreg_state, data)
+      const clients = await info.clients(a => this.load(a))
+      const datacap = await clients.find(a => this.load(a), verified)
+      return [{ verified, datacap }]
+    } catch (err) {
+      return []
+    }
   }
 
-  async verifyClient(clientAddress, datacap, indexAccount, wallet) {
+  async checkVerifier(verifier) {
+    try {
+      const data = await this.getPath(this.methods.VERIFREG, '1')
+      const info = this.methods.decode(this.methods.verifreg_state, data)
+      const verifiers = await info.verifiers(a => this.load(a))
+      const datacap = await verifiers.find(a => this.load(a), verifier)
+      return [{ verifier, datacap }]
+    } catch (err) {
+      return []
+    }
+  }
+
+  async verifyClient(clientAddress, datacap, indexAccount, wallet, { gas } = { gas: 0 }) {
     const arg = this.methods.verifreg.addVerifiedClient(clientAddress, datacap)
-    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), arg)
+    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...arg, gas })
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
     return res['/']

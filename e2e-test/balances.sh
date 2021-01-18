@@ -90,23 +90,9 @@ lotus client local
 
 lotus client deal --verified-deal --from $CLIENT $DATA t01000 0.005 1000000
 
-while [ "3" != "$(lotus-miner sectors list | wc -l)" ]
+while true
 do
  sleep 10
  lotus-miner sectors list
+ lotus-miner sectors seal 2
 done
-
-lotus-miner sectors seal 2
-
-lotus-miner info
-
-lotus-miner sectors list
-
-while [ "3" != "$(lotus-miner sectors list | grep Proving | wc -l)" ]
-do
- sleep 5
- lotus-miner sectors list | tail -n 1
- lotus-miner info | grep "Actual Power"
-done
-
-sleep 300000

@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-ls /usr/local/bin
-
 __PWD=$PWD
 __DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 __PARENT_DIR=$(dirname $__DIR)
