@@ -75,11 +75,17 @@ class VerifyAPI {
   async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, indexAccount, wallet, { gas } = { gas: 0 }) {
     // Not address but account in the form "t01003", for instance
     const add = this.methods.verifreg.addVerifier(verifierAccount, datacap)
-
-    // let tx = this.methods.rootkey.approve(0, {...add, from: "t01001"})
     const tx = this.methods.rootkey.approve(parseInt(transactionId, 10), { ...add, from: fromAccount })
-    console.log(tx)
+    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas })
+    // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
+    // we return the messageID
+    return res['/']
+  }
 
+  async cancelVerifier(verifierAccount, datacap, fromAccount, transactionId, indexAccount, wallet, { gas } = { gas: 0 }) {
+    // Not address but account in the form "t01003", for instance
+    const add = this.methods.verifreg.addVerifier(verifierAccount, datacap)
+    const tx = this.methods.rootkey.cancel(parseInt(transactionId, 10), { ...add, from: fromAccount })
     const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas })
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
@@ -191,6 +197,11 @@ class VerifyAPI {
   async approvePending(msig, tx, from, wallet) {
     const m1_actor = this.methods.actor(msig, this.methods.multisig)
     await this.send(m1_actor.approve(parseInt(tx.id), tx.tx), from, wallet)
+  }
+
+  async cancelPending(msig, tx, from, wallet) {
+    const m1_actor = this.methods.actor(msig, this.methods.multisig)
+    await this.send(m1_actor.cancel(parseInt(tx.id), tx.tx), from, wallet)
   }
 
   async multisigProposeClient(m0_addr, m1_addr, client, cap, from, wallet) {
