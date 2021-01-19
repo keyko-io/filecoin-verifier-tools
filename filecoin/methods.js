@@ -22,6 +22,11 @@ function make(testnet) {
     else return b
   }
 
+  function max(a, b) {
+    if (a < b) return a
+    else return b
+  }
+
   const gasOveruseNum = 11n
   const gasOveruseDenom = 10n
 
@@ -129,7 +134,7 @@ function make(testnet) {
       params: params.toString('base64'),
     }
 
-    console.log(await client.stateCall(msg2, head.Cids))
+    console.log(await client.stateCall(msg2, head.Cids), gasCalcTxFee)
 
     return walletContext.sign(msg, indexAccount)
   }
