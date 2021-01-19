@@ -5,6 +5,9 @@ const { NodejsProvider } = require('@filecoin-shipyard/lotus-client-provider-nod
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const cbor = require('cbor')
 
+const cacheAddress = {}
+const cacheKey = {}
+
 class VerifyAPI {
   constructor(lotusClient, walletContext, testnet = true) {
     this.methods = testnet ? methods.testnet : methods.mainnet
@@ -103,19 +106,44 @@ class VerifyAPI {
   }
 
   async listRootkeys() {
-    const data = await this.getPath(this.methods.ROOTKEY, '1')
-    const info = this.methods.decode(this.methods.msig_state, data)
-    return info.signers
+    return this.listSigners(this.methods.ROOTKEY)
   }
 
   async listSigners(addr) {
-    const data = await this.getPath(this.methods.ROOTKEY, '1')
+    const data = await this.getPath(addr, '1')
     const info = this.methods.decode(this.methods.msig_state, data)
     return info.signers
   }
 
   async actorType(addr) {
-    return this.getPath(this.methods.ROOTKEY, '0')
+    return this.getPath(addr, '0')
+  }
+
+  async cachedActorAddress(str) {
+    if (cacheAddress[str]) {
+      return cacheAddress[str]
+    }
+    try {
+      const head = await this.client.chainHead()
+      const ret = await this.client.stateLookupID(str, head.Cids)
+      cacheAddress[str] = ret
+      return ret
+    } catch (err) {
+      return str
+    }
+  }
+
+  async cachedActorKey(str) {
+    if (cacheKey[str]) {
+      return cacheKey[str]
+    }
+    try {
+      const head = await this.client.chainHead()
+      cacheKey[str] = await this.client.stateAccountKey(str, head.Cids)
+      return cacheKey[str]
+    } catch (err) {
+      return str
+    }
   }
 
   async actorAddress(str) {
@@ -177,7 +205,7 @@ class VerifyAPI {
   }
 
   async multisigProposeClient(m0_addr, m1_addr, client, cap, from, wallet) {
-    const amount = cap * 1000000000n
+    const amount = cap * 1073741824n // 1 GiB
     const m0_actor = this.methods.actor(m0_addr, this.methods.multisig)
     const m1_actor = this.methods.actor(m1_addr, this.methods.multisig)
     const tx = this.methods.verifreg.addVerifiedClient(client, amount)
@@ -201,20 +229,7 @@ class VerifyAPI {
   }
 
   async pendingRootTransactions() {
-    const data = await this.getPath(this.methods.ROOTKEY, '1/6')
-    const info = this.methods.decode(this.methods.pending, data)
-    const obj = await info.asObject(a => this.load(a))
-    const returnList = []
-    for (const [k, v] of Object.entries(obj)) {
-      const parsed = this.methods.parse(v)
-      returnList.push({
-        id: k,
-        tx: { ...v, from: v.signers[0] },
-        parsed,
-        signers: v.signers,
-      })
-    }
-    return returnList
+    return this.pendingTransactions(this.methods.ROOTKEY)
   }
 
   async multisigInfo(addr) {

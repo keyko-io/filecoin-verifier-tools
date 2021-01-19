@@ -3,9 +3,9 @@ For Clients, please note that your responses (past the Core Information section)
 ## Core Information
 - Name: Protocol Labs
 - Website / Social Media: https://protocol.ai/
-- DataCap Requested: 10TB
+- DataCap Requested: 10TiB
 - Addresses to be Notarized: t0231874218
-
+- Notary Requested: notaryuser
 
 -----------------------------
 ## Reputation

@@ -73,7 +73,7 @@ sleep 30
 lotus msig inspect t01009
 lotus msig inspect t01010
 
-curl -H "Content-Type: application/json" -H "Authorization: Bearer $(cat ~/filecoin-verifier-service/token)" -d "{\"clientAddress\": \"$(lotus wallet new)\", \"datetimeRequested\": 1}" localhost:4001/verifier/client/datacap
+curl -H "Content-Type: application/json" -H "Authorization: Bearer $(cat ~/filecoin-verifier-service/token)" -d "{\"clientAddress\": \"$(lotus wallet new)\", \"datetimeRequested\": 1}" localhost:4001/v1/verifier/client/datacap
 
 lotus-shed verifreg list-verifiers
 

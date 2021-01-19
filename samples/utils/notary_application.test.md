@@ -18,7 +18,7 @@ To apply as a notary, please fill out the following form.
 - On-chain Address(es) to be Notarized: f1111222333
 - Region of Operation: [North America]
 - Use case(s) to be supported: [Developer Tools, Web 3.0]
-- DataCap Requested: 10TB
+- DataCap Requested: 10TiB
 
 _Please respond to the questions below in pargraph form, replacing the text saying "Please answer here". Include as much detail as you can in your answer!_
 

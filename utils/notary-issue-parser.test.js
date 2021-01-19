@@ -13,7 +13,7 @@ describe('parseIssue()', () => {
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.name).toBe('Notary A')
     expect(parsedResult.address).toBe('f1111222333')
-    expect(parsedResult.datacapRequested).toBe('10TB')
+    expect(parsedResult.datacapRequested).toBe('10TiB')
     expect(parsedResult.website).toBe('info.org')
     expect(parsedResult.region).toBe('[North America]')
     expect(parsedResult.useCases).toBe('[Developer Tools, Web 3.0]')
@@ -38,7 +38,7 @@ describe('parseApproved()', () => {
 
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.approvedMessage).toBe(true)
-    expect(parsedResult.address).toBe('f1111222333')
-    expect(parsedResult.datacap).toBe('5TB')
+    expect(parsedResult.addresses[0]).toBe('f1111222333')
+    expect(parsedResult.datacaps[0]).toBe('5TiB')
   })
 })
