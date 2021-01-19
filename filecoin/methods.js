@@ -17,6 +17,67 @@ function make(testnet) {
     return Buffer.from((address.newFromString(str)).str, 'binary')
   }
 
+  function min(a, b) {
+    if (a < b) return a
+    else return b
+  }
+
+  const gasOveruseNum = 11n
+  const gasOveruseDenom = 10n
+
+  function computeGasToBurn(gasUsed, gasLimit) {
+    if (gasUsed === 0n) {
+      return gasLimit
+    }
+
+    // over = gasLimit/gasUsed - 1 - 0.1
+    // over = min(over, 1)
+    // gasToBurn = (gasLimit - gasUsed) * over
+
+    // so to factor out division from `over`
+    // over*gasUsed = min(gasLimit - (11*gasUsed)/10, gasUsed)
+    // gasToBurn = ((gasLimit - gasUsed)*over*gasUsed) / gasUsed
+    const overuse = gasUsed * gasOveruseNum / gasOveruseDenom
+    let over = gasLimit - overuse
+
+    if (over < 0) {
+      return 0n
+    }
+
+    if (over > gasUsed) {
+      over = gasUsed
+    }
+
+    const gasToBurn = (gasLimit - gasUsed - over) / gasUsed
+
+    return gasToBurn
+  }
+
+  function gasCalcTxFee(
+    gasFeeCap,
+    gasPremium,
+    gasLimit,
+    baseFee,
+    gasUsed,
+  ) {
+    const gasFeeCapBN = BigInt(gasFeeCap)
+    const gasPremiumBN = BigInt(gasPremium)
+    const gasLimitBN = BigInt(gasLimit)
+    const baseFeeBN = BigInt(baseFee)
+    const gasUsedBN = BigInt(gasUsed)
+
+    // compute left side
+    const totalGas = gasUsedBN + computeGasToBurn(gasUsedBN, gasLimitBN)
+    const minBaseFeeFeeCap = min(baseFeeBN, gasFeeCapBN)
+    const leftSide = totalGas * minBaseFeeFeeCap
+
+    // compute right side
+    const minTip = min(gasFeeCapBN - baseFeeBN, gasPremiumBN)
+    const rightSide = gasLimitBN * max(0, minTip)
+
+    return leftSide + rightSide
+  }
+
   async function signTx(client, indexAccount, walletContext, { to, method, params, value, gas }) {
     const head = await client.chainHead()
     const address = (await walletContext.getAccounts())[indexAccount]
@@ -41,9 +102,7 @@ function make(testnet) {
       Params: params.toString('base64'),
     }
 
-    console.log(estimation_msg)
-
-    const res = await client.gasEstimateMessageGas(estimation_msg, { MaxFee: '10000000000000000' }, head.Cids)
+    const res = await client.gasEstimateMessageGas(estimation_msg, { MaxFee: '10000000000000000000' }, head.Cids)
     console.log(res)
 
     const msg = {
@@ -57,6 +116,20 @@ function make(testnet) {
       method: method,
       params: params,
     }
+
+    const msg2 = {
+      to: to,
+      from: address,
+      nonce: nonce,
+      value: value.toString() || '0',
+      gasfeecap: res.GasFeeCap,
+      gaspremium: res.GasPremium,
+      gaslimit: res.GasLimit,
+      method: method,
+      params: params.toString('base64'),
+    }
+
+    console.log(await client.stateCall(msg2, head.Cids))
 
     return walletContext.sign(msg, indexAccount)
   }
