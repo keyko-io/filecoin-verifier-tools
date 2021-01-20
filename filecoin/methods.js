@@ -8,7 +8,7 @@ const CID = require('cids')
 const multihashes = require('multihashes')
 
 function cborEncode(...obj) {
-  let enc = new cbor.Encoder()
+  const enc = new cbor.Encoder()
   enc.addSemanticType(Buffer, enc._pushBuffer)
   return enc._encodeAll(obj)
 }
