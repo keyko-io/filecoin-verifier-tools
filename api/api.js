@@ -38,7 +38,7 @@ class VerifyAPI {
 
   async listVerifiers() {
     const verifiers = await this.getPath(this.methods.VERIFREG, '1/1')
-    const listOfVerifiers = await this.methods.buildArrayData(verifiers, this.load)
+    const listOfVerifiers = await this.methods.buildArrayData(verifiers, a => this.load(a))
     const returnList = []
     for (const [key, value] of listOfVerifiers) {
       returnList.push({
@@ -94,7 +94,7 @@ class VerifyAPI {
 
   async listVerifiedClients() {
     const verified = await this.getPath(this.methods.VERIFREG, '1/2')
-    const listOfVerified = await this.methods.buildArrayData(verified, this.load)
+    const listOfVerified = await this.methods.buildArrayData(verified, a => this.load(a))
     const returnList = []
     for (const [key, value] of listOfVerified) {
       returnList.push({
@@ -240,7 +240,7 @@ class VerifyAPI {
   async pendingTransactions(addr) {
     const data = await this.getPath(addr, '1/6')
     const info = this.methods.decode(this.methods.pending, data)
-    const obj = await info.asObject(this.load)
+    const obj = await info.asObject(a => this.load(a))
     const returnList = []
     for (const [k, v] of Object.entries(obj)) {
       const parsed = this.methods.parse(v)
