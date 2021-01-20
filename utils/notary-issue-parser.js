@@ -59,18 +59,10 @@ function matchGroup(regex, content) {
   }
 }
 
-function matchAll(regex, content) {
-  var matches = [...content.matchAll(regex)]
-  if (matches !== null) {
-    // each entry in the array has this form: Array ["#### Address > f1111222333", "", "f1111222333"]
-    return matches.map(elem => elem[2])
-  }
-}
-
 function parseApproveComment(commentContent) {
   const regexApproved = /##\s*Request\s*Approved/m
-  const regexAddress = /####\s*Address\s*(.*)\n>\s*(.*)/g
-  const regexDatacap = /####\s*Datacap\s*Allocated\s*(.*)\n>\s*(.*)/g
+  const regexAddress = /####\s*Address\W*^>\s*(.*)/m
+  const regexDatacap = /####\s*Datacap\s*Allocated\W*^>\s*(.*)/m
 
   const approved = matchGroup(regexApproved, commentContent)
 
@@ -80,26 +72,28 @@ function parseApproveComment(commentContent) {
     }
   }
 
-  const datacaps = matchAll(regexDatacap, commentContent)
-  const addresses = matchAll(regexAddress, commentContent)
+  const address = matchGroup(regexAddress, commentContent)
+  const datacap = matchGroup(regexDatacap, commentContent)
 
-  if (addresses != null && datacaps != null) {
+  if (address != null && datacap != null) {
     return {
       approvedMessage: true,
       correct: true,
-      addresses: addresses,
-      datacaps: datacaps,
+      address: address,
+      datacap: datacap,
     }
   }
 
   let errorMessage = ''
-  if (addresses == null) { errorMessage += 'We could not find the **Filecoin address** in the information provided in the comment\n' }
-  if (datacaps == null) { errorMessage += 'We could not find the **Datacap** allocated in the information provided in the comment\n' }
+  if (address == null) { errorMessage += 'We could not find the **Filecoin address** in the information provided in the comment\n' }
+  if (datacap == null) { errorMessage += 'We could not find the **Datacap** allocated in the information provided in the comment\n' }
   return {
     approvedMessage: true,
     correct: false,
     errorMessage: errorMessage,
-    errorDetails: 'Unable to find required attributes.',
+    errorDetails: `Unable to find required attributes.
+          The address= ${address},
+          datacapAllocated= ${datacap}`,
   }
 }
 
