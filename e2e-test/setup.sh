@@ -50,8 +50,6 @@ done
 lotus msig propose --from $ROOT1 t080 t06 0 2 824300eb0753000125dfa371a19e6f7cb54395ca0000000000
 lotus msig inspect t080
 
-node $JSDIR/samples/api/approve-pending.js
-
 sleep 5
 lotus-shed verifreg list-verifiers
 
@@ -59,8 +57,6 @@ node $JSDIR/samples/api/propose-verifier.js t01004
 sleep 15
 lotus msig inspect t080
 sleep 15
-lotus msig inspect t080
-lotus msig approve --from $ROOT1 t080 1
 
 lotus-shed verifreg list-verifiers
 
