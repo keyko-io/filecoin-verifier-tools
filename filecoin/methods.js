@@ -7,6 +7,12 @@ const address = require('@glif/filecoin-address')
 const CID = require('cids')
 const multihashes = require('multihashes')
 
+function cborEncode(...obj) {
+  const enc = new cbor.Encoder()
+  enc.addSemanticType(Buffer, enc._pushBuffer)
+  return enc._encodeAll(obj)
+}
+
 function make(testnet) {
   function bytesToAddress(payload) {
     const addr = new address.Address(payload)
@@ -110,7 +116,7 @@ function make(testnet) {
     return {
       to: VERIFREG,
       method: 2,
-      params: cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)]),
+      params: cborEncode([signer.addressAsBytes(verified), encodeBig(cap)]),
       value: 0n,
     }
   }
@@ -119,7 +125,7 @@ function make(testnet) {
     return {
       to: VERIFREG,
       method: 4,
-      params: cbor.encode([signer.addressAsBytes(verified), encodeBig(cap)]),
+      params: cborEncode([signer.addressAsBytes(verified), encodeBig(cap)]),
       value: 0n,
     }
   }
@@ -129,13 +135,13 @@ function make(testnet) {
     return {
       to: msig,
       method: 2,
-      params: cbor.encode([signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params]),
+      params: cborEncode([signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params]),
       value: 0n,
     }
   }
 
   function encodeProposalHashdata(from, msg) {
-    return cbor.encode([signer.addressAsBytes(from), signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params])
+    return cborEncode([signer.addressAsBytes(from), signer.addressAsBytes(msg.to), encodeBig(msg.value || 0), msg.method, msg.params])
   }
 
   function encodeApprove(msig, txid, from, msg) {
@@ -144,7 +150,7 @@ function make(testnet) {
     return {
       to: msig,
       method: 3,
-      params: cbor.encode([txid, Buffer.from(hash, 'hex')]),
+      params: cborEncode([txid, Buffer.from(hash, 'hex')]),
       value: 0n,
     }
   }
@@ -273,7 +279,7 @@ function make(testnet) {
       return data
     }
     if (schema.type === 'hash') {
-      const hashData = cbor.encode(encode(schema.input, data))
+      const hashData = cborEncode(encode(schema.input, data))
       const hash = blake.blake2bHex(hashData, null, 32)
       return Buffer.from(hash, 'hex')
     }
@@ -282,7 +288,7 @@ function make(testnet) {
         return data.map(a => encode(schema[1], a))
       }
       if (schema[0] === 'cbor') {
-        return cbor.encode(encode(schema[1], data))
+        return cborEncode(encode(schema[1], data))
       }
       if (schema.length !== data.length) throw new Error('schema and data length do not match')
       const res = []
@@ -323,7 +329,7 @@ function make(testnet) {
           to: address,
           value: 0n,
           method: parseInt(num),
-          params: cbor.encode(params),
+          params: cborEncode(params),
         }
       }
     }
