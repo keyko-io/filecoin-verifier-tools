@@ -6,6 +6,7 @@ For Clients, please note that your responses (past the Core Information section)
 - DataCap Requested: 10TiB
 - Addresses to be Notarized: t0231874218
 - Notary Requested: notaryuser
+- Region: Europe
 
 -----------------------------
 ## Reputation
