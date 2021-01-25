@@ -26,6 +26,20 @@ describe('parseIssue()', () => {
   })
 })
 
+describe('parseRemovalIssue()', () => {
+  it('we can parse an issue including the right data', () => {
+    const issueContent = 'This is an issue to remove the DataCap associated with f1sdzgaqmitbvgktkklpuaxohg6nuhce5eyvwxhbb.\nThis address was used by the Filecoin Foundation during the Filecoin Beta for allocations. Now that a new allocation has been made to a new address, this should be set to 0.'
+    const issueTitle = 'Notary DataCap Removal: f1sdzgaqmitbvgktkklpuaxohg6nuhce5eyvwxhbb'
+
+    const parsedResult = parseIssue(issueContent, issueTitle)
+
+    expect(parsedResult.correct).toBe(true)
+    expect(parsedResult.datacapRemoval).toBe(true)
+    expect(parsedResult.address).toBe('f1sdzgaqmitbvgktkklpuaxohg6nuhce5eyvwxhbb')
+    expect(parsedResult.datacapRequested).toBe('0B')
+  })
+})
+
 describe('parseApproved()', () => {
   it('we can parse an approve comment including the right data', () => {
     const commentContent = fs.readFileSync(

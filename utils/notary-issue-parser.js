@@ -1,11 +1,13 @@
 
-function parseIssue(issueContent) {
+function parseIssue(issueContent, issueTitle = '') {
   const regexName = /-\s*Name:\s*(.*)/m
   const regexWebsite = /-\s*Website\s*\/\s*Social\s*Media:\s*(.*)/m
   const regexAddress = /-\s*On-chain\s*Address\(es\)\s*to\s*be\s*Notarized:\s*(.*)/m
   const regexRegion = /-\s*Region\s*of\s*Operation:\s*(.*)/m
   const regexUseCases = /-\s*Use\s*case\(s\)\s*to\s*be\s*supported:\s*(.*)/m
   const regexDatacapRequested = /-\s*DataCap\s*Requested:\s*(.*)/m
+
+  const regextRemovalTitle = /\s*Notary\s*DataCap\s*Removal:\s*(.*)/m
 
   const name = matchGroup(regexName, issueContent)
   const website = matchGroup(regexWebsite, issueContent)
@@ -25,6 +27,25 @@ function parseIssue(issueContent) {
       website: website,
       region: region,
       useCases: useCases,
+      datacapRemoval: false,
+    }
+  }
+
+  if (issueTitle !== '') {
+    const removalAddress = matchGroup(regextRemovalTitle, issueTitle)
+    if (removalAddress != null) {
+      return {
+        correct: true,
+        errorMessage: '',
+        errorDetails: '',
+        name: '',
+        address: removalAddress,
+        datacapRequested: '0B',
+        website: '',
+        region: '',
+        useCases: '',
+        datacapRemoval: true,
+      }
     }
   }
 
