@@ -1,6 +1,6 @@
 var fs = require('fs')
 var path = require('path')
-const { parseIssue, parseApproveComment, parseApproveMultipleComment } = require('./notary-issue-parser')
+const { parseIssue, parseApproveComment, parseMultipleApproveComment } = require('./notary-issue-parser')
 
 describe('parseIssue()', () => {
   it('we can parse an issue including the right data', () => {
@@ -63,7 +63,7 @@ describe('parseApproved()', () => {
         path.resolve(__dirname, '../samples/utils/notary_approved_comment.test.md'),
         { encoding: 'utf8' },
       )
-      const parsedResult = parseApproveMultipleComment(commentContent)
+      const parsedResult = parseMultipleApproveComment(commentContent)
   
       console.log(parsedResult)
   
@@ -73,7 +73,7 @@ describe('parseApproved()', () => {
       expect(parsedResult.datacaps[0]).toBe('5TiB')
       expect(parsedResult.addresses[1]).toBe('f33332222111')
       expect(parsedResult.datacaps[1]).toBe('1TiB')
-      expect(parsedResult.addresses[2]).toBe('f33332222111')
+      expect(parsedResult.addresses[2]).toBe('f222233334444')
       expect(parsedResult.datacaps[2]).toBe('10TiB')
     })
 })

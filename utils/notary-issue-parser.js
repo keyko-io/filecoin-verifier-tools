@@ -126,7 +126,7 @@ function matchAll(regex, content) {
   }
 }
 
-function parseApproveMultipleComment(commentContent) {
+function parseMultipleApproveComment(commentContent) {
   const regexApproved = /##\s*Request\s*Approved/m
   const regexAddress = /####\s*Address\s*(.*)\n>\s*(.*)/g
   const regexDatacap = /####\s*Datacap\s*Allocated\s*(.*)\n>\s*(.*)/g
@@ -164,5 +164,5 @@ function parseApproveMultipleComment(commentContent) {
 
 exports.parseIssue = parseIssue
 exports.parseApproveComment = parseApproveComment
-exports.parseApproveMultipleComment = parseApproveMultipleComment
+exports.parseMultipleApproveComment = parseMultipleApproveComment
 
