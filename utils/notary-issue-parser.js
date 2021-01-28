@@ -118,5 +118,51 @@ function parseApproveComment(commentContent) {
   }
 }
 
+function matchAll(regex, content) {
+  var matches = [...content.matchAll(regex)]
+  if (matches !== null) {
+    // each entry in the array has this form: Array ["#### Address > f1111222333", "", "f1111222333"]
+    return matches.map(elem => elem[2])
+  }
+}
+
+function parseApproveMultipleComment(commentContent) {
+  const regexApproved = /##\s*Request\s*Approved/m
+  const regexAddress = /####\s*Address\s*(.*)\n>\s*(.*)/g
+  const regexDatacap = /####\s*Datacap\s*Allocated\s*(.*)\n>\s*(.*)/g
+
+  const approved = matchGroup(regexApproved, commentContent)
+
+  if (approved == null) {
+    return {
+      approvedMessage: false,
+    }
+  }
+
+  const datacaps = matchAll(regexDatacap, commentContent)
+  const addresses = matchAll(regexAddress, commentContent)
+
+  if (addresses != null && datacaps != null) {
+    return {
+      approvedMessage: true,
+      correct: true,
+      addresses: addresses,
+      datacaps: datacaps,
+    }
+  }
+
+  let errorMessage = ''
+  if (addresses == null) { errorMessage += 'We could not find the **Filecoin address** in the information provided in the comment\n' }
+  if (datacaps == null) { errorMessage += 'We could not find the **Datacap** allocated in the information provided in the comment\n' }
+  return {
+    approvedMessage: true,
+    correct: false,
+    errorMessage: errorMessage,
+    errorDetails: 'Unable to find required attributes.',
+  }
+}
+
 exports.parseIssue = parseIssue
 exports.parseApproveComment = parseApproveComment
+exports.parseApproveMultipleComment = parseApproveMultipleComment
+

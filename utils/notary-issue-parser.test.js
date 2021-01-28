@@ -1,6 +1,6 @@
 var fs = require('fs')
 var path = require('path')
-const { parseIssue, parseApproveComment } = require('./notary-issue-parser')
+const { parseIssue, parseApproveComment, parseApproveMultipleComment } = require('./notary-issue-parser')
 
 describe('parseIssue()', () => {
   it('we can parse an issue including the right data', () => {
@@ -53,6 +53,27 @@ describe('parseApproved()', () => {
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.approvedMessage).toBe(true)
     expect(parsedResult.address).toBe('f1111222333')
-    expect(parsedResult.datacap).toBe('5TB')
+    expect(parsedResult.datacap).toBe('5TiB')
   })
+})
+
+  describe('parseApprovedMultiple()', () => {
+    it('we can parse an approve comment including the right data', () => {
+      const commentContent = fs.readFileSync(
+        path.resolve(__dirname, '../samples/utils/notary_approved_comment.test.md'),
+        { encoding: 'utf8' },
+      )
+      const parsedResult = parseApproveMultipleComment(commentContent)
+  
+      console.log(parsedResult)
+  
+      expect(parsedResult.correct).toBe(true)
+      expect(parsedResult.approvedMessage).toBe(true)
+      expect(parsedResult.addresses[0]).toBe('f1111222333')
+      expect(parsedResult.datacaps[0]).toBe('5TiB')
+      expect(parsedResult.addresses[1]).toBe('f33332222111')
+      expect(parsedResult.datacaps[1]).toBe('1TiB')
+      expect(parsedResult.addresses[2]).toBe('f33332222111')
+      expect(parsedResult.datacaps[2]).toBe('10TiB')
+    })
 })
