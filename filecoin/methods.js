@@ -153,7 +153,9 @@ function make(testnet) {
       }
     }
 
+    console.log("Start estimnate gas...")
     const msg = await iterateGas(client, { ...tx, from: address, nonce })
+    console.log("Estimate gas: " + msg)
 
     return walletContext.sign(msg, indexAccount)
   }
