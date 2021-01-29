@@ -124,7 +124,7 @@ function make(testnet) {
   async function iterateGas(client, msg) {
     let maxfee = BigInt(Math.pow(Number(BigInt(10)), Number(BigInt(10))))
     let saved_error
-    let maxFeeComparison =  BigInt(2) *  BigInt(Math.pow(Number(BigInt(10)), Number(BigInt(18))))
+    const maxFeeComparison = BigInt(2) * BigInt(Math.pow(Number(BigInt(10)), Number(BigInt(18))))
     while (maxfee < maxFeeComparison) {
       try {
         maxfee = maxfee * 2n
