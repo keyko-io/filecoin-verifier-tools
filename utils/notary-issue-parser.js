@@ -165,4 +165,3 @@ function parseMultipleApproveComment(commentContent) {
 exports.parseIssue = parseIssue
 exports.parseApproveComment = parseApproveComment
 exports.parseMultipleApproveComment = parseMultipleApproveComment
-
