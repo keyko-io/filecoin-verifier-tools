@@ -168,12 +168,12 @@ function make(testnet) {
      To: tx.To,
      From: address,
      Nonce: nonce,
-     Value: value.toString() || '0',
+     Value: tx.value.toString() || '0',
      GasFeeCap: '0',
      GasPremium: '0',
      GasLimit: gas || 0,
-     Method: method,
-     Params: params.toString('base64'),
+     Method: tx.method,
+     Params: tx.params.toString('base64'),
    }
 
    console.log(estimation_msg)
