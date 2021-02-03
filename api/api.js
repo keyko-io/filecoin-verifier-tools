@@ -195,7 +195,6 @@ class VerifyAPI {
   }
 
   async multisigVerifyClient(multisigAddress, clientAddress, datacap, indexAccount, wallet, { gas } = { gas: 0 }) {
-
     const tx = this.methods.verifreg.addVerifiedClient(clientAddress, datacap)
     const m_actor = this.methods.actor(multisigAddress, this.methods.multisig)
 
