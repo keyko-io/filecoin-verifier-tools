@@ -171,7 +171,7 @@ function make(testnet) {
      Value: tx.value.toString() || '0',
      GasFeeCap: '0',
      GasPremium: '0',
-     GasLimit: gas || 0,
+     GasLimit: tx.gas || 0,
      Method: tx.method,
      Params: tx.params.toString('base64'),
    }
@@ -182,16 +182,16 @@ function make(testnet) {
    console.log(res)
 
    const msg = {
-     to: to,
-     from: address,
-     nonce: nonce,
-     value: value.toString() || '0',
-     gasfeecap: res.GasFeeCap,
-     gaspremium: res.GasPremium,
-     gaslimit: res.GasLimit,
-     method: method,
-     params: params,
-   }
+    to: tx.To,
+    from: address,
+    nonce: nonce,
+    value: tx.value.toString() || '0',
+    gasfeecap: res.GasFeeCap,
+    gaspremium: res.GasPremium,
+    gaslimit: res.GasLimit,
+    method: tx.method,
+    params: tx.params,
+  }
 
    return walletContext.sign(msg, indexAccount)
   }
