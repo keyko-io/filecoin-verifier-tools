@@ -142,6 +142,8 @@ function make(testnet) {
   }
 
   async function signTx(client, indexAccount, walletContext, tx) {
+
+    
     const head = await client.chainHead()
     const address = (await walletContext.getAccounts())[indexAccount]
 
@@ -153,12 +155,45 @@ function make(testnet) {
         nonce = tx.Nonce + 1
       }
     }
-
+/*
     console.log('Start estimnate gas...')
     const msg = await iterateGas(client, { ...tx, from: address, nonce })
     console.log('Estimate gas: ' + msg)
 
     return walletContext.sign(msg, indexAccount)
+    */
+
+  // OLD CODE WITH HARDCODED MAXFEE
+   const estimation_msg = {
+     To: to,
+     From: address,
+     Nonce: nonce,
+     Value: value.toString() || '0',
+     GasFeeCap: '0',
+     GasPremium: '0',
+     GasLimit: gas || 0,
+     Method: method,
+     Params: params.toString('base64'),
+   }
+
+   console.log(estimation_msg)
+
+   const res = await client.gasEstimateMessageGas(estimation_msg, { MaxFee: '10000000000000000' }, head.Cids)
+   console.log(res)
+
+   const msg = {
+     to: to,
+     from: address,
+     nonce: nonce,
+     value: value.toString() || '0',
+     gasfeecap: res.GasFeeCap,
+     gaspremium: res.GasPremium,
+     gaslimit: res.GasLimit,
+     method: method,
+     params: params,
+   }
+
+   return walletContext.sign(msg, indexAccount)
   }
 
   // returns tx hash
