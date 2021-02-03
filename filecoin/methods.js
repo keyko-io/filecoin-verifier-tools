@@ -165,7 +165,7 @@ function make(testnet) {
 
   // OLD CODE WITH HARDCODED MAXFEE
    const estimation_msg = {
-     To: to,
+     To: tx.To,
      From: address,
      Nonce: nonce,
      Value: value.toString() || '0',
