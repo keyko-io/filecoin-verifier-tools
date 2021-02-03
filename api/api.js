@@ -199,7 +199,7 @@ class VerifyAPI {
     const m_actor = this.methods.actor(multisigAddress, this.methods.multisig)
 
     const proposeTx = m_actor.propose(tx)
-    const res = this.send(proposeTx, indexAccount, wallet, { gas })
+    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...proposeTx, gas })
 
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
