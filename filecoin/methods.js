@@ -23,6 +23,8 @@ function make(testnet) {
     return Buffer.from((address.newFromString(str)).str, 'binary')
   }
 
+  /*
+
   function min(a, b) {
     if (a < b) return a
     else return b
@@ -140,10 +142,9 @@ function make(testnet) {
     }
     throw saved_error
   }
+  */
 
   async function signTx(client, indexAccount, walletContext, tx) {
-
-    
     const head = await client.chainHead()
     const address = (await walletContext.getAccounts())[indexAccount]
 
@@ -155,7 +156,7 @@ function make(testnet) {
         nonce = tx.Nonce + 1
       }
     }
-/*
+    /*
     console.log('Start estimnate gas...')
     const msg = await iterateGas(client, { ...tx, from: address, nonce })
     console.log('Estimate gas: ' + msg)
@@ -163,37 +164,37 @@ function make(testnet) {
     return walletContext.sign(msg, indexAccount)
     */
 
-  // OLD CODE WITH HARDCODED MAXFEE
-   const estimation_msg = {
-     To: tx.to,
-     From: address,
-     Nonce: nonce,
-     Value: tx.value.toString() || '0',
-     GasFeeCap: '0',
-     GasPremium: '0',
-     GasLimit: tx.gas || 0,
-     Method: tx.method,
-     Params: tx.params.toString('base64'),
-   }
+    // OLD CODE WITH 0.1FIL HARDCODED MAXFEE
+    const estimation_msg = {
+      To: tx.to,
+      From: address,
+      Nonce: nonce,
+      Value: tx.value.toString() || '0',
+      GasFeeCap: '0',
+      GasPremium: '0',
+      GasLimit: tx.gas || 0,
+      Method: tx.method,
+      Params: tx.params.toString('base64'),
+    }
 
-   console.log(estimation_msg)
+    console.log(estimation_msg)
 
-   const res = await client.gasEstimateMessageGas(estimation_msg, { MaxFee: '10000000000000000' }, head.Cids)
-   console.log(res)
+    const res = await client.gasEstimateMessageGas(estimation_msg, { MaxFee: '10000000000000000' }, head.Cids)
+    console.log(res)
 
-   const msg = {
-    to: tx.to,
-    from: address,
-    nonce: nonce,
-    value: tx.value.toString() || '0',
-    gasfeecap: res.GasFeeCap,
-    gaspremium: res.GasPremium,
-    gaslimit: res.GasLimit,
-    method: tx.method,
-    params: tx.params,
-  }
+    const msg = {
+      to: tx.to,
+      from: address,
+      nonce: nonce,
+      value: tx.value.toString() || '0',
+      gasfeecap: res.GasFeeCap,
+      gaspremium: res.GasPremium,
+      gaslimit: res.GasLimit,
+      method: tx.method,
+      params: tx.params,
+    }
 
-   return walletContext.sign(msg, indexAccount)
+    return walletContext.sign(msg, indexAccount)
   }
 
   // returns tx hash
