@@ -31,30 +31,24 @@ describe('readVarInt()', () => {
 const data = [
   'IkAAAA==',
   [
-    {
-      1: [
-        [
-          'AOsH',
-          'AAEl36NxoZ5vepcb1EmRplwAAA==',
-        ],
+    [
+      [
+        'AOsH',
+        'AAEl36NxoZ5vepcb1EmRplwAAA==',
       ],
-    },
-    {
-      1: [
-        [
-          'AOwH',
-          'AAEl36NxoZ5vfLVDlcoAAAAAAA==',
-        ],
+    ],
+    [
+      [
+        'AOwH',
+        'AAEl36NxoZ5vfLVDlcoAAAAAAA==',
       ],
-    },
-    {
-      1: [
-        [
-          'AFE=',
-          '',
-        ],
+    ],
+    [
+      [
+        'AFE=',
+        '',
       ],
-    },
+    ],
   ],
 ]
 

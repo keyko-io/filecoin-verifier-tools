@@ -25,10 +25,11 @@ async function load(a) {
 async function run() {
   while (true) {
     const head = await client.chainHead()
-    const state = head.Blocks[0].ParentStateRoot['/']
-    console.log('height', head.Height, state)
-    const data = (await client.chainGetNode(`${state}/1/@Ha:t080/1`)).Obj
-    console.log(JSON.stringify(data, null, 2))
+    console.log('height', head.Height)
+    const actor = await client.stateGetActor('t080', head.Cids)
+    console.log('actor', actor)
+    const data = (await client.chainGetNode(actor.Head['/'])).Obj
+    // console.log(JSON.stringify(data, null, 2))
     const info = methods.decode(methods.msig_state, data)
     console.log(info)
     const obj = await (await info.pending(load)).asObject(load)

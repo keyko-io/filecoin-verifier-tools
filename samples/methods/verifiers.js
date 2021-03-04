@@ -5,7 +5,7 @@ const { mainnet } = require('@filecoin-shipyard/lotus-client-schema')
 const hamt = require('../../hamt/hamt')
 const fs = require('fs')
 const constants = require('../constants')
-const methods = require('../../filecoin/methods')
+const methods = require('../../filecoin/methods').mainnet
 
 const endpointUrl = constants.lotus_endpoint
 const tokenPath = constants.token_path
@@ -32,9 +32,10 @@ async function run() {
     console.log('here')
     const head = await client.chainHead()
     console.log('height', head.Height)
-    const state = head.Blocks[0].ParentStateRoot['/']
-    console.log('height', head.Height, state)
-    const verifiers = (await client.chainGetNode(`${state}/1/@Ha:t06/1/1`)).Obj
+    const actor = await client.stateGetActor('t06', head.Cids)
+    console.log('actor', actor)
+    const verifiers = (await client.chainGetNode(`${actor.Head['/']}/1`)).Obj
+    // const verifiers = (await client.chainGetNode(`${state}/1/@Ha:t06/1/1`)).Obj
     console.log(JSON.stringify(verifiers, null, 2))
     await hamt.forEach(verifiers, load, print)
 

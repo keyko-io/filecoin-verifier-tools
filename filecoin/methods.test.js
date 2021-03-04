@@ -5,35 +5,33 @@ const methods = require('./methods').testnet
 const precommitData = [
   'Ag==',
   [
-    {
-      1: [
+    [
+      [
+        'Aw==',
         [
-          'Aw==',
           [
+            0,
+            3,
+            {
+              '/': 'bagboea4b5abcaz2agtrhorad327din3udimabrvwjxervgnd6dgds7wlwdla7qsq',
+            },
+            -520,
             [
-              0,
               3,
-              {
-                '/': 'bagboea4b5abcaz2agtrhorad327din3udimabrvwjxervgnd6dgds7wlwdla7qsq',
-              },
-              -520,
-              [
-                3,
-              ],
-              1025937,
-              false,
-              0,
-              0,
-              0,
             ],
-            'ABT0tcB+',
-            381,
-            'AB6NTgA=',
-            '',
+            1025937,
+            false,
+            0,
+            0,
+            0,
           ],
+          'ABT0tcB+',
+          381,
+          'AB6NTgA=',
+          '',
         ],
       ],
-    },
+    ],
   ],
 ]
 
