@@ -20,13 +20,13 @@ async function main() {
   for (const { verifier } of lst) {
     console.log(verifier, await api.checkVerifier(verifier))
   }
-  console.log('t01010', await api.checkVerifier('t01010'))
+  // console.log('t01003', await api.checkVerifier('t01003'))
   const lst2 = await api.listVerifiedClients()
   console.log(lst2)
   for (const { verified } of lst2) {
     console.log(verified, await api.checkClient(verified))
   }
-  console.log('t01010', await api.checkClient('t01010'))
+  // console.log('t01005', await api.checkClient('t01005'))
   process.exit(0)
 }
 

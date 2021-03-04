@@ -32,12 +32,14 @@ class VerifyAPI {
 
   async getPath(addr, path) {
     const head = await this.client.chainHead()
-    const state = head.Blocks[0].ParentStateRoot['/']
-    return (await this.client.chainGetNode(`${state}/1/@Ha:${addr}/${path}`)).Obj
+    const actor = await this.client.stateGetActor(addr, head.Cids)
+    // const state = head.Blocks[0].ParentStateRoot['/']
+    // return (await this.client.chainGetNode(`${state}/1/@Ha:${addr}/${path}`)).Obj
+    return (await this.client.chainGetNode(`${actor.Head['/']}/${path}`)).Obj
   }
 
   async listVerifiers() {
-    const verifiers = await this.getPath(this.methods.VERIFREG, '1/1')
+    const verifiers = await this.getPath(this.methods.VERIFREG, '1')
     const listOfVerifiers = await this.methods.buildArrayData(verifiers, a => this.load(a))
     const returnList = []
     for (const [key, value] of listOfVerifiers) {
@@ -93,7 +95,7 @@ class VerifyAPI {
   }
 
   async listVerifiedClients() {
-    const verified = await this.getPath(this.methods.VERIFREG, '1/2')
+    const verified = await this.getPath(this.methods.VERIFREG, '2')
     const listOfVerified = await this.methods.buildArrayData(verified, a => this.load(a))
     const returnList = []
     for (const [key, value] of listOfVerified) {
@@ -110,13 +112,15 @@ class VerifyAPI {
   }
 
   async listSigners(addr) {
-    const data = await this.getPath(addr, '1')
+    const data = await this.getPath(addr, '')
     const info = this.methods.decode(this.methods.msig_state, data)
     return info.signers
   }
 
   async actorType(addr) {
-    return this.getPath(addr, '0')
+    const head = await this.client.chainHead()
+    const actor = await this.client.stateGetActor(addr, head.Cids)
+    return actor.Code['/']
   }
 
   async cachedActorAddress(str) {
@@ -164,7 +168,7 @@ class VerifyAPI {
 
   async checkClient(verified) {
     try {
-      const data = await this.getPath(this.methods.VERIFREG, '1')
+      const data = await this.getPath(this.methods.VERIFREG, '')
       const info = this.methods.decode(this.methods.verifreg_state, data)
       const clients = await info.clients(a => this.load(a))
       const datacap = await clients.find(a => this.load(a), verified)
@@ -176,7 +180,7 @@ class VerifyAPI {
 
   async checkVerifier(verifier) {
     try {
-      const data = await this.getPath(this.methods.VERIFREG, '1')
+      const data = await this.getPath(this.methods.VERIFREG, '')
       const info = this.methods.decode(this.methods.verifreg_state, data)
       const verifiers = await info.verifiers(a => this.load(a))
       const datacap = await verifiers.find(a => this.load(a), verifier)
@@ -245,12 +249,12 @@ class VerifyAPI {
   }
 
   async multisigInfo(addr) {
-    const data = await this.getPath(addr, '1')
+    const data = await this.getPath(addr, '')
     return this.methods.decode(this.methods.msig_state, data)
   }
 
   async pendingTransactions(addr) {
-    const data = await this.getPath(addr, '1/6')
+    const data = await this.getPath(addr, '6')
     const info = this.methods.decode(this.methods.pending, data)
     const obj = await info.asObject(a => this.load(a))
     const returnList = []

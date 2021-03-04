@@ -39,14 +39,13 @@ async function getValue(n, load, hv, key) {
 
   const c = n.data.pointers[cindex]
 
-  if (c[0]) {
-    const child = await load(c[0]['/'])
-    return getValue({ bitWidth: n.bitWidth, data: parseNode(child) }, load, hv, key)
-  }
-  if (c[1]) {
-    for (const [k, v] of c[1]) {
+  if (c instanceof Array) {
+    for (const [k, v] of c) {
       if (k === key.toString('base64')) return makeBuffers(v)
     }
+  } else {
+    const child = await load(c['/'])
+    return getValue({ bitWidth: n.bitWidth, data: parseNode(child) }, load, hv, key)
   }
   throw new Error('key not found')
 }
@@ -65,14 +64,13 @@ exports.makeBuffers = makeBuffers
 
 async function forEach(n, load, cb) {
   for (const c of n.data.pointers) {
-    if (c[0]) {
-      const child = await load(c[0]['/'])
-      await forEach({ bitWidth: n.bitWidth, data: parseNode(child) }, load, cb)
-    }
-    if (c[1]) {
-      for (const [k, v] of c[1]) {
+    if (c instanceof Array) {
+      for (const [k, v] of c) {
         await cb(Buffer.from(k, 'base64'), makeBuffers(v))
       }
+    } else {
+      const child = await load(c['/'])
+      await forEach({ bitWidth: n.bitWidth, data: parseNode(child) }, load, cb)
     }
   }
 }
