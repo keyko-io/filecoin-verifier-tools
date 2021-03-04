@@ -23,7 +23,128 @@ function make(testnet) {
     return Buffer.from((address.newFromString(str)).str, 'binary')
   }
 
-  async function signTx(client, indexAccount, walletContext, { to, method, params, value, gas }) {
+  /*
+
+  function min(a, b) {
+    if (a < b) return a
+    else return b
+  }
+
+  function max(a, b) {
+    if (a > b) return a
+    else return b
+  }
+
+  const gasOveruseNum = 11n
+  const gasOveruseDenom = 10n
+
+  function computeGasToBurn(gasUsed, gasLimit) {
+    if (gasUsed === 0n) {
+      return gasLimit
+    }
+
+    // over = gasLimit/gasUsed - 1 - 0.1
+    // over = min(over, 1)
+    // gasToBurn = (gasLimit - gasUsed) * over
+
+    // so to factor out division from `over`
+    // over*gasUsed = min(gasLimit - (11*gasUsed)/10, gasUsed)
+    // gasToBurn = ((gasLimit - gasUsed)*over*gasUsed) / gasUsed
+    const overuse = gasUsed * gasOveruseNum / gasOveruseDenom
+    let over = gasLimit - overuse
+
+    if (over < 0n) {
+      return 0n
+    }
+
+    if (over > gasUsed) {
+      over = gasUsed
+    }
+
+    return (gasLimit - gasUsed - over) / gasUsed
+  }
+
+  function gasCalcTxFee(
+    gasFeeCap,
+    gasPremium,
+    gasLimit,
+    baseFee,
+    gasUsed,
+  ) {
+    // compute left side
+    const totalGas = gasUsed + computeGasToBurn(gasUsed, gasLimit)
+    const minBaseFeeFeeCap = min(baseFee, gasFeeCap)
+    const leftSide = totalGas * minBaseFeeFeeCap
+
+    // compute right side
+    const minTip = min(gasFeeCap - baseFee, gasPremium)
+    const rightSide = gasLimit * max(0n, minTip)
+
+    return leftSide + rightSide
+  }
+
+  async function estimateGas(client, maxfee, { to, method, params, value, gas, nonce, from }) {
+    const head = await client.chainHead()
+    const baseFee = BigInt(head.Blocks[0].ParentBaseFee)
+
+    const estimation_msg = {
+      To: to,
+      From: from,
+      Nonce: nonce,
+      Value: value.toString() || '0',
+      GasFeeCap: '0',
+      GasPremium: '0',
+      GasLimit: gas || 0,
+      Method: method,
+      Params: params.toString('base64'),
+    }
+
+    const res = await client.gasEstimateMessageGas(estimation_msg, { MaxFee: maxfee.toString() }, head.Cids)
+    // console.log(res)
+
+    const msg = {
+      to: to,
+      from: from,
+      nonce: nonce,
+      value: value.toString() || '0',
+      gasfeecap: res.GasFeeCap,
+      gaspremium: res.GasPremium,
+      gaslimit: res.GasLimit,
+      method: method,
+      params: params,
+    }
+
+    const msg2 = { ...msg, params: params.toString('base64') }
+
+    const { ExecutionTrace: { MsgRct: { GasUsed } } } = await client.stateCall(msg2, head.Cids)
+    const fee = gasCalcTxFee(BigInt(res.GasFeeCap), BigInt(res.GasPremium), BigInt(res.GasLimit), baseFee, BigInt(GasUsed))
+    // console.log("got fee", fee)
+
+    return [msg, fee]
+  }
+
+  async function iterateGas(client, msg) {
+    let maxfee = BigInt(Math.pow(Number(BigInt(10)), Number(BigInt(10))))
+    let saved_error
+    const maxFeeComparison = BigInt(2) * BigInt(Math.pow(Number(BigInt(10)), Number(BigInt(18))))
+    while (maxfee < maxFeeComparison) {
+      try {
+        maxfee = maxfee * 2n
+        const [res, fee] = await estimateGas(client, maxfee, msg)
+        const ratio = 100n * fee / maxfee
+        console.log('fee', fee, 'max', maxfee, 'ratio', ratio)
+        if (ratio < 10n) {
+          return res
+        }
+      } catch (err) {
+        saved_error = err
+      }
+    }
+    throw saved_error
+  }
+  */
+
+  async function signTx(client, indexAccount, walletContext, tx) {
     const head = await client.chainHead()
     const address = (await walletContext.getAccounts())[indexAccount]
 
@@ -35,33 +156,41 @@ function make(testnet) {
         nonce = tx.Nonce + 1
       }
     }
+    /*
+    console.log('Start estimnate gas...')
+    const msg = await iterateGas(client, { ...tx, from: address, nonce })
+    console.log('Estimate gas: ' + msg)
+
+    return walletContext.sign(msg, indexAccount)
+    */
+
+    // OLD CODE WITH 0.1FIL HARDCODED MAXFEE
     const estimation_msg = {
-      To: to,
+      To: tx.to,
       From: address,
       Nonce: nonce,
-      Value: value.toString() || '0',
+      Value: tx.value.toString() || '0',
       GasFeeCap: '0',
       GasPremium: '0',
-      GasLimit: gas || 0,
-      Method: method,
-      Params: params.toString('base64'),
+      GasLimit: tx.gas || 0,
+      Method: tx.method,
+      Params: tx.params.toString('base64'),
     }
 
     console.log(estimation_msg)
-
-    const res = await client.gasEstimateMessageGas(estimation_msg, { MaxFee: '10000000000000000' }, head.Cids)
+    const res = await client.gasEstimateMessageGas(estimation_msg, { MaxFee: '100000000000000000' }, head.Cids)
     console.log(res)
 
     const msg = {
-      to: to,
+      to: tx.to,
       from: address,
       nonce: nonce,
-      value: value.toString() || '0',
+      value: tx.value.toString() || '0',
       gasfeecap: res.GasFeeCap,
       gaspremium: res.GasPremium,
       gaslimit: res.GasLimit,
-      method: method,
-      params: params,
+      method: tx.method,
+      params: tx.params,
     }
 
     return walletContext.sign(msg, indexAccount)

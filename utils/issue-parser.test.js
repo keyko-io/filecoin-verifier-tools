@@ -16,6 +16,7 @@ describe('parseIssue()', () => {
     expect(parsedResult.datacap).toBe('10TiB')
     expect(parsedResult.website).toContain('https://protocol.ai/')
     expect(parsedResult.notary).toBe('notaryuser')
+    expect(parsedResult.region).toBe('Europe')
   })
 
   it('we can not parse an invalid issue', () => {

@@ -194,6 +194,18 @@ class VerifyAPI {
     return res['/']
   }
 
+  async multisigVerifyClient(multisigAddress, clientAddress, datacap, indexAccount, wallet, { gas } = { gas: 0 }) {
+    const tx = this.methods.verifreg.addVerifiedClient(clientAddress, datacap)
+    const m_actor = this.methods.actor(multisigAddress, this.methods.multisig)
+
+    const proposeTx = m_actor.propose(tx)
+    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...proposeTx, gas })
+
+    // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
+    // we return the messageID
+    return res['/']
+  }
+
   async approvePending(msig, tx, from, wallet) {
     const m1_actor = this.methods.actor(msig, this.methods.multisig)
     await this.send(m1_actor.approve(parseInt(tx.id), tx.tx), from, wallet)

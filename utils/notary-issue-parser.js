@@ -1,11 +1,13 @@
 
-function parseIssue(issueContent) {
+function parseIssue(issueContent, issueTitle = '') {
   const regexName = /-\s*Name:\s*(.*)/m
   const regexWebsite = /-\s*Website\s*\/\s*Social\s*Media:\s*(.*)/m
   const regexAddress = /-\s*On-chain\s*Address\(es\)\s*to\s*be\s*Notarized:\s*(.*)/m
   const regexRegion = /-\s*Region\s*of\s*Operation:\s*(.*)/m
   const regexUseCases = /-\s*Use\s*case\(s\)\s*to\s*be\s*supported:\s*(.*)/m
   const regexDatacapRequested = /-\s*DataCap\s*Requested:\s*(.*)/m
+
+  const regextRemovalTitle = /\s*Notary\s*DataCap\s*Removal:\s*(.*)/m
 
   const name = matchGroup(regexName, issueContent)
   const website = matchGroup(regexWebsite, issueContent)
@@ -25,6 +27,25 @@ function parseIssue(issueContent) {
       website: website,
       region: region,
       useCases: useCases,
+      datacapRemoval: false,
+    }
+  }
+
+  if (issueTitle !== '') {
+    const removalAddress = matchGroup(regextRemovalTitle, issueTitle)
+    if (removalAddress != null) {
+      return {
+        correct: true,
+        errorMessage: '',
+        errorDetails: '',
+        name: '',
+        address: removalAddress,
+        datacapRequested: '0B',
+        website: '',
+        region: '',
+        useCases: '',
+        datacapRemoval: true,
+      }
     }
   }
 
@@ -97,5 +118,50 @@ function parseApproveComment(commentContent) {
   }
 }
 
+function matchAll(regex, content) {
+  var matches = [...content.matchAll(regex)]
+  if (matches !== null) {
+    // each entry in the array has this form: Array ["#### Address > f1111222333", "", "f1111222333"]
+    return matches.map(elem => elem[2])
+  }
+}
+
+function parseMultipleApproveComment(commentContent) {
+  const regexApproved = /##\s*Request\s*Approved/m
+  const regexAddress = /####\s*Address\s*(.*)\n>\s*(.*)/g
+  const regexDatacap = /####\s*Datacap\s*Allocated\s*(.*)\n>\s*(.*)/g
+
+  const approved = matchGroup(regexApproved, commentContent)
+
+  if (approved == null) {
+    return {
+      approvedMessage: false,
+    }
+  }
+
+  const datacaps = matchAll(regexDatacap, commentContent)
+  const addresses = matchAll(regexAddress, commentContent)
+
+  if (addresses != null && datacaps != null) {
+    return {
+      approvedMessage: true,
+      correct: true,
+      addresses: addresses,
+      datacaps: datacaps,
+    }
+  }
+
+  let errorMessage = ''
+  if (addresses == null) { errorMessage += 'We could not find the **Filecoin address** in the information provided in the comment\n' }
+  if (datacaps == null) { errorMessage += 'We could not find the **Datacap** allocated in the information provided in the comment\n' }
+  return {
+    approvedMessage: true,
+    correct: false,
+    errorMessage: errorMessage,
+    errorDetails: 'Unable to find required attributes.',
+  }
+}
+
 exports.parseIssue = parseIssue
 exports.parseApproveComment = parseApproveComment
+exports.parseMultipleApproveComment = parseMultipleApproveComment
