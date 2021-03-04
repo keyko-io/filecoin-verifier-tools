@@ -383,7 +383,7 @@ function make(testnet) {
 
   function encode(schema, data) {
     if (schema === 'address') {
-      console.log(data)
+      // console.log(data)
       return addressAsBytes(data)
     }
     if (schema === 'bigint') {

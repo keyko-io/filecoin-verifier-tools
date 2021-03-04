@@ -28,12 +28,6 @@ const schema = {
   value: 'bigint',
 }
 
-const schema2 = {
-  type: 'hamt',
-  key: 'address',
-  value: 'buffer',
-}
-
 async function run() {
   const head = await client.chainHead()
   console.log('height', head.Height)

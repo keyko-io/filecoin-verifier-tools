@@ -41,7 +41,7 @@ async function getValue(n, load, hv, key) {
 
   if (c instanceof Array) {
     for (const [k, v] of c) {
-      if (k === key.toString('base64')) return makeBuffers(v)
+      if (makeBuffers(k).toString() === makeBuffers(key).toString()) return makeBuffers(v)
     }
   } else {
     const child = await load(c['/'])
@@ -66,7 +66,7 @@ async function forEach(n, load, cb) {
   for (const c of n.data.pointers) {
     if (c instanceof Array) {
       for (const [k, v] of c) {
-        await cb(Buffer.from(k, 'base64'), makeBuffers(v))
+        await cb(makeBuffers(k), makeBuffers(v))
       }
     } else {
       const child = await load(c['/'])
