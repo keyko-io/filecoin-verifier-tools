@@ -583,6 +583,10 @@ function make(testnet) {
         cap: 'bigint',
       },
     },
+    3: {
+      name: 'removeVerifier',
+      input: 'address',
+    },
     4: {
       name: 'addVerifiedClient',
       input: {
