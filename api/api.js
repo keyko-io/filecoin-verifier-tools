@@ -65,7 +65,7 @@ class VerifyAPI {
     return res['/']
   }
 
-  async removeVerifier(verifierAccount, indexAccount, wallet, { gas } = { gas: 0 }) {
+  async proposeRemoveVerifier(verifierAccount, indexAccount, wallet, { gas } = { gas: 0 }) {
     // Not address but account in the form "t01004", for instance
     const tx = this.methods.rootkey.propose(this.methods.verifreg.removeVerifier(verifierAccount))
     const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas })
@@ -87,6 +87,16 @@ class VerifyAPI {
     // Not address but account in the form "t01003", for instance
     const add = this.methods.verifreg.addVerifier(verifierAccount, datacap)
     const tx = this.methods.rootkey.approve(parseInt(transactionId, 10), { ...add, from: fromAccount })
+    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas })
+    // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
+    // we return the messageID
+    return res['/']
+  }
+
+  async removeVerifier(verifierAccount, fromAccount, transactionId, indexAccount, wallet, { gas } = { gas: 0 }) {
+    // Not address but account in the form "t01003", for instance
+    const remove = this.methods.verifreg.removeVerifier(verifierAccount)
+    const tx = this.methods.rootkey.approve(parseInt(transactionId, 10), { ...remove, from: fromAccount })
     const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas })
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
