@@ -1,22 +1,20 @@
 var fs = require('fs')
 var path = require('path')
-const { parseIssue, parseApproveComment, parseMultipleApproveComment } = require('./notary-issue-parser')
+const { parseIssue, parseApproveComment, parseMultipleApproveComment } = require('./large-issue-parser')
 
 describe('parseIssue()', () => {
   it('we can parse an issue including the right data', () => {
     const issueContent = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/notary_application.test.md'),
+      path.resolve(__dirname, '../samples/utils/large_client_application.test.md'),
       { encoding: 'utf8' },
     )
     const parsedResult = parseIssue(issueContent)
 
     expect(parsedResult.correct).toBe(true)
-    expect(parsedResult.name).toBe('Notary A')
+    expect(parsedResult.name).toBe('Client A')
     expect(parsedResult.address).toBe('f1111222333')
     expect(parsedResult.datacapRequested).toBe('10TB')
     expect(parsedResult.website).toBe('info.org')
-    expect(parsedResult.region).toBe('[North America]')
-    expect(parsedResult.useCases).toBe('[Developer Tools, Web 3.0]')
   })
 
   it('we can not parse an invalid issue', () => {
@@ -29,7 +27,7 @@ describe('parseIssue()', () => {
 describe('parseRemovalIssue()', () => {
   it('we can parse an issue including the right data', () => {
     const issueContent = 'This is an issue to remove the DataCap associated with f1sdzgaqmitbvgktkklpuaxohg6nuhce5eyvwxhbb.\nThis address was used by the Filecoin Foundation during the Filecoin Beta for allocations. Now that a new allocation has been made to a new address, this should be set to 0.'
-    const issueTitle = 'Notary DataCap Removal: f1sdzgaqmitbvgktkklpuaxohg6nuhce5eyvwxhbb'
+    const issueTitle = 'Large Client Request DataCap Removal: f1sdzgaqmitbvgktkklpuaxohg6nuhce5eyvwxhbb'
 
     const parsedResult = parseIssue(issueContent, issueTitle)
 
@@ -43,12 +41,10 @@ describe('parseRemovalIssue()', () => {
 describe('parseApproved()', () => {
   it('we can parse an approve comment including the right data', () => {
     const commentContent = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/notary_approved_comment.test.md'),
+      path.resolve(__dirname, '../samples/utils/large_request_approved_comment.test.md'),
       { encoding: 'utf8' },
     )
     const parsedResult = parseApproveComment(commentContent)
-
-    console.log(parsedResult)
 
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.approvedMessage).toBe(true)
@@ -60,12 +56,10 @@ describe('parseApproved()', () => {
 describe('parseApprovedMultiple()', () => {
   it('we can parse an approve comment including the right data', () => {
     const commentContent = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/notary_approved_comment.test.md'),
+      path.resolve(__dirname, '../samples/utils/large_request_approved_comment.test.md'),
       { encoding: 'utf8' },
     )
     const parsedResult = parseMultipleApproveComment(commentContent)
-
-    console.log(parsedResult)
 
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.approvedMessage).toBe(true)

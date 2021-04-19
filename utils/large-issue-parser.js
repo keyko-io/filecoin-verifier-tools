@@ -1,20 +1,18 @@
 
 function parseIssue(issueContent, issueTitle = '') {
-  const regexName = /-\s*Name:\s*(.*)/m
+  const regexName = /-\s*Organization\s*Name:\s*(.*)/m
   const regexWebsite = /-\s*Website\s*\/\s*Social\s*Media:\s*(.*)/m
   const regexAddress = /-\s*On-chain\s*Address\(es\)\s*to\s*be\s*Notarized:\s*(.*)/m
-  const regexUseCases = /-\s*Use\s*case\(s\)\s*to\s*be\s*supported:\s*(.*)/m
   const regexDatacapRequested = /-\s*DataCap\s*Requested:\s*(.*)/m
 
-  const regextRemovalTitle = /\s*Notary\s*DataCap\s*Removal:\s*(.*)/m
+  const regextRemovalTitle = /\s*Large\s*Client\s*Request\s*DataCap\s*Removal:\s*(.*)/m
 
   const name = matchGroup(regexName, issueContent)
   const website = matchGroup(regexWebsite, issueContent)
   const address = matchGroup(regexAddress, issueContent)
   const datacapRequested = matchGroup(regexDatacapRequested, issueContent)
-  const useCases = matchGroup(regexUseCases, issueContent)
 
-  if (name != null && address != null && datacapRequested != null && website != null && region != null && useCases != null) {
+  if (name != null && address != null && datacapRequested != null && website != null) {
     return {
       correct: true,
       errorMessage: '',
@@ -23,7 +21,6 @@ function parseIssue(issueContent, issueTitle = '') {
       address: address,
       datacapRequested: datacapRequested,
       website: website,
-      useCases: useCases,
       datacapRemoval: false,
     }
   }
@@ -39,7 +36,6 @@ function parseIssue(issueContent, issueTitle = '') {
         address: removalAddress,
         datacapRequested: '0B',
         website: '',
-        useCases: '',
         datacapRemoval: true,
       }
     }
@@ -50,7 +46,6 @@ function parseIssue(issueContent, issueTitle = '') {
   if (address == null) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
   if (datacapRequested == null) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
   if (website == null) { errorMessage += 'We could not find any **Web site or social media info** in the information provided\n' }
-  if (useCases == null) { errorMessage += 'We could not find any **Use Case** in the information provided\n' }
 
   return {
     correct: false,
@@ -59,8 +54,7 @@ function parseIssue(issueContent, issueTitle = '') {
         The name= ${name},
         address= ${address},
         datacapRequested= ${datacapRequested},
-        website= ${website},
-        useCases= ${useCases}`,
+        website= ${website}`,
   }
 }
 

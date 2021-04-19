@@ -48,8 +48,6 @@ describe('parseApproved()', () => {
     )
     const parsedResult = parseApproveComment(commentContent)
 
-    console.log(parsedResult)
-
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.approvedMessage).toBe(true)
     expect(parsedResult.address).toBe('f1111222333')
@@ -64,8 +62,6 @@ describe('parseApprovedMultiple()', () => {
       { encoding: 'utf8' },
     )
     const parsedResult = parseMultipleApproveComment(commentContent)
-
-    console.log(parsedResult)
 
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.approvedMessage).toBe(true)
