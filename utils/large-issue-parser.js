@@ -150,6 +150,47 @@ function parseMultipleApproveComment(commentContent) {
   }
 }
 
+function parseMultisigNotaryRequest(commentContent) {
+  const regexMultisig = /##\s*Multisig\s*Notary\s*requested/m
+  const regexAddresses = /####\s*Notary\s*addresses\s*(.*)\n>\s*(.*)/g
+  const regexTotalDatacap = /####\s*Total\s*DataCap\s*requested\s*(.*)\n>\s*(.*)/g
+  const regexWeeklyDatacap = /####\s*Expected\s*weekly\s*DataCap\s*usage\s*rate\s*(.*)\n>\s*(.*)/g
+
+  const multisig = matchGroup(regexMultisig, commentContent)
+
+  if (multisig == null) {
+    return {
+      multisigMessage: false,
+    }
+  }
+
+  const addresses = matchAll(regexAddresses, commentContent)
+  const totalDatacaps = matchAll(regexTotalDatacap, commentContent)
+  const weeklyDatacap = matchAll(regexWeeklyDatacap, commentContent)
+  
+  if (addresses != null && datacaps != null) {
+    return {
+      multisigMessage: true,
+      correct: true,
+      addresses: addresses,
+      totalDatacaps: totalDatacaps,
+      weeklyDatacap: weeklyDatacap
+    }
+  }
+
+  let errorMessage = ''
+  if (addresses == null) { errorMessage += 'We could not find the **Filecoin addresses** in the information provided in the comment\n' }
+  if (totalDatacaps == null) { errorMessage += 'We could not find the **Total Datacap** allocated in the information provided in the comment\n' }
+  if (weeklyDatacap == null) { errorMessage += 'We could not find the **Weekly Datacap** allocated in the information provided in the comment\n' }
+  return {
+    multisigMessage: true,
+    correct: false,
+    errorMessage: errorMessage,
+    errorDetails: 'Unable to find required attributes.',
+  }
+}
+
 exports.parseIssue = parseIssue
 exports.parseApproveComment = parseApproveComment
 exports.parseMultipleApproveComment = parseMultipleApproveComment
+exports.parseMultisigNotaryRequest = parseMultisigNotaryRequest
