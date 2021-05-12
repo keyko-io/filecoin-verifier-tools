@@ -152,7 +152,7 @@ function parseMultipleApproveComment(commentContent) {
 
 function parseMultisigNotaryRequest(commentContent) {
   const regexMultisig = /##\s*Multisig\s*Notary\s*requested/m
-  const regexAddresses = /(?<=>\s).*\n(?=[\s\S]*####\s*Total\s*DataCap\s*requested)/gm
+  const regexAddresses = /(?<=>\s)[a-zA-Z0-9]*(?=[\s\S]*####\sTotal\sDataCap\srequested)/gm
   const regexTotalDatacap = /####\s*Total\s*DataCap\s*requested\s*(.*)\n>\s*(.*)/g
   const regexWeeklyDatacap = /####\s*Expected\s*weekly\s*DataCap\s*usage\s*rate\s*(.*)\n>\s*(.*)/g
 
