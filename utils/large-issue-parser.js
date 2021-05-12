@@ -168,7 +168,7 @@ function parseMultisigNotaryRequest(commentContent) {
   const totalDatacaps = matchAll(regexTotalDatacap, commentContent)
   const weeklyDatacap = matchAll(regexWeeklyDatacap, commentContent)
   
-  if (addresses != null && datacaps != null) {
+  if (addresses != null && totalDatacaps != null && weeklyDatacap) {
     return {
       multisigMessage: true,
       correct: true,
