@@ -164,7 +164,7 @@ function parseMultisigNotaryRequest(commentContent) {
     }
   }
 
-  const addresses = matchAll(regexAddresses, commentContent)
+  const addresses = [...commentContent.match(regexAddresses)]
   const totalDatacaps = matchAll(regexTotalDatacap, commentContent)
   const weeklyDatacap = matchAll(regexWeeklyDatacap, commentContent)
   
