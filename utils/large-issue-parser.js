@@ -190,7 +190,27 @@ function parseMultisigNotaryRequest(commentContent) {
   }
 }
 
+function parseNotaryConfirmation(commentContent, title) {
+  const regexConfirmation = /##\s*The\s*request\s*has\s*been\s*signed\s*by\s*a\s*new\s*Root\s*Key\s*Holder/m
+  const regexTitleNumber = /(?<=Large dataset multisig request #)[0-9*]/m
+
+  const confirmation = matchGroup(regexConfirmation, commentContent)
+  const number = [...title.match(regexTitleNumber)]
+
+  if (confirmation == null) {
+    return {
+      confirmationMessage: false,
+    }
+  } else {
+    return {
+      confirmationMessage: true,
+      number: number
+    }
+  }
+}
+
 exports.parseIssue = parseIssue
 exports.parseApproveComment = parseApproveComment
 exports.parseMultipleApproveComment = parseMultipleApproveComment
 exports.parseMultisigNotaryRequest = parseMultisigNotaryRequest
+exports.parseNotaryConfirmation = parseNotaryConfirmation
