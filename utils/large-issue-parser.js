@@ -209,8 +209,49 @@ function parseNotaryConfirmation(commentContent, title) {
   }
 }
 
+function parseReleaseRequest(commentContent) {
+  const regexMultisig = /##\s*DataCap\s*Allocation\s*requested/m
+  const regexNotaryAddress = /####\s*Multisig\s*Notary\s*address\s*>\s*(.*)/g
+  const regexClientAddress = /####\s*Client\s*address\s*>\s*(.*)/g
+  const regexAllocationDatacap = /####\s*DataCap\s*allocation\s*requested\s*(.*)\n>\s*(.*)/g
+
+  const multisig = matchGroup(regexMultisig, commentContent)
+
+  if (multisig == null) {
+    return {
+      multisigMessage: false,
+    }
+  }
+
+  const notaryAddress = [...commentContent.match(regexNotaryAddress)]
+  const clientAddress = [...commentContent.match(regexClientAddress)]
+  const allocationAddress = [...commentContent.match(regexAllocationDatacap)]
+  
+  if (notaryAddress != null && totalDatacaps != null && weeklyDatacap) {
+    return {
+      multisigMessage: true,
+      correct: true,
+      notaryAddress: notaryAddress,
+      clientAddress: clientAddress,
+      allocationAddress: allocationAddress
+    }
+  }
+
+  let errorMessage = ''
+  if (notaryAddress == null) { errorMessage += 'We could not find the **Filecoin notary address** in the information provided in the comment\n' }
+  if (clientAddress == null) { errorMessage += 'We could not find the **Client address** in the information provided in the comment\n' }
+  if (allocationAddress == null) { errorMessage += 'We could not find the **Alocation address** allocated in the information provided in the comment\n' }
+  return {
+    multisigMessage: true,
+    correct: false,
+    errorMessage: errorMessage,
+    errorDetails: 'Unable to find required attributes.',
+  }
+}
+
 exports.parseIssue = parseIssue
 exports.parseApproveComment = parseApproveComment
 exports.parseMultipleApproveComment = parseMultipleApproveComment
 exports.parseMultisigNotaryRequest = parseMultisigNotaryRequest
 exports.parseNotaryConfirmation = parseNotaryConfirmation
+exports.parseReleaseRequest = parseReleaseRequest
