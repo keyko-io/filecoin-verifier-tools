@@ -167,14 +167,14 @@ function parseMultisigNotaryRequest(commentContent) {
   const addresses = [...commentContent.match(regexAddresses)]
   const totalDatacaps = matchAll(regexTotalDatacap, commentContent)
   const weeklyDatacap = matchAll(regexWeeklyDatacap, commentContent)
-  
+
   if (addresses != null && totalDatacaps != null && weeklyDatacap) {
     return {
       multisigMessage: true,
       correct: true,
       addresses: addresses,
       totalDatacaps: totalDatacaps,
-      weeklyDatacap: weeklyDatacap
+      weeklyDatacap: weeklyDatacap,
     }
   }
 
@@ -204,7 +204,7 @@ function parseNotaryConfirmation(commentContent, title) {
   } else {
     return {
       confirmationMessage: true,
-      number: number
+      number: number,
     }
   }
 }
@@ -226,14 +226,14 @@ function parseReleaseRequest(commentContent) {
   const notaryAddress = [...commentContent.match(regexNotaryAddress)]
   const clientAddress = [...commentContent.match(regexClientAddress)]
   const allocationAddress = [...commentContent.match(regexAllocationDatacap)]
-  
-  if (notaryAddress != null && totalDatacaps != null && weeklyDatacap) {
+
+  if (notaryAddress != null && clientAddress != null && allocationAddress != null) {
     return {
       multisigMessage: true,
       correct: true,
       notaryAddress: notaryAddress,
       clientAddress: clientAddress,
-      allocationAddress: allocationAddress
+      allocationAddress: allocationAddress,
     }
   }
 
