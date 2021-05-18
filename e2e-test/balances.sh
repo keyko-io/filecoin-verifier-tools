@@ -53,11 +53,11 @@ echo 5
 sleep 10
 echo 6
 
-node $JSDIR/samples/api/new-msig.js
-sleep 15
+#node $JSDIR/samples/api/new-msig.js
+#sleep 15
 
-rm ~/filecoin-verifier-service/app_msig_address
-tmux new-window -t lotus:4 -n appservice -d bash run-app-service.sh
+#rm ~/filecoin-verifier-service/app_msig_address
+#tmux new-window -t lotus:4 -n appservice -d bash run-app-service.sh
 
 node $JSDIR/samples/api/propose-verifier.js t01009
 lotus msig inspect t080
