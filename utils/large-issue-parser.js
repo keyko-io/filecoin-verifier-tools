@@ -223,24 +223,24 @@ function parseReleaseRequest(commentContent) {
     }
   }
 
-  const notaryAddress = [...commentContent.match(regexNotaryAddress)]
-  const clientAddress = [...commentContent.match(regexClientAddress)]
-  const allocationAddress = [...commentContent.match(regexAllocationDatacap)]
+  const notaryAddress = matchGroup(regexNotaryAddress, commentContent)
+  const clientAddress = matchGroup(regexClientAddress, commentContent)
+  const allocationDatacap = matchGroup(regexAllocationDatacap, commentContent)
 
-  if (notaryAddress != null && clientAddress != null && allocationAddress != null) {
+  if (notaryAddress != null && clientAddress != null && allocationDatacap != null) {
     return {
       multisigMessage: true,
       correct: true,
       notaryAddress: notaryAddress,
       clientAddress: clientAddress,
-      allocationAddress: allocationAddress,
+      allocationDatacap: allocationDatacap,
     }
   }
 
   let errorMessage = ''
   if (notaryAddress == null) { errorMessage += 'We could not find the **Filecoin notary address** in the information provided in the comment\n' }
   if (clientAddress == null) { errorMessage += 'We could not find the **Client address** in the information provided in the comment\n' }
-  if (allocationAddress == null) { errorMessage += 'We could not find the **Alocation address** allocated in the information provided in the comment\n' }
+  if (allocationDatacap == null) { errorMessage += 'We could not find the **Alocation datacap** in the information provided in the comment\n' }
   return {
     multisigMessage: true,
     correct: false,
