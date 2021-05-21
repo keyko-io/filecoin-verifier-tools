@@ -213,7 +213,7 @@ function parseReleaseRequest(commentContent) {
   const regexMultisig = /##\s*DataCap\s*Allocation\s*requested/m
   const regexNotaryAddress = /####\s*Multisig\s*Notary\s*address\s*>\s*(.*)/g
   const regexClientAddress = /####\s*Client\s*address\s*>\s*(.*)/g
-  const regexAllocationDatacap = /####\s*DataCap\s*allocation\s*requested\s*(.*)\n>\s*(.*)/g
+  const regexAllocationDatacap = /####\s*DataCap\s*allocation\s*requested\s*\n>\s*(.*)/g
 
   const multisig = matchGroup(regexMultisig, commentContent)
 
