@@ -6,7 +6,7 @@ class MockWallet {
     this.path = path
   }
 
-  async getAccounts(nStart = 0, nEnd = 5) {
+  async getAccounts(nStart = 0, nEnd = 10) {
     const accounts = []
     for (let i = nStart; i < nEnd; i += 1) {
       accounts.push(
