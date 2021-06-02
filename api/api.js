@@ -273,11 +273,15 @@ class VerifyAPI {
   }
 
   async pendingTransactions(addr) {
+    console.log("addr", addr)
     const data = await this.getPath(addr, '6')
+    console.log("data", data)
     const info = this.methods.decode(this.methods.pending, data)
+    console.log("info", info)
     const obj = await info.asObject(a => this.load(a))
     const returnList = []
     for (const [k, v] of Object.entries(obj)) {
+      console.log(k, v)
       const parsed = this.methods.parse(v)
       returnList.push({
         id: parseInt(k),
