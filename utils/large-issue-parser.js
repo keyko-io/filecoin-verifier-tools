@@ -160,7 +160,7 @@ function parseMultisigNotaryRequest(commentContent) {
 
   if (multisig == null) {
     return {
-      multisigMessage: false,
+      multisigNotaryMessage: false,
     }
   }
 
@@ -170,7 +170,7 @@ function parseMultisigNotaryRequest(commentContent) {
 
   if (addresses != null && totalDatacaps != null && weeklyDatacap) {
     return {
-      multisigMessage: true,
+      multisigNotaryMessage: true,
       correct: true,
       addresses: addresses,
       totalDatacaps: totalDatacaps,
@@ -183,7 +183,7 @@ function parseMultisigNotaryRequest(commentContent) {
   if (totalDatacaps == null) { errorMessage += 'We could not find the **Total Datacap** allocated in the information provided in the comment\n' }
   if (weeklyDatacap == null) { errorMessage += 'We could not find the **Weekly Datacap** allocated in the information provided in the comment\n' }
   return {
-    multisigMessage: true,
+    multisigNotaryMessage: true,
     correct: false,
     errorMessage: errorMessage,
     errorDetails: 'Unable to find required attributes.',
@@ -219,17 +219,17 @@ function parseReleaseRequest(commentContent) {
 
   if (multisig == null) {
     return {
-      multisigMessage: false,
+      multisigAllocationMessage: false,
     }
   }
 
   const notaryAddress = matchGroup(regexNotaryAddress, commentContent)
   const clientAddress = matchGroup(regexClientAddress, commentContent)
-  const allocationDatacap = matchGroup(regexAllocationDatacap, commentContent)
+  const allocationAddress = matchAll(regexAllocationDatacap, commentContent)
 
   if (notaryAddress != null && clientAddress != null && allocationDatacap != null) {
     return {
-      multisigMessage: true,
+      multisigAllocationMessage: true,
       correct: true,
       notaryAddress: notaryAddress,
       clientAddress: clientAddress,
@@ -242,7 +242,7 @@ function parseReleaseRequest(commentContent) {
   if (clientAddress == null) { errorMessage += 'We could not find the **Client address** in the information provided in the comment\n' }
   if (allocationDatacap == null) { errorMessage += 'We could not find the **Alocation datacap** in the information provided in the comment\n' }
   return {
-    multisigMessage: true,
+    multisigAllocationMessage: true,
     correct: false,
     errorMessage: errorMessage,
     errorDetails: 'Unable to find required attributes.',
