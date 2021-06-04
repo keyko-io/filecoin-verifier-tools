@@ -226,6 +226,7 @@ function parseReleaseRequest(commentContent) {
   const notaryAddress = matchGroup(regexNotaryAddress, commentContent)
   const clientAddress = matchGroup(regexClientAddress, commentContent)
   const allocationDatacap = matchGroup(regexAllocationDatacap, commentContent)
+  const allocationDataCapAmount = matchAll(regexAllocationDatacap, commentContent)
 
   if (notaryAddress != null && clientAddress != null && allocationDatacap != null) {
     return {
@@ -234,6 +235,7 @@ function parseReleaseRequest(commentContent) {
       notaryAddress: notaryAddress,
       clientAddress: clientAddress,
       allocationDatacap: allocationDatacap,
+      allocationDataCapAmount: allocationDataCapAmount
     }
   }
 
