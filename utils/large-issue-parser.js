@@ -227,13 +227,13 @@ function parseReleaseRequest(commentContent) {
   const clientAddress = matchGroup(regexClientAddress, commentContent)
   const allocationAddress = matchAll(regexAllocationDatacap, commentContent)
 
-  if (notaryAddress != null && clientAddress != null && allocationDatacap != null) {
+  if (notaryAddress != null && clientAddress != null && allocationAddress != null) {
     return {
       multisigAllocationMessage: true,
       correct: true,
       notaryAddress: notaryAddress,
       clientAddress: clientAddress,
-      allocationDatacap: allocationDatacap,
+      allocationDatacap: allocationAddress,
     }
   }
 
