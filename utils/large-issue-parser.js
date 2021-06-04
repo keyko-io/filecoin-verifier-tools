@@ -235,7 +235,7 @@ function parseReleaseRequest(commentContent) {
       notaryAddress: notaryAddress,
       clientAddress: clientAddress,
       allocationDatacap: allocationDatacap,
-      allocationDataCapAmount: allocationDataCapAmount
+      allocationDataCapAmount: allocationDataCapAmount,
     }
   }
 
