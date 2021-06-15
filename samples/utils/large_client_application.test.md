@@ -14,8 +14,8 @@ To apply as a large client, please fill out the following form.
 ## Core Information
 - Organization Name: Client A
 - Website / Social Media: info.org
-- DataCap Requested: 10TB
-- On-chain Address(es) to be Notarized: f1111222333
+- Total amount of DataCap being requested (between 500 TiB and 5 PiB): 10TB
+- On-chain address for first allocation: f1111222333
 
 ## Project details
 - Describe the data being stored onto Filecoin
