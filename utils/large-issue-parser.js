@@ -152,7 +152,7 @@ function parseMultipleApproveComment(commentContent) {
 
 function parseMultisigNotaryRequest(commentContent) {
   const regexMultisig = /##\s*Multisig\s*Notary\s*requested/m
-  const regexAddresses = /(?<=>\s)[a-zA-Z0-9]*(?=[\s\S]*####\sTotal\sDataCap\srequested)/gm
+  const regexAddresses = /[a-zA-Z0-9]{41}(?=[\s\S]*####\sTotal\sDataCap\srequested)/gm
   const regexTotalDatacap = /####\s*Total\s*DataCap\s*requested\s*(.*)\n>\s*(.*)/g
   const regexWeeklyDatacap = /####\s*Expected\s*weekly\s*DataCap\s*usage\s*rate\s*(.*)\n>\s*(.*)/g
 
@@ -179,7 +179,7 @@ function parseMultisigNotaryRequest(commentContent) {
   }
 
   let errorMessage = ''
-  if (addresses == null) { errorMessage += 'We could not find the **Filecoin addresses** in the information provided in the comment\n' }
+  if (addresses == null || addresses.length === 0) { errorMessage += 'We could not find the **Filecoin addresses** in the information provided in the comment\n' }
   if (totalDatacaps == null) { errorMessage += 'We could not find the **Total Datacap** allocated in the information provided in the comment\n' }
   if (weeklyDatacap == null) { errorMessage += 'We could not find the **Weekly Datacap** allocated in the information provided in the comment\n' }
   return {
@@ -192,10 +192,10 @@ function parseMultisigNotaryRequest(commentContent) {
 
 function parseNotaryConfirmation(commentContent, title) {
   const regexConfirmation = /##\s*The\s*request\s*has\s*been\s*signed\s*by\s*a\s*new\s*Root\s*Key\s*Holder/m
-  const regexTitleNumber = /(?<=Large dataset multisig request #)[0-9]*/m
+  const regexTitleNumber = /Large\sdataset\smultisig\srequest\s#\s*([0-9]*)/m
 
   const confirmation = matchGroup(regexConfirmation, commentContent)
-  const number = [...title.match(regexTitleNumber)]
+  const number = Number([...title.match(regexTitleNumber)][1])
 
   if (confirmation == null) {
     return {
