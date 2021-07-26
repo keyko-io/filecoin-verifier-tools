@@ -231,7 +231,8 @@ class VerifyAPI {
 
   async approvePending(msig, tx, from, wallet) {
     const m1_actor = this.methods.actor(msig, this.methods.multisig)
-    await this.send(m1_actor.approve(parseInt(tx.id), tx.tx), from, wallet)
+    const messageId = await this.send(m1_actor.approve(parseInt(tx.id), tx.tx), from, wallet)
+    return messageId
   }
 
   async cancelPending(msig, tx, from, wallet) {
