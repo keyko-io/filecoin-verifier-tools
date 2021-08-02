@@ -17,9 +17,10 @@ const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
 async function main() {
   const accts = await mockWallet.getAccounts()
   console.log(accts)
-  const textile = accts[3]
+  const a1 = accts[0]
+  const a2 = accts[1]
 
-  const m0_addr = await api.newMultisig([textile], 1, 1000n, 3)
+  const m0_addr = await api.newMultisig([a1,a2], 2, 1000n, 3)
   console.log('M0', m0_addr)
 
   /*

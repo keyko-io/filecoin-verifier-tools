@@ -24,6 +24,8 @@ const key2 = signer.keyDerive(constants.rootkey_mnemonic, `${constants.path}/2`,
 console.log('rootkey address', key2.address)
 
 async function main() {
+  let accounts = await mockWallet.getAccounts()
+  console.log(accounts)
   await methods.sendTx(client, 2, mockWallet, methods.encodeSend('t01000'))
   process.exit(0)
 }
