@@ -250,9 +250,42 @@ function parseReleaseRequest(commentContent) {
   }
 }
 
+function parseWeeklyDataCapAllocationUpdateRequest(commentContent) {
+
+  const regexRequest = /##\s*Weekly\s*DataCap\s*Allocation\s*Update\s*requested/m
+  const regexDataCap = /####\s*Update\s*to\s*expected\s*weekly\s*DataCap\s*usage\s*rate\s*>\s*(.*)/g
+
+  const request = matchGroup(regexRequest, commentContent)
+  if (request == null) {
+    return {
+      multisigMessage: false,
+    }
+  }
+
+  const allocationDatacap = matchGroup(regexDataCap, commentContent)
+  if (allocationDatacap != null ) {
+    return {
+      multisigMessage: true,
+      correct: true,
+      allocationDatacap: allocationDatacap,
+    }
+  }
+
+  let errorMessage = ''
+  if (allocationDatacap == null) { errorMessage += 'We could not find the **Alocation datacap** in the information provided in the comment\n' }
+  return {
+    multisigMessage: true,
+    correct: false,
+    errorMessage: errorMessage,
+    errorDetails: 'Unable to find required attributes.',
+  }
+}
+
+
 exports.parseIssue = parseIssue
 exports.parseApproveComment = parseApproveComment
 exports.parseMultipleApproveComment = parseMultipleApproveComment
 exports.parseMultisigNotaryRequest = parseMultisigNotaryRequest
 exports.parseNotaryConfirmation = parseNotaryConfirmation
 exports.parseReleaseRequest = parseReleaseRequest
+exports.parseWeeklyDataCapAllocationUpdateRequest = parseWeeklyDataCapAllocationUpdateRequest

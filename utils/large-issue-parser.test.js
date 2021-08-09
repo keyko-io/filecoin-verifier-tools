@@ -7,6 +7,7 @@ const {
   parseNotaryConfirmation,
   parseMultisigNotaryRequest,
   parseReleaseRequest,
+  parseWeeklyDataCapAllocationUpdateRequest
 } = require('./large-issue-parser')
 
 describe('parseIssue()', () => {
@@ -125,5 +126,20 @@ describe('parseReleaseRequest()', () => {
     expect(parsedResult.clientAddress).toBe('f3vnq2cmwig3qjisnx5hobxvsd4drn4f54xfxnv4tciw6vnjdsf5xipgafreprh5riwmgtcirpcdmi3urbg36a')
     expect(parsedResult.allocationDatacap).toBe('10TiB')
     expect(parsedResult.allocationDataCapAmount[0]).toBe('10TiB')
+  })
+})
+
+describe('parseWeeklyDataCapAllocationUpdateRequest()', () => {
+  it('we can parse dataCap allocation updates requests', () => {
+    const commentContent = fs.readFileSync(
+      path.resolve(__dirname, '../samples/utils/weekly_datacap_update_request.test.md'),
+      { encoding: 'utf8' },
+    )
+    
+    const parsedResult = parseWeeklyDataCapAllocationUpdateRequest(commentContent)
+    expect(parsedResult.multisigMessage).toBe(true)
+    expect(parsedResult.correct).toBe(true)
+    expect(parsedResult.allocationDatacap).toBe('10TiB')
+
   })
 })
