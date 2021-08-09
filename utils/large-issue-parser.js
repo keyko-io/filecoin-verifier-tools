@@ -251,7 +251,6 @@ function parseReleaseRequest(commentContent) {
 }
 
 function parseWeeklyDataCapAllocationUpdateRequest(commentContent) {
-
   const regexRequest = /##\s*Weekly\s*DataCap\s*Allocation\s*Update\s*requested/m
   const regexDataCap = /####\s*Update\s*to\s*expected\s*weekly\s*DataCap\s*usage\s*rate\s*>\s*(.*)/g
 
@@ -263,7 +262,7 @@ function parseWeeklyDataCapAllocationUpdateRequest(commentContent) {
   }
 
   const allocationDatacap = matchGroup(regexDataCap, commentContent)
-  if (allocationDatacap != null ) {
+  if (allocationDatacap != null) {
     return {
       multisigMessage: true,
       correct: true,
@@ -280,7 +279,6 @@ function parseWeeklyDataCapAllocationUpdateRequest(commentContent) {
     errorDetails: 'Unable to find required attributes.',
   }
 }
-
 
 exports.parseIssue = parseIssue
 exports.parseApproveComment = parseApproveComment

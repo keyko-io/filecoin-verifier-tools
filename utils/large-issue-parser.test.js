@@ -7,7 +7,7 @@ const {
   parseNotaryConfirmation,
   parseMultisigNotaryRequest,
   parseReleaseRequest,
-  parseWeeklyDataCapAllocationUpdateRequest
+  parseWeeklyDataCapAllocationUpdateRequest,
 } = require('./large-issue-parser')
 
 describe('parseIssue()', () => {
@@ -135,11 +135,10 @@ describe('parseWeeklyDataCapAllocationUpdateRequest()', () => {
       path.resolve(__dirname, '../samples/utils/weekly_datacap_update_request.test.md'),
       { encoding: 'utf8' },
     )
-    
+
     const parsedResult = parseWeeklyDataCapAllocationUpdateRequest(commentContent)
     expect(parsedResult.multisigMessage).toBe(true)
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.allocationDatacap).toBe('10TiB')
-
   })
 })
