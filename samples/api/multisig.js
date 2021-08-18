@@ -22,7 +22,6 @@ async function run() {
   console.log(await api.pendingTransactions('t080'))
 
   process.exit(0)
-
 }
 
 run()
