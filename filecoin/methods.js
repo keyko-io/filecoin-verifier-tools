@@ -310,7 +310,7 @@ function make(testnet) {
       return hamt.bytesToBig(data) / 2n
     }
     if (schema === 'bigint-key') {
-      return hamt.bytesToBig(data) / 2n
+      return hamt.readVarInt(data) / 2n
     }
     if (schema === 'int' || schema === 'buffer' || schema === 'bool') {
       return data
@@ -555,7 +555,7 @@ function make(testnet) {
 
   const pending = {
     type: 'hamt',
-    key: 'bigint-signed',
+    key: 'bigint-key',
     value: {
       to: 'address',
       value: 'bigint',
