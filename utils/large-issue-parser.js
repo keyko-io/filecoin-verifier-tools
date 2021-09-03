@@ -4,15 +4,16 @@ function parseIssue(issueContent, issueTitle = '') {
   const regexWebsite = /-\s*Website\s*\/\s*Social\s*Media:\s*(.*)/m
   const regexAddress = /-\s*On-chain\s*address\s*for\s*first\s*allocation:\s*(.*)/m
   const regexDatacapRequested = /-\s*Total\s*amount\s*of\s*DataCap\s*being\s*requested\s*\(between 500 TiB and 5 PiB\)\s*:\s*(.*)/m
-
   const regextRemovalTitle = /\s*Large\s*Client\s*Request\s*DataCap\s*Removal:\s*(.*)/m
+  const regexDcFirstAllocation = /-\s*DataCap\s*to\s*request\s*for\s*first\s*allocation:\s*(.*)/m
 
   const name = matchGroup(regexName, issueContent)
   const website = matchGroup(regexWebsite, issueContent)
   const address = matchGroup(regexAddress, issueContent)
   const datacapRequested = matchGroup(regexDatacapRequested, issueContent)
+  const dataCapFirstAllocation = matchGroup(regexDcFirstAllocation, issueContent)
 
-  if (name != null && address != null && datacapRequested != null && website != null) {
+  if (name != null && address != null && datacapRequested != null && website != null && dataCapFirstAllocation != null) {
     return {
       correct: true,
       errorMessage: '',
@@ -20,6 +21,7 @@ function parseIssue(issueContent, issueTitle = '') {
       name: name,
       address: address,
       datacapRequested: datacapRequested,
+      dataCapFirstAllocation: dataCapFirstAllocation,
       website: website,
       datacapRemoval: false,
     }
@@ -46,6 +48,7 @@ function parseIssue(issueContent, issueTitle = '') {
   if (address == null) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
   if (datacapRequested == null) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
   if (website == null) { errorMessage += 'We could not find any **Web site or social media info** in the information provided\n' }
+  if (dataCapFirstAllocation == null) { errorMessage += 'We could not find any **DataCap to request for 1st allocation** in the information provided\n' }
 
   return {
     correct: false,

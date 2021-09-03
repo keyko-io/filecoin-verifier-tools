@@ -17,12 +17,14 @@ describe('parseIssue()', () => {
       { encoding: 'utf8' },
     )
     const parsedResult = parseIssue(issueContent)
+    console.log(parsedResult)
 
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.name).toBe('Client A')
     expect(parsedResult.address).toBe('f1111222333')
     expect(parsedResult.datacapRequested).toBe('10TB')
     expect(parsedResult.website).toBe('info.org')
+    expect(parsedResult.dataCapFirstAllocation).toBe('10TiB')
   })
 
   it('we can not parse an invalid issue', () => {
