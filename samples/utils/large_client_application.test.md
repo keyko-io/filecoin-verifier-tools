@@ -16,6 +16,8 @@ To apply as a large client, please fill out the following form.
 - Website / Social Media: info.org
 - Total amount of DataCap being requested (between 500 TiB and 5 PiB): 10TB
 - On-chain address for first allocation: f1111222333
+- Expected weekly DataCap usage rate: 9TiB
+
 
 ## Project details
 - Describe the data being stored onto Filecoin

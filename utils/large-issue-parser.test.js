@@ -23,6 +23,7 @@ describe('parseIssue()', () => {
     expect(parsedResult.address).toBe('f1111222333')
     expect(parsedResult.datacapRequested).toBe('10TB')
     expect(parsedResult.website).toBe('info.org')
+    expect(parsedResult.dataCapWeeklyAllocation).toBe('9TiB')
   })
 
   it('we can not parse an invalid issue', () => {
