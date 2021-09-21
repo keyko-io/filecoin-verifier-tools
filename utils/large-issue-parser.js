@@ -5,7 +5,7 @@ function parseIssue(issueContent, issueTitle = '') {
   const regexAddress = /-\s*On-chain\s*address\s*for\s*first\s*allocation:\s*(.*)/m
   const regexDatacapRequested = /-\s*Total\s*amount\s*of\s*DataCap\s*being\s*requested\s*\(between 500 TiB and 5 PiB\)\s*:\s*(.*)/m
   const regextRemovalTitle = /\s*Large\s*Client\s*Request\s*DataCap\s*Removal:\s*(.*)/m
-  const regexWeeklyDataCapAllocation = /-\s*Expected\s*weekly\s*DataCap\s*usage\s*rate:\s*(.*)\s*(.*)/m
+  const regexWeeklyDataCapAllocation = /-\s*Weekly\s*allocation\s*of\s*DataCap\s*requested\s*\(usually between 1-100TiB\)\s*:\s*(.*)/m
 
   const name = matchGroup(regexName, issueContent)
   const website = matchGroup(regexWebsite, issueContent)
@@ -156,7 +156,7 @@ function parseMultipleApproveComment(commentContent) {
 
 function parseMultisigNotaryRequest(commentContent) {
   const regexMultisig = /##\s*Multisig\s*Notary\s*requested/m
-  const regexAddresses = /[a-zA-Z0-9]{41}(?=[\s\S]*####\sTotal\sDataCap\srequested)/gm
+  // const regexAddresses = /[a-zA-Z0-9]{41}(?=[\s\S]*####\sTotal\sDataCap\srequested)/gm
   const regexTotalDatacap = /####\s*Total\s*DataCap\s*requested\s*(.*)\n>\s*(.*)/g
   const regexWeeklyDatacap = /####\s*Expected\s*weekly\s*DataCap\s*usage\s*rate\s*(.*)\n>\s*(.*)/g
 
@@ -168,22 +168,22 @@ function parseMultisigNotaryRequest(commentContent) {
     }
   }
 
-  const addresses = [...commentContent.match(regexAddresses)]
+  // const addresses = [...commentContent.match(regexAddresses)]
   const totalDatacaps = matchAll(regexTotalDatacap, commentContent)
   const weeklyDatacap = matchAll(regexWeeklyDatacap, commentContent)
 
-  if (addresses != null && totalDatacaps != null && weeklyDatacap) {
+  if (/*addresses != null* && */totalDatacaps != null && weeklyDatacap) {
     return {
       multisigMessage: true,
       correct: true,
-      addresses: addresses,
+      // addresses: addresses,
       totalDatacaps: totalDatacaps,
       weeklyDatacap: weeklyDatacap,
     }
   }
 
   let errorMessage = ''
-  if (addresses == null || addresses.length === 0) { errorMessage += 'We could not find the **Filecoin addresses** in the information provided in the comment\n' }
+  // if (addresses == null || addresses.length === 0) { errorMessage += 'We could not find the **Filecoin addresses** in the information provided in the comment\n' }
   if (totalDatacaps == null) { errorMessage += 'We could not find the **Total Datacap** allocated in the information provided in the comment\n' }
   if (weeklyDatacap == null) { errorMessage += 'We could not find the **Weekly Datacap** allocated in the information provided in the comment\n' }
   return {
