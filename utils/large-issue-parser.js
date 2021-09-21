@@ -156,7 +156,6 @@ function parseMultipleApproveComment(commentContent) {
 
 function parseMultisigNotaryRequest(commentContent) {
   const regexMultisig = /##\s*Multisig\s*Notary\s*requested/m
-  // const regexAddresses = /[a-zA-Z0-9]{41}(?=[\s\S]*####\sTotal\sDataCap\srequested)/gm
   const regexTotalDatacap = /####\s*Total\s*DataCap\s*requested\s*(.*)\n>\s*(.*)/g
   const regexWeeklyDatacap = /####\s*Expected\s*weekly\s*DataCap\s*usage\s*rate\s*(.*)\n>\s*(.*)/g
 
@@ -168,15 +167,13 @@ function parseMultisigNotaryRequest(commentContent) {
     }
   }
 
-  // const addresses = [...commentContent.match(regexAddresses)]
   const totalDatacaps = matchAll(regexTotalDatacap, commentContent)
   const weeklyDatacap = matchAll(regexWeeklyDatacap, commentContent)
 
-  if (/*addresses != null* && */totalDatacaps != null && weeklyDatacap) {
+  if (totalDatacaps != null && weeklyDatacap) {
     return {
       multisigMessage: true,
       correct: true,
-      // addresses: addresses,
       totalDatacaps: totalDatacaps,
       weeklyDatacap: weeklyDatacap,
     }
