@@ -1,3 +1,5 @@
 [API]
   ListenAddress = "/ip4/0.0.0.0/tcp/2345/http"
   Timeout = "60s"
+[Dealmaking]
+  PublishMsgPeriod = "0h5m0s"

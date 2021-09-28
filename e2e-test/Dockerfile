@@ -51,12 +51,17 @@ RUN git clone https://github.com/keyko-io/filecoin-verifier-tools/ --depth 1 --b
 RUN cd filecoin-verifier-tools/ && \
     yarn
 
+RUN mkdir -p /root/.lotus/keystore
+
+COPY MF2XI2BNNJ3XILLQOJUXMYLUMU /root/.lotus/keystore/
+COPY rpc-token /root/.lotus/token
 COPY entrypoint.bash /bin/entrypoint
 COPY rootkey1 /rootkey1
 COPY dddd /dddd
 COPY setup.sh /bin/setup.sh
 COPY config.toml /root/config.toml
 COPY config-miner.toml /root/config-miner.toml
+
 
 # API port
 EXPOSE 1234
@@ -68,5 +73,5 @@ EXPOSE 2345
 
 ENTRYPOINT ["/bin/entrypoint"]
 
-# docker build . -t mrsmkl/lotus:21-01-15
-# docker run --name lotus --rm -ti -p 1234:1234 -p 2345:2345  mrsmkl/lotus:21-01-15
+# docker build . -t mrsmkl/lotus:21-09-28
+# docker run --name lotus --rm -ti -p 1234:1234 -p 2345:2345  mrsmkl/lotus:21-09-28

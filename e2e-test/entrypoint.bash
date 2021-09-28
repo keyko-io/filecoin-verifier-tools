@@ -18,8 +18,8 @@ restart_lotus() {
 
 configure_lotus() {
 
-  mkdir ~/.lotus
-  mkdir ~/.lotusminer
+  mkdir -p ~/.lotus
+  mkdir -p ~/.lotusminer
 
   echo -e "\nPre-seal some sectors:\n"
   $LOTUS_SEED pre-seal --sector-size 2KiB --num-sectors 2
@@ -66,7 +66,9 @@ restart_lotus() {
 
 main() {
 
-  echo -e "\nUsing Lotus Path: $LOTUS_PATH \n"
+  echo -e "\nKey\n"
+
+  cat ~/.lotus/keystore/MF2XI2BNNJ3XILLQOJUXMYLUMU
 
   if [ -f ~/.lotusminer/token ]; then
     restart_lotus
