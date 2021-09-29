@@ -1,9 +1,9 @@
 # initial version from https://github.com/openworklabs/filecoin-docker
 # build container stage
-FROM golang:1.15.6 AS build-env
+FROM golang:1.16.8 AS build-env
 
 # branch or tag of the lotus version to build
-ARG BRANCH=v1.9.0
+ARG BRANCH=v1.11.0
 
 RUN echo "Building lotus from branch $BRANCH"
 
@@ -23,11 +23,11 @@ RUN cd lotus && \
     install -C ./lotus-seed /usr/local/bin/lotus-seed
 
 # runtime container stage
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 # Instead of running apt-get just copy the certs and binaries that keeps the runtime image nice and small
 RUN apt-get update && \
-    apt-get install sudo ca-certificates mesa-opencl-icd ocl-icd-opencl-dev tmux jq libhwloc5 -y && \
+    apt-get install sudo ca-certificates mesa-opencl-icd ocl-icd-opencl-dev tmux jq hwloc -y && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=build-env /usr/local/bin/lotus /usr/local/bin/lotus

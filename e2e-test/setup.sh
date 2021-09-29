@@ -77,7 +77,7 @@ lotus client deal --verified-deal --from $CLIENT $DATA t01000 0.005 1000000
 
 while true
 do
- sleep 10
+ sleep 100
  lotus-miner sectors list
  lotus-miner sectors seal 2
 done
