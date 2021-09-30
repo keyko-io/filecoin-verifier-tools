@@ -8,6 +8,7 @@ const {
   parseMultisigNotaryRequest,
   parseReleaseRequest,
   parseWeeklyDataCapAllocationUpdateRequest,
+  parseApprovedRequestWithSignerAddress
 } = require('./large-issue-parser')
 
 describe('parseIssue()', () => {
@@ -77,6 +78,23 @@ describe('parseApprovedMultiple()', () => {
     expect(parsedResult.datacaps[1]).toBe('1TiB')
     expect(parsedResult.addresses[2]).toBe('f222233334444')
     expect(parsedResult.datacaps[2]).toBe('10TiB')
+  })
+})
+
+describe('parseApprovedRequestWithSignerAddress()', () => {
+  it('we can parse an approve comment including the right data', () => {
+    const commentContent = fs.readFileSync(
+      path.resolve(__dirname, '../samples/utils/ldn_approve_dc_request_comment.test.md'),
+      { encoding: 'utf8' },
+    )
+    const parsedResult = parseApprovedRequestWithSignerAddress(commentContent)
+
+    expect(parsedResult.correct).toBe(true)
+    expect(parsedResult.approvedMessage).toBe(true)
+    expect(parsedResult.address).toBe('t1rbfyvybljzd5xcouqjx22juucdj3xbwtro2crwq')
+    expect(parsedResult.datacap).toBe('50TiB')
+    expect(parsedResult.signerAddress).toBe('t1gechnbsldgbqan4q2dwjsicbh25n5xvvdzhqd3y')
+    expect(parsedResult.message).toBe('bafy2bzacec7gf6xycdqw3fzgs76ppn3mgtojntd5tvqrrmedvcqciw5tghjps')
   })
 })
 

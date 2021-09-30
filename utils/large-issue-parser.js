@@ -154,6 +154,51 @@ function parseMultipleApproveComment(commentContent) {
   }
 }
 
+function parseApprovedRequestWithSignerAddress(commentContent) {
+  const regexApproved = /##\s*Request\s*Approved/m
+  const regexAddress = /####\s*Address\W*^>\s*(.*)/m
+  const regexDatacap = /####\s*Datacap\s*Allocated\W*^>\s*(.*)/m
+  const regexSignerAddress = /####\s*Signer\s*Address\s*\n>\s*(.*)/g
+  const regexMessage = /####\s*Message\s*sent\s*to\s*Filecoin\s*Network\s*\n>\s*(.*)/g
+
+  const approved = matchGroup(regexApproved, commentContent)
+
+  if (approved == null) {
+    return {
+      approvedMessage: false,
+    }
+  }
+
+  const datacap = matchGroup(regexDatacap, commentContent)
+  const address = matchGroup(regexAddress, commentContent)
+  const signerAddress = matchGroup(regexSignerAddress, commentContent)
+  const message = matchGroup(regexMessage, commentContent)
+
+
+  if (address != null && datacap != null && signerAddress != null && message != null) {
+    return {
+      approvedMessage: true,
+      correct: true,
+      address: address,
+      datacap: datacap,
+      signerAddress: signerAddress,
+      message: message
+    }
+  }
+
+  let errorMessage = ''
+  if (address == null) { errorMessage += 'We could not find the **Filecoin address** in the information provided in the comment\n' }
+  if (datacap == null) { errorMessage += 'We could not find the **Datacap** allocated in the information provided in the comment\n' }
+  if (signerAddress == null) { errorMessage += 'We could not find the **signerAddress** in the information provided in the comment\n' }
+  if (message == null) { errorMessage += 'We could not find the **message** in the information provided in the comment\n' }
+  return {
+    approvedMessage: true,
+    correct: false,
+    errorMessage: errorMessage,
+    errorDetails: 'Unable to find required attributes.',
+  }
+}
+
 function parseMultisigNotaryRequest(commentContent) {
   const regexMultisig = /##\s*Multisig\s*Notary\s*requested/m
   const regexTotalDatacap = /####\s*Total\s*DataCap\s*requested\s*(.*)\n>\s*(.*)/g
@@ -288,3 +333,4 @@ exports.parseMultisigNotaryRequest = parseMultisigNotaryRequest
 exports.parseNotaryConfirmation = parseNotaryConfirmation
 exports.parseReleaseRequest = parseReleaseRequest
 exports.parseWeeklyDataCapAllocationUpdateRequest = parseWeeklyDataCapAllocationUpdateRequest
+exports.parseApprovedRequestWithSignerAddress = parseApprovedRequestWithSignerAddress
