@@ -174,7 +174,6 @@ function parseApprovedRequestWithSignerAddress(commentContent) {
   const signerAddress = matchGroup(regexSignerAddress, commentContent)
   const message = matchGroup(regexMessage, commentContent)
 
-
   if (address != null && datacap != null && signerAddress != null && message != null) {
     return {
       approvedMessage: true,
@@ -182,7 +181,7 @@ function parseApprovedRequestWithSignerAddress(commentContent) {
       address: address,
       datacap: datacap,
       signerAddress: signerAddress,
-      message: message
+      message: message,
     }
   }
 

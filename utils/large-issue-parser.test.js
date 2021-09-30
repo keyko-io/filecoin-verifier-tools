@@ -8,7 +8,7 @@ const {
   parseMultisigNotaryRequest,
   parseReleaseRequest,
   parseWeeklyDataCapAllocationUpdateRequest,
-  parseApprovedRequestWithSignerAddress
+  parseApprovedRequestWithSignerAddress,
 } = require('./large-issue-parser')
 
 describe('parseIssue()', () => {
