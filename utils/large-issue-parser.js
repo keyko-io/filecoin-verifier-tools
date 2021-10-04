@@ -1,11 +1,11 @@
 
 function parseIssue(issueContent, issueTitle = '') {
-  const regexName = /-\s*Organization\s*Name:\s*(.*)/m
-  const regexWebsite = /-\s*Website\s*\/\s*Social\s*Media:\s*(.*)/m
-  const regexAddress = /-\s*On-chain\s*address\s*for\s*first\s*allocation:\s*(.*)/m
-  const regexDatacapRequested = /-\s*Total\s*amount\s*of\s*DataCap\s*being\s*requested\s*\(between 500 TiB and 5 PiB\)\s*:\s*(.*)/m
-  const regextRemovalTitle = /\s*Large\s*Client\s*Request\s*DataCap\s*Removal:\s*(.*)/m
-  const regexWeeklyDataCapAllocation = /-\s*Weekly\s*allocation\s*of\s*DataCap\s*requested\s*\(usually between 1-100TiB\)\s*:\s*(.*)/m
+  const regexName = /[\n\r][ \t]*-\s*Organization\s*Name:[ \t]*([^\n\r]*)/
+  const regexWebsite = /[\n\r][ \t]*-\s*Website\s*\/\s*Social\s*Media:[ \t]*([^\n\r]*)/m
+  const regexAddress = /[\n\r][ \t]*-\s*On-chain\s*address\s*for\s*first\s*allocation:[ \t]*([^\n\r]*)/m
+  const regexDatacapRequested = /[\n\r][ \t]*-\s*Total\s*amount\s*of\s*DataCap\s*being\s*requested\s*\(between 500 TiB and 5 PiB\)\s*:[ \t]*([^\n\r]*)/m
+  const regextRemovalTitle = /#\s*Large\s*Client\s*Request\s*DataCap\s*Removal:[ \t]*([^\n\r]*)/m
+  const regexWeeklyDataCapAllocation = /[\n\r][ \t]*-\s*Weekly\s*allocation\s*of\s*DataCap\s*requested\s*\(usually between 1-100TiB\)\s*:[ \t]*([^\n\r]*)/m
 
   const name = matchGroup(regexName, issueContent)
   const website = matchGroup(regexWebsite, issueContent)
@@ -13,7 +13,7 @@ function parseIssue(issueContent, issueTitle = '') {
   const datacapRequested = matchGroup(regexDatacapRequested, issueContent)
   const dataCapWeeklyAllocation = matchGroup(regexWeeklyDataCapAllocation, issueContent)
 
-  if (name != null && address != null && datacapRequested != null && website != null && dataCapWeeklyAllocation != null) {
+  if (name && address && datacapRequested && website && dataCapWeeklyAllocation) {
     return {
       correct: true,
       errorMessage: '',
@@ -28,8 +28,8 @@ function parseIssue(issueContent, issueTitle = '') {
   }
 
   if (issueTitle !== '') {
-    const removalAddress = matchGroup(regextRemovalTitle, issueTitle)
-    if (removalAddress != null) {
+    const removalAddress = matchGroup(regextRemovalTitle, issueContent)
+    if (removalAddress) {
       return {
         correct: true,
         errorMessage: '',
@@ -45,11 +45,11 @@ function parseIssue(issueContent, issueTitle = '') {
   }
 
   let errorMessage = ''
-  if (name == null) { errorMessage += 'We could not find your **Name** in the information provided\n' }
-  if (address == null) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
-  if (datacapRequested == null) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
-  if (website == null) { errorMessage += 'We could not find any **Web site or social media info** in the information provided\n' }
-  if (dataCapWeeklyAllocation == null) { errorMessage += 'We could not find any **Expected weekly DataCap usage rate** in the information provided\n' }
+  if (!name) { errorMessage += 'We could not find your **Name** in the information provided\n' }
+  if (!address) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
+  if (!datacapRequested) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
+  if (!website) { errorMessage += 'We could not find any **Web site or social media info** in the information provided\n' }
+  if (!dataCapWeeklyAllocation) { errorMessage += 'We could not find any **Expected weekly DataCap usage rate** in the information provided\n' }
 
   return {
     correct: false,
@@ -66,9 +66,9 @@ function matchGroup(regex, content) {
   let m
   if ((m = regex.exec(content)) !== null) {
     if (m.length >= 2) {
-      return m[1]
+      return m[1].trim()
     }
-    return m[0]
+    return m[0].trim()
   }
 }
 

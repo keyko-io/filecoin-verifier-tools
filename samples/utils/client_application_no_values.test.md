@@ -1,12 +1,12 @@
 # Client Allocation Questions 
 For Clients, please note that your responses (past the Core Information section) are entirely optional. However, without answering in detail your total approved DataCap may be limited. 
 ## Core Information
-- Name:    Protocol Labs
-- Website / Social Media: https://protocol.ai/   
-- DataCap Requested:      10TiB
-- Addresses to be Notarized:    t0231874218
-- Notary Requested:notaryuser
-- Region: Europe
+- Name:
+- Website / Social Media:
+- DataCap Requested:
+- Addresses to be Notarized:
+- Notary Requested: 
+- Region:
 
 -----------------------------
 ## Reputation

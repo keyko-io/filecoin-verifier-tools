@@ -12,11 +12,11 @@ assignees: ''
 To apply as a large client, please fill out the following form. 
 
 ## Core Information
-- Organization Name:     Client A
-- Website / Social Media: info.org    
-- Total amount of DataCap being requested (between 500 TiB and 5 PiB):     10TB
-- On-chain address for first allocation:     f1111222333
-- Weekly allocation of DataCap requested (usually between 1-100TiB):9TiB
+- Organization Name:     
+- Website / Social Media: 
+- Total amount of DataCap being requested (between 500 TiB and 5 PiB): 
+- On-chain address for first allocation: 
+- Weekly allocation of DataCap requested (usually between 1-100TiB): 
 
 
 ## Project details
