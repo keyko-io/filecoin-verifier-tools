@@ -24,4 +24,14 @@ describe('parseIssue()', () => {
     expect(parsedResult.correct).toBe(false)
     expect(parsedResult.errorMessage).not.toBe('')
   })
+
+  it("empty issue get not validated", () => {
+    const issueContentNoVals = fs.readFileSync(
+      path.resolve(__dirname, '../samples/utils/client_application_no_values.test.md'),
+      { encoding: 'utf8' },
+    )
+    const parsedResult = parseIssue(issueContentNoVals)
+    expect(parsedResult.correct).toBe(false)
+  })
+
 })
