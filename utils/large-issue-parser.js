@@ -13,7 +13,7 @@ function parseIssue(issueContent, issueTitle = '') {
   const datacapRequested = matchGroup(regexDatacapRequested, issueContent)
   const dataCapWeeklyAllocation = matchGroup(regexWeeklyDataCapAllocation, issueContent)
 
-  if (name && address  && datacapRequested && website  && dataCapWeeklyAllocation ) {
+  if (name && address && datacapRequested && website && dataCapWeeklyAllocation) {
     return {
       correct: true,
       errorMessage: '',
@@ -29,7 +29,7 @@ function parseIssue(issueContent, issueTitle = '') {
 
   if (issueTitle !== '') {
     const removalAddress = matchGroup(regextRemovalTitle, issueContent)
-    if (removalAddress ) {
+    if (removalAddress) {
       return {
         correct: true,
         errorMessage: '',
@@ -45,8 +45,8 @@ function parseIssue(issueContent, issueTitle = '') {
   }
 
   let errorMessage = ''
-  if (!name ) { errorMessage += 'We could not find your **Name** in the information provided\n' }
-  if (!address ) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
+  if (!name) { errorMessage += 'We could not find your **Name** in the information provided\n' }
+  if (!address) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
   if (!datacapRequested) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
   if (!website) { errorMessage += 'We could not find any **Web site or social media info** in the information provided\n' }
   if (!dataCapWeeklyAllocation) { errorMessage += 'We could not find any **Expected weekly DataCap usage rate** in the information provided\n' }

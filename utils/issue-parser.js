@@ -14,7 +14,7 @@ function parseIssue(issueContent) {
   const notary = matchGroup(regexNotary, issueContent)
   const region = matchGroup(regexRegion, issueContent)
 
-  if (name  && address && datacap && website ) {
+  if (name && address && datacap && website) {
     return {
       correct: true,
       errorMessage: '',
@@ -30,9 +30,9 @@ function parseIssue(issueContent) {
 
   let errorMessage = ''
   if (!name) { errorMessage += 'We could not find your **Name** in the information provided\n' }
-  if (!address ) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
+  if (!address) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
   if (!datacap) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
-  if (!website ) { errorMessage += 'We could not find any **website /social media** in the information provided\n' }
+  if (!website) { errorMessage += 'We could not find any **website /social media** in the information provided\n' }
 
   return {
     correct: false,
