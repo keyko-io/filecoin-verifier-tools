@@ -31,14 +31,25 @@ describe('parseIssue()', () => {
     expect(parsedResult.correct).toBe(false)
     expect(parsedResult.errorMessage).not.toBe('')
   })
+
+  it("empty issue get not validated", () => {
+    const issueContentNoVals = fs.readFileSync(
+      path.resolve(__dirname, '../samples/utils/large_client_application_no_values.test.md'),
+      { encoding: 'utf8' },
+    )
+    const parsedResult = parseIssue(issueContentNoVals)
+    expect(parsedResult.correct).toBe(false)
+  })
 })
 
 describe('parseRemovalIssue()', () => {
   it('we can parse an issue including the right data', () => {
-    const issueContent = 'This is an issue to remove the DataCap associated with f1sdzgaqmitbvgktkklpuaxohg6nuhce5eyvwxhbb.\nThis address was used by the Filecoin Foundation during the Filecoin Beta for allocations. Now that a new allocation has been made to a new address, this should be set to 0.'
     const issueTitle = 'Large Client Request DataCap Removal: f1sdzgaqmitbvgktkklpuaxohg6nuhce5eyvwxhbb'
-
-    const parsedResult = parseIssue(issueContent, issueTitle)
+    const removalIssueContent = fs.readFileSync(
+      path.resolve(__dirname, '../samples/utils/large_client_datacap_removal.test.md'),
+      { encoding: 'utf8' },
+    )
+    const parsedResult = parseIssue(removalIssueContent, issueTitle)
 
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.datacapRemoval).toBe(true)
