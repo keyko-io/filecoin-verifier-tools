@@ -15,4 +15,4 @@ function callMetricsApi(issueNumber, eventType, params) {
     // return res
 }
 
-exports.parseIssue = parseIssue
+exports.callMetricsApi = callMetricsApi
