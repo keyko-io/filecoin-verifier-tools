@@ -1,5 +1,5 @@
 
-export function callMetricsApi(issueNumber, eventType, params) {
+function callMetricsApi(issueNumber, eventType, params) {
     const req = {
         environment: process.env.METRICS_API_ENVIRONMENT || "test",
         issueNumber,
@@ -14,3 +14,5 @@ export function callMetricsApi(issueNumber, eventType, params) {
     // console.log()
     // return res
 }
+
+exports.parseIssue = parseIssue
