@@ -23,7 +23,7 @@
     "@filecoin-shipyard/lotus-client-schema": "2.0.0",
     "@glif/filecoin-address": "1.0.0-beta.5",
     "@zondax/filecoin-signing-tools": "^0.7.1",
-    "axios": "^0.23.0",
+    "axios": "^0.21.4",
     "base32-decode": "^1.0.0",
     "base32-encode": "^1.1.1",
     "bip32": "^2.0.5",
