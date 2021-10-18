@@ -1,14 +1,14 @@
 const axios = require('axios')
 const baseURL = 'https://api.filplus.d.interplanetary.one/api/storeBotEvent'
 const botEnvironment = process.env.METRICS_API_ENVIRONMENT || 'test'
-async function callMetricsApi(issueNumber, eventName, eventMetadata, environment) {
+async function callMetricsApi(issueNumber, eventType, params, environment) {
   const req = {
     environment: environment || botEnvironment,
-    issueNumber,
     repo: 'large-dataset',
+    issueNumber,
     timeStamp: new Date(),
-    eventName,
-    eventMetadata,
+    eventType,
+    params,
   }
   //  console.log('req', req)
   try {
