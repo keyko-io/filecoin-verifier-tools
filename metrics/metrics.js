@@ -12,8 +12,8 @@ async function callMetricsApi(issueNumber, eventType, params, environment) {
   }
   //  console.log('req', req)
   try {
-    await axios.post(baseURL, req)
-    // console.log(res)
+    const res = await axios.post(baseURL, req)
+    console.log("metrics data res", res.data)
   } catch (error) {
     console.error(error)
   }
