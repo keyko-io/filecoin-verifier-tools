@@ -81,7 +81,25 @@ main() {
   echo "Token for node: $(cat ~/.lotus/token)"
   echo "Token for miner: $(cat ~/.lotusminer/token)"
 
-  sleep 1000000000
+  sleep 10
+
+  export MAIN=$(cat /root/.genesis-sectors/pre-seal-t01000.json | jq  -r '.t01000."Owner"')
+  lotus send --from "$MAIN" t16ae3lwcive5aws7eifk5a4sow77zwiguwmogb2y 10
+
+  lotus send --from "$MAIN" t1rbfyvybljzd5xcouqjx22juucdj3xbwtro2crwq 10
+
+  lotus send --from "$MAIN" t1fmqtnifrcnv4753hoyhjalgsv5klimrxmk7ekoq 10
+  lotus send --from "$MAIN" t1us742aljq3rregf6eldkdbi2ymsnfifhq7meyly 10
+  lotus send --from "$MAIN" t1gechnbsldgbqan4q2dwjsicbh25n5xvvdzhqd3y 10
+  lotus send --from "$MAIN" t1o47ee4dqp6fn7hacdalcai5seoxtms2327bpccq 10
+
+  lotus send --from "$MAIN" t1ovug2aycii62mkempr2e2hiwgwrvxpdfhb7vfda 10
+  lotus send --from "$MAIN" t1gkzlw6vjzo3s7wgu7yxdxri2562b43hvwxzhzxa 10
+  lotus send --from "$MAIN" t1cncuf2kvfzsmsij3opaypup527ounnpwhiicdci 10
+  lotus send --from "$MAIN" t1h6tinlpvveqhpt6gdsjgndq4ocd2s7h4quediha 10
+  lotus send --from "$MAIN" t1we63b6yzqusmcfwgtvcqe2snwa7t252c5lg2aja 10
+
+  tail -f /dev/null
 }
 
 #### Main

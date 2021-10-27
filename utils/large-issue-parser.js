@@ -1,18 +1,19 @@
 
 function parseIssue(issueContent, issueTitle = '') {
-  const regexName = /-\s*Organization\s*Name:\s*(.*)/m
-  const regexWebsite = /-\s*Website\s*\/\s*Social\s*Media:\s*(.*)/m
-  const regexAddress = /-\s*On-chain\s*address\s*for\s*first\s*allocation:\s*(.*)/m
-  const regexDatacapRequested = /-\s*Total\s*amount\s*of\s*DataCap\s*being\s*requested\s*\(between 500 TiB and 5 PiB\)\s*:\s*(.*)/m
-
-  const regextRemovalTitle = /\s*Large\s*Client\s*Request\s*DataCap\s*Removal:\s*(.*)/m
+  const regexName = /[\n\r][ \t]*-\s*Organization\s*Name:[ \t]*([^\n\r]*)/
+  const regexWebsite = /[\n\r][ \t]*-\s*Website\s*\/\s*Social\s*Media:[ \t]*([^\n\r]*)/m
+  const regexAddress = /[\n\r][ \t]*-\s*On-chain\s*address\s*for\s*first\s*allocation:[ \t]*([^\n\r]*)/m
+  const regexDatacapRequested = /[\n\r][ \t]*-\s*Total\s*amount\s*of\s*DataCap\s*being\s*requested\s*\(between 500 TiB and 5 PiB\)\s*:[ \t]*([^\n\r]*)/m
+  const regextRemovalTitle = /#\s*Large\s*Client\s*Request\s*DataCap\s*Removal:[ \t]*([^\n\r]*)/m
+  const regexWeeklyDataCapAllocation = /[\n\r][ \t]*-\s*Weekly\s*allocation\s*of\s*DataCap\s*requested\s*\(usually between 1-100TiB\)\s*:[ \t]*([^\n\r]*)/m
 
   const name = matchGroup(regexName, issueContent)
   const website = matchGroup(regexWebsite, issueContent)
   const address = matchGroup(regexAddress, issueContent)
   const datacapRequested = matchGroup(regexDatacapRequested, issueContent)
+  const dataCapWeeklyAllocation = matchGroup(regexWeeklyDataCapAllocation, issueContent)
 
-  if (name != null && address != null && datacapRequested != null && website != null) {
+  if (name && address && datacapRequested && website && dataCapWeeklyAllocation) {
     return {
       correct: true,
       errorMessage: '',
@@ -20,14 +21,15 @@ function parseIssue(issueContent, issueTitle = '') {
       name: name,
       address: address,
       datacapRequested: datacapRequested,
+      dataCapWeeklyAllocation: dataCapWeeklyAllocation,
       website: website,
       datacapRemoval: false,
     }
   }
 
   if (issueTitle !== '') {
-    const removalAddress = matchGroup(regextRemovalTitle, issueTitle)
-    if (removalAddress != null) {
+    const removalAddress = matchGroup(regextRemovalTitle, issueContent)
+    if (removalAddress) {
       return {
         correct: true,
         errorMessage: '',
@@ -35,6 +37,7 @@ function parseIssue(issueContent, issueTitle = '') {
         name: '',
         address: removalAddress,
         datacapRequested: '0B',
+        dataCapWeeklyAllocation: '0B',
         website: '',
         datacapRemoval: true,
       }
@@ -42,10 +45,11 @@ function parseIssue(issueContent, issueTitle = '') {
   }
 
   let errorMessage = ''
-  if (name == null) { errorMessage += 'We could not find your **Name** in the information provided\n' }
-  if (address == null) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
-  if (datacapRequested == null) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
-  if (website == null) { errorMessage += 'We could not find any **Web site or social media info** in the information provided\n' }
+  if (!name) { errorMessage += 'We could not find your **Name** in the information provided\n' }
+  if (!address) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
+  if (!datacapRequested) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
+  if (!website) { errorMessage += 'We could not find any **Web site or social media info** in the information provided\n' }
+  if (!dataCapWeeklyAllocation) { errorMessage += 'We could not find any **Expected weekly DataCap usage rate** in the information provided\n' }
 
   return {
     correct: false,
@@ -62,9 +66,9 @@ function matchGroup(regex, content) {
   let m
   if ((m = regex.exec(content)) !== null) {
     if (m.length >= 2) {
-      return m[1]
+      return m[1].trim()
     }
-    return m[0]
+    return m[0].trim()
   }
 }
 
@@ -150,9 +154,52 @@ function parseMultipleApproveComment(commentContent) {
   }
 }
 
+function parseApprovedRequestWithSignerAddress(commentContent) {
+  const regexApproved = /##\s*Request\s*Approved/m
+  const regexAddress = /####\s*Address\W*^>\s*(.*)/m
+  const regexDatacap = /####\s*Datacap\s*Allocated\W*^>\s*(.*)/m
+  const regexSignerAddress = /####\s*Signer\s*Address\s*\n>\s*(.*)/g
+  const regexMessage = /####\s*Message\s*sent\s*to\s*Filecoin\s*Network\s*\n>\s*(.*)/g
+
+  const approved = matchGroup(regexApproved, commentContent)
+
+  if (approved == null) {
+    return {
+      approvedMessage: false,
+    }
+  }
+
+  const datacap = matchGroup(regexDatacap, commentContent)
+  const address = matchGroup(regexAddress, commentContent)
+  const signerAddress = matchGroup(regexSignerAddress, commentContent)
+  const message = matchGroup(regexMessage, commentContent)
+
+  if (address != null && datacap != null && signerAddress != null && message != null) {
+    return {
+      approvedMessage: true,
+      correct: true,
+      address: address,
+      datacap: datacap,
+      signerAddress: signerAddress,
+      message: message,
+    }
+  }
+
+  let errorMessage = ''
+  if (address == null) { errorMessage += 'We could not find the **Filecoin address** in the information provided in the comment\n' }
+  if (datacap == null) { errorMessage += 'We could not find the **Datacap** allocated in the information provided in the comment\n' }
+  if (signerAddress == null) { errorMessage += 'We could not find the **signerAddress** in the information provided in the comment\n' }
+  if (message == null) { errorMessage += 'We could not find the **message** in the information provided in the comment\n' }
+  return {
+    approvedMessage: true,
+    correct: false,
+    errorMessage: errorMessage,
+    errorDetails: 'Unable to find required attributes.',
+  }
+}
+
 function parseMultisigNotaryRequest(commentContent) {
   const regexMultisig = /##\s*Multisig\s*Notary\s*requested/m
-  const regexAddresses = /[a-zA-Z0-9]{41}(?=[\s\S]*####\sTotal\sDataCap\srequested)/gm
   const regexTotalDatacap = /####\s*Total\s*DataCap\s*requested\s*(.*)\n>\s*(.*)/g
   const regexWeeklyDatacap = /####\s*Expected\s*weekly\s*DataCap\s*usage\s*rate\s*(.*)\n>\s*(.*)/g
 
@@ -164,22 +211,20 @@ function parseMultisigNotaryRequest(commentContent) {
     }
   }
 
-  const addresses = [...commentContent.match(regexAddresses)]
   const totalDatacaps = matchAll(regexTotalDatacap, commentContent)
   const weeklyDatacap = matchAll(regexWeeklyDatacap, commentContent)
 
-  if (addresses != null && totalDatacaps != null && weeklyDatacap) {
+  if (totalDatacaps != null && weeklyDatacap) {
     return {
       multisigMessage: true,
       correct: true,
-      addresses: addresses,
       totalDatacaps: totalDatacaps,
       weeklyDatacap: weeklyDatacap,
     }
   }
 
   let errorMessage = ''
-  if (addresses == null || addresses.length === 0) { errorMessage += 'We could not find the **Filecoin addresses** in the information provided in the comment\n' }
+  // if (addresses == null || addresses.length === 0) { errorMessage += 'We could not find the **Filecoin addresses** in the information provided in the comment\n' }
   if (totalDatacaps == null) { errorMessage += 'We could not find the **Total Datacap** allocated in the information provided in the comment\n' }
   if (weeklyDatacap == null) { errorMessage += 'We could not find the **Weekly Datacap** allocated in the information provided in the comment\n' }
   return {
@@ -287,3 +332,4 @@ exports.parseMultisigNotaryRequest = parseMultisigNotaryRequest
 exports.parseNotaryConfirmation = parseNotaryConfirmation
 exports.parseReleaseRequest = parseReleaseRequest
 exports.parseWeeklyDataCapAllocationUpdateRequest = parseWeeklyDataCapAllocationUpdateRequest
+exports.parseApprovedRequestWithSignerAddress = parseApprovedRequestWithSignerAddress

@@ -11,19 +11,17 @@ async function run() {
 
   console.log(Buffer.from('') instanceof Buffer)
 
-  while (true) {
-    const info = await api.pendingRootTransactions()
-    console.log(info)
+  const info = await api.pendingRootTransactions()
+  console.log(info)
 
-    console.log(await api.listVerifiers())
+  console.log(await api.listVerifiers())
 
-    console.log(await api.listRootkeys())
+  console.log(await api.listRootkeys())
 
-    console.log(await api.multisigInfo('t080'))
-    console.log(await api.pendingTransactions('t080'))
+  console.log(await api.multisigInfo('t080'))
+  console.log(await api.pendingTransactions('t080'))
 
-    await new Promise(resolve => { setTimeout(resolve, 1000) })
-  }
+  process.exit(0)
 }
 
 run()
