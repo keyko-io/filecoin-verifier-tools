@@ -3,7 +3,7 @@
 FROM golang:1.16.8 AS build-env
 
 # branch or tag of the lotus version to build
-ARG BRANCH=v1.11.0
+ARG BRANCH=v1.13.0
 
 RUN echo "Building lotus from branch $BRANCH"
 
@@ -63,6 +63,8 @@ COPY config.toml /root/config.toml
 COPY config-miner.toml /root/config-miner.toml
 
 
+RUN chmod 600 /root/.lotus/keystore/MF2XI2BNNJ3XILLQOJUXMYLUMU
+
 # API port
 EXPOSE 1234
 
@@ -73,5 +75,5 @@ EXPOSE 2345
 
 ENTRYPOINT ["/bin/entrypoint"]
 
-# docker build . -t mrsmkl/lotus:21-09-28
-# docker run --name lotus --rm -ti -p 1234:1234 -p 2345:2345  mrsmkl/lotus:21-09-28
+# docker build . -t mrsmkl/lotus:21-10-27
+# docker run --name lotus --rm -ti -p 1234:1234 -p 2345:2345  mrsmkl/lotus:21-10-27
