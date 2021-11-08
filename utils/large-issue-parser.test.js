@@ -21,7 +21,7 @@ describe('parseIssue()', () => {
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.name).toBe('Client A')
     expect(parsedResult.address).toBe('f1111222333')
-    expect(parsedResult.datacapRequested).toBe('10TB')
+    expect(parsedResult.datacapRequested).toBe('10TiB')
     expect(parsedResult.website).toBe('info.org')
     expect(parsedResult.dataCapWeeklyAllocation).toBe('9TiB')
   })
@@ -38,6 +38,14 @@ describe('parseIssue()', () => {
       { encoding: 'utf8' },
     )
     const parsedResult = parseIssue(issueContentNoVals)
+    expect(parsedResult.correct).toBe(false)
+  })
+  it('validate formatting of datacap', () => {
+    const issueContentFormatDc = fs.readFileSync(
+      path.resolve(__dirname, '../samples/utils/large_client_application_datacap_formatting.test.md'),
+      { encoding: 'utf8' },
+    )
+    const parsedResult = parseIssue(issueContentFormatDc)
     expect(parsedResult.correct).toBe(false)
   })
 })
