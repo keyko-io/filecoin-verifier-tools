@@ -1,3 +1,8 @@
+const {
+  matchGroupLargeNotary,
+  matchAll,
+  validateIssueDataCap,
+} = require('./common-utils')
 
 function parseIssue(issueContent, issueTitle = '') {
   const regexName = /[\n\r][ \t]*-\s*Organization\s*Name:[ \t]*([^\n\r]*)/
@@ -7,13 +12,15 @@ function parseIssue(issueContent, issueTitle = '') {
   const regextRemovalTitle = /#\s*Large\s*Client\s*Request\s*DataCap\s*Removal:[ \t]*([^\n\r]*)/m
   const regexWeeklyDataCapAllocation = /[\n\r][ \t]*-\s*Weekly\s*allocation\s*of\s*DataCap\s*requested\s*\(usually between 1-100TiB\)\s*:[ \t]*([^\n\r]*)/m
 
-  const name = matchGroup(regexName, issueContent)
-  const website = matchGroup(regexWebsite, issueContent)
-  const address = matchGroup(regexAddress, issueContent)
-  const datacapRequested = matchGroup(regexDatacapRequested, issueContent)
-  const dataCapWeeklyAllocation = matchGroup(regexWeeklyDataCapAllocation, issueContent)
+  const name = matchGroupLargeNotary(regexName, issueContent)
+  const website = matchGroupLargeNotary(regexWebsite, issueContent)
+  const address = matchGroupLargeNotary(regexAddress, issueContent)
+  const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
+  const dataCapWeeklyAllocation = matchGroupLargeNotary(regexWeeklyDataCapAllocation, issueContent)
 
-  if (name && address && datacapRequested && website && dataCapWeeklyAllocation) {
+  const validateIssueDataCapResult = validateIssueDataCap(datacapRequested, dataCapWeeklyAllocation)
+
+  if (name && address && datacapRequested && website && dataCapWeeklyAllocation && validateIssueDataCapResult.resultCorrectDc && validateIssueDataCapResult.resultCorrectWeeklyDc) {
     return {
       correct: true,
       errorMessage: '',
@@ -28,7 +35,7 @@ function parseIssue(issueContent, issueTitle = '') {
   }
 
   if (issueTitle !== '') {
-    const removalAddress = matchGroup(regextRemovalTitle, issueContent)
+    const removalAddress = matchGroupLargeNotary(regextRemovalTitle, issueContent)
     if (removalAddress) {
       return {
         correct: true,
@@ -50,6 +57,8 @@ function parseIssue(issueContent, issueTitle = '') {
   if (!datacapRequested) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
   if (!website) { errorMessage += 'We could not find any **Web site or social media info** in the information provided\n' }
   if (!dataCapWeeklyAllocation) { errorMessage += 'We could not find any **Expected weekly DataCap usage rate** in the information provided\n' }
+  if (!validateIssueDataCapResult.resultCorrectDc) { errorMessage += 'The formatting for the **Total amount of DataCap being requested** is wrong. please input again with this formatting : nnnTiB/PiB or nnnTiB/PiB \n' }
+  if (!validateIssueDataCapResult.resultCorrectWeeklyDc) { errorMessage += 'The formatting for the **Weekly allocation of DataCap requested** is wrong. please input again with this formatting : nnnTiB/PiB or nnnTiB/PiB \n' }
 
   return {
     correct: false,
@@ -62,22 +71,22 @@ function parseIssue(issueContent, issueTitle = '') {
   }
 }
 
-function matchGroup(regex, content) {
-  let m
-  if ((m = regex.exec(content)) !== null) {
-    if (m.length >= 2) {
-      return m[1].trim()
-    }
-    return m[0].trim()
-  }
-}
+// function matchGroup(regex, content) {
+//   let m
+//   if ((m = regex.exec(content)) !== null) {
+//     if (m.length >= 2) {
+//       return m[1].trim()
+//     }
+//     return m[0].trim()
+//   }
+// }
 
 function parseApproveComment(commentContent) {
   const regexApproved = /##\s*Request\s*Approved/m
   const regexAddress = /####\s*Address\W*^>\s*(.*)/m
   const regexDatacap = /####\s*Datacap\s*Allocated\W*^>\s*(.*)/m
 
-  const approved = matchGroup(regexApproved, commentContent)
+  const approved = matchGroupLargeNotary(regexApproved, commentContent)
 
   if (approved == null) {
     return {
@@ -85,8 +94,8 @@ function parseApproveComment(commentContent) {
     }
   }
 
-  const address = matchGroup(regexAddress, commentContent)
-  const datacap = matchGroup(regexDatacap, commentContent)
+  const address = matchGroupLargeNotary(regexAddress, commentContent)
+  const datacap = matchGroupLargeNotary(regexDatacap, commentContent)
 
   if (address != null && datacap != null) {
     return {
@@ -110,20 +119,20 @@ function parseApproveComment(commentContent) {
   }
 }
 
-function matchAll(regex, content) {
-  var matches = [...content.matchAll(regex)]
-  if (matches !== null) {
-    // each entry in the array has this form: Array ["#### Address > f1111222333", "", "f1111222333"]
-    return matches.map(elem => elem[2])
-  }
-}
+// function matchAll(regex, content) {
+//   var matches = [...content.matchAll(regex)]
+//   if (matches !== null) {
+//     // each entry in the array has this form: Array ["#### Address > f1111222333", "", "f1111222333"]
+//     return matches.map(elem => elem[2])
+//   }
+// }
 
 function parseMultipleApproveComment(commentContent) {
   const regexApproved = /##\s*Request\s*Approved/m
   const regexAddress = /####\s*Address\s*(.*)\n>\s*(.*)/g
   const regexDatacap = /####\s*Datacap\s*Allocated\s*(.*)\n>\s*(.*)/g
 
-  const approved = matchGroup(regexApproved, commentContent)
+  const approved = matchGroupLargeNotary(regexApproved, commentContent)
 
   if (approved == null) {
     return {
@@ -161,7 +170,7 @@ function parseApprovedRequestWithSignerAddress(commentContent) {
   const regexSignerAddress = /####\s*Signer\s*Address\s*\n>\s*(.*)/g
   const regexMessage = /####\s*Message\s*sent\s*to\s*Filecoin\s*Network\s*\n>\s*(.*)/g
 
-  const approved = matchGroup(regexApproved, commentContent)
+  const approved = matchGroupLargeNotary(regexApproved, commentContent)
 
   if (approved == null) {
     return {
@@ -169,10 +178,10 @@ function parseApprovedRequestWithSignerAddress(commentContent) {
     }
   }
 
-  const datacap = matchGroup(regexDatacap, commentContent)
-  const address = matchGroup(regexAddress, commentContent)
-  const signerAddress = matchGroup(regexSignerAddress, commentContent)
-  const message = matchGroup(regexMessage, commentContent)
+  const datacap = matchGroupLargeNotary(regexDatacap, commentContent)
+  const address = matchGroupLargeNotary(regexAddress, commentContent)
+  const signerAddress = matchGroupLargeNotary(regexSignerAddress, commentContent)
+  const message = matchGroupLargeNotary(regexMessage, commentContent)
 
   if (address != null && datacap != null && signerAddress != null && message != null) {
     return {
@@ -203,7 +212,7 @@ function parseMultisigNotaryRequest(commentContent) {
   const regexTotalDatacap = /####\s*Total\s*DataCap\s*requested\s*(.*)\n>\s*(.*)/g
   const regexWeeklyDatacap = /####\s*Expected\s*weekly\s*DataCap\s*usage\s*rate\s*(.*)\n>\s*(.*)/g
 
-  const multisig = matchGroup(regexMultisig, commentContent)
+  const multisig = matchGroupLargeNotary(regexMultisig, commentContent)
 
   if (multisig == null) {
     return {
@@ -239,7 +248,7 @@ function parseNotaryConfirmation(commentContent, title) {
   const regexConfirmation = /##\s*The\s*request\s*has\s*been\s*signed\s*by\s*a\s*new\s*Root\s*Key\s*Holder/m
   const regexTitleNumber = /Large\sdataset\smultisig\srequest\s#\s*([0-9]*)/m
 
-  const confirmation = matchGroup(regexConfirmation, commentContent)
+  const confirmation = matchGroupLargeNotary(regexConfirmation, commentContent)
   const number = Number([...title.match(regexTitleNumber)][1])
 
   if (confirmation == null) {
@@ -260,7 +269,7 @@ function parseReleaseRequest(commentContent) {
   const regexClientAddress = /####\s*Client\s*address\s*>\s*(.*)/g
   const regexAllocationDatacap = /####\s*DataCap\s*allocation\s*requested\s*\n>\s*(.*)/g
 
-  const multisig = matchGroup(regexMultisig, commentContent)
+  const multisig = matchGroupLargeNotary(regexMultisig, commentContent)
 
   if (multisig == null) {
     return {
@@ -268,9 +277,9 @@ function parseReleaseRequest(commentContent) {
     }
   }
 
-  const notaryAddress = matchGroup(regexNotaryAddress, commentContent)
-  const clientAddress = matchGroup(regexClientAddress, commentContent)
-  const allocationDatacap = matchGroup(regexAllocationDatacap, commentContent)
+  const notaryAddress = matchGroupLargeNotary(regexNotaryAddress, commentContent)
+  const clientAddress = matchGroupLargeNotary(regexClientAddress, commentContent)
+  const allocationDatacap = matchGroupLargeNotary(regexAllocationDatacap, commentContent)
 
   if (notaryAddress != null && clientAddress != null && allocationDatacap != null) {
     return {
@@ -299,14 +308,14 @@ function parseWeeklyDataCapAllocationUpdateRequest(commentContent) {
   const regexRequest = /##\s*Weekly\s*DataCap\s*Allocation\s*Update\s*requested/m
   const regexDataCap = /####\s*Update\s*to\s*expected\s*weekly\s*DataCap\s*usage\s*rate\s*>\s*(.*)/g
 
-  const request = matchGroup(regexRequest, commentContent)
+  const request = matchGroupLargeNotary(regexRequest, commentContent)
   if (request == null) {
     return {
       multisigMessage: false,
     }
   }
 
-  const allocationDatacap = matchGroup(regexDataCap, commentContent)
+  const allocationDatacap = matchGroupLargeNotary(regexDataCap, commentContent)
   if (allocationDatacap != null) {
     return {
       multisigMessage: true,

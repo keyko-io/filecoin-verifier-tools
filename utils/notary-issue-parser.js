@@ -1,3 +1,8 @@
+const {
+  matchGroupLargeNotary,
+  matchAll,
+  validateIssueDataCap,
+} = require('./common-utils')
 
 function parseIssue(issueContent, issueTitle = '') {
   const regexName = /-\s*Name:\s*(.*)/m
@@ -9,14 +14,16 @@ function parseIssue(issueContent, issueTitle = '') {
 
   const regextRemovalTitle = /\s*Notary\s*DataCap\s*Removal:\s*(.*)/m
 
-  const name = matchGroup(regexName, issueContent)
-  const website = matchGroup(regexWebsite, issueContent)
-  const address = matchGroup(regexAddress, issueContent)
-  const datacapRequested = matchGroup(regexDatacapRequested, issueContent)
-  const region = matchGroup(regexRegion, issueContent)
-  const useCases = matchGroup(regexUseCases, issueContent)
+  const name = matchGroupLargeNotary(regexName, issueContent)
+  const website = matchGroupLargeNotary(regexWebsite, issueContent)
+  const address = matchGroupLargeNotary(regexAddress, issueContent)
+  const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
+  const region = matchGroupLargeNotary(regexRegion, issueContent)
+  const useCases = matchGroupLargeNotary(regexUseCases, issueContent)
 
-  if (name != null && address != null && datacapRequested != null && website != null && region != null && useCases != null) {
+  const validateIssueDataCapResult = validateIssueDataCap(datacapRequested)
+
+  if (name != null && address != null && datacapRequested != null && website != null && region != null && useCases != null && validateIssueDataCapResult.resultCorrectDc) {
     return {
       correct: true,
       errorMessage: '',
@@ -32,7 +39,7 @@ function parseIssue(issueContent, issueTitle = '') {
   }
 
   if (issueTitle !== '') {
-    const removalAddress = matchGroup(regextRemovalTitle, issueTitle)
+    const removalAddress = matchGroupLargeNotary(regextRemovalTitle, issueTitle)
     if (removalAddress != null) {
       return {
         correct: true,
@@ -56,6 +63,7 @@ function parseIssue(issueContent, issueTitle = '') {
   if (website == null) { errorMessage += 'We could not find any **Web site or social media info** in the information provided\n' }
   if (region == null) { errorMessage += 'We could not find any **Region** in the information provided\n' }
   if (useCases == null) { errorMessage += 'We could not find any **Use Case** in the information provided\n' }
+  if (!validateIssueDataCapResult.resultCorrectDc) { errorMessage += 'The formatting for the **Total amount of DataCap being requested** is wrong. please input again with this formatting : nnnTiB/PiB or nnnTiB/PiB \n' }
 
   return {
     correct: false,
@@ -70,22 +78,22 @@ function parseIssue(issueContent, issueTitle = '') {
   }
 }
 
-function matchGroup(regex, content) {
-  let m
-  if ((m = regex.exec(content)) !== null) {
-    if (m.length >= 2) {
-      return m[1]
-    }
-    return m[0]
-  }
-}
+// function matchGroupLargeNotary(regex, content) {
+//   let m
+//   if ((m = regex.exec(content)) !== null) {
+//     if (m.length >= 2) {
+//       return m[1]
+//     }
+//     return m[0]
+//   }
+// }
 
 function parseApproveComment(commentContent) {
   const regexApproved = /##\s*Request\s*Approved/m
   const regexAddress = /####\s*Address\W*^>\s*(.*)/m
   const regexDatacap = /####\s*Datacap\s*Allocated\W*^>\s*(.*)/m
 
-  const approved = matchGroup(regexApproved, commentContent)
+  const approved = matchGroupLargeNotary(regexApproved, commentContent)
 
   if (approved == null) {
     return {
@@ -93,8 +101,8 @@ function parseApproveComment(commentContent) {
     }
   }
 
-  const address = matchGroup(regexAddress, commentContent)
-  const datacap = matchGroup(regexDatacap, commentContent)
+  const address = matchGroupLargeNotary(regexAddress, commentContent)
+  const datacap = matchGroupLargeNotary(regexDatacap, commentContent)
 
   if (address != null && datacap != null) {
     return {
@@ -118,20 +126,20 @@ function parseApproveComment(commentContent) {
   }
 }
 
-function matchAll(regex, content) {
-  var matches = [...content.matchAll(regex)]
-  if (matches !== null) {
-    // each entry in the array has this form: Array ["#### Address > f1111222333", "", "f1111222333"]
-    return matches.map(elem => elem[2])
-  }
-}
+// function matchAll(regex, content) {
+//   var matches = [...content.matchAll(regex)]
+//   if (matches !== null) {
+//     // each entry in the array has this form: Array ["#### Address > f1111222333", "", "f1111222333"]
+//     return matches.map(elem => elem[2])
+//   }
+// }
 
 function parseMultipleApproveComment(commentContent) {
   const regexApproved = /##\s*Request\s*Approved/m
   const regexAddress = /####\s*Address\s*(.*)\n>\s*(.*)/g
   const regexDatacap = /####\s*Datacap\s*Allocated\s*(.*)\n>\s*(.*)/g
 
-  const approved = matchGroup(regexApproved, commentContent)
+  const approved = matchGroupLargeNotary(regexApproved, commentContent)
 
   if (approved == null) {
     return {
