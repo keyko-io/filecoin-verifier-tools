@@ -1,8 +1,8 @@
 const {
   matchGroupLargeNotary,
   matchAll,
-  validateIssueDataCap
-} = require("./common-utils")
+  validateIssueDataCap,
+} = require('./common-utils')
 
 function parseIssue(issueContent, issueTitle = '') {
   const regexName = /[\n\r][ \t]*-\s*Organization\s*Name:[ \t]*([^\n\r]*)/

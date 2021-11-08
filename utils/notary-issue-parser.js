@@ -1,8 +1,8 @@
 const {
   matchGroupLargeNotary,
   matchAll,
-  validateIssueDataCap
-} = require("./common-utils")
+  validateIssueDataCap,
+} = require('./common-utils')
 
 function parseIssue(issueContent, issueTitle = '') {
   const regexName = /-\s*Name:\s*(.*)/m
@@ -23,7 +23,7 @@ function parseIssue(issueContent, issueTitle = '') {
 
   const validateIssueDataCapResult = validateIssueDataCap(datacapRequested)
 
-  if (name != null && address != null && datacapRequested != null && website != null && region != null && useCases != null && validateIssueDataCapResult.resultCorrectDc ) {
+  if (name != null && address != null && datacapRequested != null && website != null && region != null && useCases != null && validateIssueDataCapResult.resultCorrectDc) {
     return {
       correct: true,
       errorMessage: '',
