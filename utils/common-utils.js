@@ -1,7 +1,6 @@
 
 function validateIssueDataCap(datacap, weeklyDatacap) {
   const validateDatacapRegex = /[0-9]{1,3}[PiBT]{3,4}/g
-  console.log('datacap,weeklyDatacap', datacap, weeklyDatacap)
   const resultCorrectDc = datacap ? datacap.match(validateDatacapRegex) : null
   const resultCorrectWeeklyDc = weeklyDatacap ? weeklyDatacap.match(validateDatacapRegex) : null
 
