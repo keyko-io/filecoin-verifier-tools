@@ -180,7 +180,6 @@ class VerifyAPI {
       const res = await this.client.stateAccountKey(str, head.Cids)
       return res
     } catch (err) {
-      console.log('Cannot convert to key', err)
       return str
     }
   }
