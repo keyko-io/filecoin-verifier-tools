@@ -213,6 +213,15 @@ function make(testnet) {
     }
   }
 
+  async function getMessage(client, cid) {
+    try {
+      const res = await client.chainGetMessage({ '/': cid })
+      return res
+    } catch (error) {
+      // return new Error(error)
+    }
+  }
+
   function pad(str) {
     if (str.length % 2 === 0) return str
     else return '0' + str
@@ -650,6 +659,7 @@ function make(testnet) {
     encode,
     actor,
     getReceipt,
+    getMessage,
     multisig,
     multisigCID,
     pending,
