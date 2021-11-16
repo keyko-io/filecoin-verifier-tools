@@ -83,6 +83,10 @@ class VerifyAPI {
     return this.methods.getReceipt(this.client, id)
   }
 
+  async getMessage(cid) {
+    return this.methods.getMessage(this.client, cid)
+  }
+
   async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, indexAccount, wallet, { gas } = { gas: 0 }) {
     // Not address but account in the form "t01003", for instance
     const add = this.methods.verifreg.addVerifier(verifierAccount, datacap)
