@@ -216,7 +216,7 @@ function make(testnet) {
   async function getMessage(client, cid) {
     try {
       const res = await client.chainGetMessage({ '/': cid })
-      return res 
+      return res
     } catch (error) {
       return new Error(error)
     }
