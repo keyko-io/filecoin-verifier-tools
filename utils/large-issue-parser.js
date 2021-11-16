@@ -1,6 +1,6 @@
 const {
   matchGroupLargeNotary,
-  matchAll
+  matchAll,
 } = require('./common-utils')
 
 function parseIssue(issueContent, issueTitle = '') {
@@ -17,8 +17,7 @@ function parseIssue(issueContent, issueTitle = '') {
   const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
   const dataCapWeeklyAllocation = matchGroupLargeNotary(regexWeeklyDataCapAllocation, issueContent)
 
-
-  if (name && address && datacapRequested && website && dataCapWeeklyAllocation ) {
+  if (name && address && datacapRequested && website && dataCapWeeklyAllocation) {
     return {
       correct: true,
       errorMessage: '',

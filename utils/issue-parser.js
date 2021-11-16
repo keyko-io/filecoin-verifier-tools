@@ -1,5 +1,5 @@
 const {
-  matchGroup
+  matchGroup,
 } = require('./common-utils')
 
 function parseIssue(issueContent) {
@@ -17,8 +17,7 @@ function parseIssue(issueContent) {
   const notary = matchGroup(regexNotary, issueContent)
   const region = matchGroup(regexRegion, issueContent)
 
-
-  if (name && address && datacap && website ) {
+  if (name && address && datacap && website) {
     return {
       correct: true,
       errorMessage: '',

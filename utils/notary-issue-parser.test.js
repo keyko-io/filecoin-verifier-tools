@@ -24,7 +24,6 @@ describe('parseIssue()', () => {
     expect(parsedResult.correct).toBe(false)
     expect(parsedResult.errorMessage).not.toBe('')
   })
-
 })
 
 describe('parseRemovalIssue()', () => {

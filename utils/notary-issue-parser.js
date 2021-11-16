@@ -1,6 +1,6 @@
 const {
   matchGroupLargeNotary,
-  matchAll
+  matchAll,
 } = require('./common-utils')
 
 function parseIssue(issueContent, issueTitle = '') {
@@ -20,8 +20,7 @@ function parseIssue(issueContent, issueTitle = '') {
   const region = matchGroupLargeNotary(regexRegion, issueContent)
   const useCases = matchGroupLargeNotary(regexUseCases, issueContent)
 
-
-  if (name != null && address != null && datacapRequested != null && website != null && region != null && useCases != null ) {
+  if (name != null && address != null && datacapRequested != null && website != null && region != null && useCases != null) {
     return {
       correct: true,
       errorMessage: '',
