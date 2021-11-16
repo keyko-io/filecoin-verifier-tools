@@ -1,6 +1,5 @@
 const {
-  matchGroup,
-  validateIssueDataCap,
+  matchGroup
 } = require('./common-utils')
 
 function parseIssue(issueContent) {
@@ -18,9 +17,8 @@ function parseIssue(issueContent) {
   const notary = matchGroup(regexNotary, issueContent)
   const region = matchGroup(regexRegion, issueContent)
 
-  const validateIssueDataCapResult = validateIssueDataCap(datacap, '')
 
-  if (name && address && datacap && website && validateIssueDataCapResult.resultCorrectDc) {
+  if (name && address && datacap && website ) {
     return {
       correct: true,
       errorMessage: '',
@@ -39,7 +37,6 @@ function parseIssue(issueContent) {
   if (!address) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
   if (!datacap) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
   if (!website) { errorMessage += 'We could not find any **website /social media** in the information provided\n' }
-  if (!validateIssueDataCapResult.resultCorrectDc) { errorMessage += 'The formatting for the **Total amount of DataCap being requested** is wrong. please input again with this formatting : nnnTiB/PiB or nnnTiB/PiB \n' }
 
   return {
     correct: false,
