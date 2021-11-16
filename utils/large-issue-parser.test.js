@@ -40,14 +40,6 @@ describe('parseIssue()', () => {
     const parsedResult = parseIssue(issueContentNoVals)
     expect(parsedResult.correct).toBe(false)
   })
-  it('validate formatting of datacap', () => {
-    const issueContentFormatDc = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/large_client_application_datacap_formatting.test.md'),
-      { encoding: 'utf8' },
-    )
-    const parsedResult = parseIssue(issueContentFormatDc)
-    expect(parsedResult.correct).toBe(false)
-  })
 })
 
 describe('parseRemovalIssue()', () => {
