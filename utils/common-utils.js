@@ -1,14 +1,14 @@
 
-function validateIssueDataCap(datacap, weeklyDatacap) {
-  const validateDatacapRegex = /[0-9]{1,3}[PiBT]{3,4}/g
-  const resultCorrectDc = datacap ? datacap.match(validateDatacapRegex) : null
-  const resultCorrectWeeklyDc = weeklyDatacap ? weeklyDatacap.match(validateDatacapRegex) : null
+// function validateIssueDataCap(datacap, weeklyDatacap) {
+//   const validateDatacapRegex = /[0-9]{1,3}[PiBT]{3,4}/g
+//   const resultCorrectDc = datacap ? datacap.match(validateDatacapRegex) : null
+//   const resultCorrectWeeklyDc = weeklyDatacap ? weeklyDatacap.match(validateDatacapRegex) : null
 
-  return {
-    resultCorrectDc,
-    resultCorrectWeeklyDc,
-  }
-}
+//   return {
+//     resultCorrectDc,
+//     resultCorrectWeeklyDc,
+//   }
+// }
 // used in large-issue-parser and notary-issue-parser
 function matchGroupLargeNotary(regex, content) {
   let m
@@ -38,4 +38,4 @@ function matchAll(regex, content) {
 exports.matchGroupLargeNotary = matchGroupLargeNotary
 exports.matchGroup = matchGroup
 exports.matchAll = matchAll
-exports.validateIssueDataCap = validateIssueDataCap
+// exports.validateIssueDataCap = validateIssueDataCap

@@ -1,7 +1,6 @@
 const {
   matchGroupLargeNotary,
   matchAll,
-  validateIssueDataCap,
 } = require('./common-utils')
 
 function parseIssue(issueContent, issueTitle = '') {
@@ -21,9 +20,7 @@ function parseIssue(issueContent, issueTitle = '') {
   const region = matchGroupLargeNotary(regexRegion, issueContent)
   const useCases = matchGroupLargeNotary(regexUseCases, issueContent)
 
-  const validateIssueDataCapResult = validateIssueDataCap(datacapRequested)
-
-  if (name != null && address != null && datacapRequested != null && website != null && region != null && useCases != null && validateIssueDataCapResult.resultCorrectDc) {
+  if (name != null && address != null && datacapRequested != null && website != null && region != null && useCases != null) {
     return {
       correct: true,
       errorMessage: '',
@@ -63,7 +60,6 @@ function parseIssue(issueContent, issueTitle = '') {
   if (website == null) { errorMessage += 'We could not find any **Web site or social media info** in the information provided\n' }
   if (region == null) { errorMessage += 'We could not find any **Region** in the information provided\n' }
   if (useCases == null) { errorMessage += 'We could not find any **Use Case** in the information provided\n' }
-  if (!validateIssueDataCapResult.resultCorrectDc) { errorMessage += 'The formatting for the **Total amount of DataCap being requested** is wrong. please input again with this formatting : nnnTiB/PiB or nnnTiB/PiB \n' }
 
   return {
     correct: false,

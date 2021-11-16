@@ -1,7 +1,6 @@
 const {
   matchGroupLargeNotary,
   matchAll,
-  validateIssueDataCap,
 } = require('./common-utils')
 
 function parseIssue(issueContent, issueTitle = '') {
@@ -18,9 +17,7 @@ function parseIssue(issueContent, issueTitle = '') {
   const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
   const dataCapWeeklyAllocation = matchGroupLargeNotary(regexWeeklyDataCapAllocation, issueContent)
 
-  const validateIssueDataCapResult = validateIssueDataCap(datacapRequested, dataCapWeeklyAllocation)
-
-  if (name && address && datacapRequested && website && dataCapWeeklyAllocation && validateIssueDataCapResult.resultCorrectDc && validateIssueDataCapResult.resultCorrectWeeklyDc) {
+  if (name && address && datacapRequested && website && dataCapWeeklyAllocation) {
     return {
       correct: true,
       errorMessage: '',
@@ -57,8 +54,6 @@ function parseIssue(issueContent, issueTitle = '') {
   if (!datacapRequested) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
   if (!website) { errorMessage += 'We could not find any **Web site or social media info** in the information provided\n' }
   if (!dataCapWeeklyAllocation) { errorMessage += 'We could not find any **Expected weekly DataCap usage rate** in the information provided\n' }
-  if (!validateIssueDataCapResult.resultCorrectDc) { errorMessage += 'The formatting for the **Total amount of DataCap being requested** is wrong. please input again with this formatting : nnnTiB/PiB or nnnTiB/PiB \n' }
-  if (!validateIssueDataCapResult.resultCorrectWeeklyDc) { errorMessage += 'The formatting for the **Weekly allocation of DataCap requested** is wrong. please input again with this formatting : nnnTiB/PiB or nnnTiB/PiB \n' }
 
   return {
     correct: false,
