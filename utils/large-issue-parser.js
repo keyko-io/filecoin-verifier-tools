@@ -66,7 +66,6 @@ function parseIssue(issueContent, issueTitle = '') {
   }
 }
 
-
 function parseApproveComment(commentContent) {
   const regexApproved = /##\s*Request\s*Approved/m
   const regexAddress = /####\s*Address\W*^>\s*(.*)/m
@@ -104,7 +103,6 @@ function parseApproveComment(commentContent) {
           datacapAllocated= ${datacap}`,
   }
 }
-
 
 function parseMultipleApproveComment(commentContent) {
   const regexApproved = /##\s*Request\s*Approved/m
@@ -236,7 +234,7 @@ function parseMultisigReconnectComment(commentContent) {
     return {
       correct: true,
       msigAddress,
-      issueURI
+      issueURI,
     }
   }
 

@@ -9,7 +9,7 @@ const {
   parseReleaseRequest,
   parseWeeklyDataCapAllocationUpdateRequest,
   parseApprovedRequestWithSignerAddress,
-  parseMultisigReconnectComment
+  parseMultisigReconnectComment,
 } = require('./large-issue-parser')
 
 describe('parseIssue()', () => {
@@ -182,8 +182,7 @@ describe('parseMultisigReconnectComment()', () => {
 
     const parsedResult = parseMultisigReconnectComment(commentContent)
     expect(parsedResult.correct).toBe(true)
-    expect(parsedResult.msigAddress).toBe("f01105812")
+    expect(parsedResult.msigAddress).toBe('f01105812')
     expect(parsedResult.issueURI).toBe('https://github.com/keyko-io/filecoin-notaries-onboarding/issues/370')
   })
- 
 })
