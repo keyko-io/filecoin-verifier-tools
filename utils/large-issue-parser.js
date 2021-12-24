@@ -66,15 +66,6 @@ function parseIssue(issueContent, issueTitle = '') {
   }
 }
 
-// function matchGroup(regex, content) {
-//   let m
-//   if ((m = regex.exec(content)) !== null) {
-//     if (m.length >= 2) {
-//       return m[1].trim()
-//     }
-//     return m[0].trim()
-//   }
-// }
 
 function parseApproveComment(commentContent) {
   const regexApproved = /##\s*Request\s*Approved/m
@@ -114,13 +105,6 @@ function parseApproveComment(commentContent) {
   }
 }
 
-// function matchAll(regex, content) {
-//   var matches = [...content.matchAll(regex)]
-//   if (matches !== null) {
-//     // each entry in the array has this form: Array ["#### Address > f1111222333", "", "f1111222333"]
-//     return matches.map(elem => elem[2])
-//   }
-// }
 
 function parseMultipleApproveComment(commentContent) {
   const regexApproved = /##\s*Request\s*Approved/m
@@ -239,6 +223,34 @@ function parseMultisigNotaryRequest(commentContent) {
   }
 }
 
+function parseMultisigReconnectComment(commentContent) {
+  const regexRequest = /##\s*Multisig\s*Notary\s*Reconnection\s*Request/m
+  const regexAddress = /####\s*Multisig\s*Notary\s*Address\s*(.*)\n>\s*(.*)/g
+  const regexIssue = /####\s*Notary\s*Governance\s*Issue\s*(.*)\n>\s*(.*)/g
+
+  const requestType = matchGroupLargeNotary(regexRequest, commentContent)
+  const msigAddress = matchAll(regexAddress, commentContent)[0]
+  const issueURI = matchAll(regexIssue, commentContent)[0]
+
+  if (requestType && msigAddress && issueURI) {
+    return {
+      correct: true,
+      msigAddress,
+      issueURI
+    }
+  }
+
+  let errorMessage = ''
+  if (msigAddress == null) { errorMessage += 'We could not find the **Multisig Notary Address** allocated in the information provided in the comment\n' }
+  if (issueURI == null) { errorMessage += 'We could not find the **Notary Governance Issue** allocated in the information provided in the comment\n' }
+  return {
+    multisigMessage: true,
+    correct: false,
+    errorMessage: errorMessage,
+    errorDetails: 'Unable to find required attributes.',
+  }
+}
+
 function parseNotaryConfirmation(commentContent, title) {
   const regexConfirmation = /##\s*The\s*request\s*has\s*been\s*signed\s*by\s*a\s*new\s*Root\s*Key\s*Holder/m
   const regexTitleNumber = /Large\sdataset\smultisig\srequest\s#\s*([0-9]*)/m
@@ -337,3 +349,4 @@ exports.parseNotaryConfirmation = parseNotaryConfirmation
 exports.parseReleaseRequest = parseReleaseRequest
 exports.parseWeeklyDataCapAllocationUpdateRequest = parseWeeklyDataCapAllocationUpdateRequest
 exports.parseApprovedRequestWithSignerAddress = parseApprovedRequestWithSignerAddress
+exports.parseMultisigReconnectComment = parseMultisigReconnectComment
