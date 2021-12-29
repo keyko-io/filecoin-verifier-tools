@@ -223,23 +223,27 @@ function parseMultisigNotaryRequest(commentContent) {
 
 function parseMultisigReconnectComment(commentContent) {
   const regexRequest = /##\s*Multisig\s*Notary\s*Reconnection\s*Request/m
-  const regexAddress = /####\s*Multisig\s*Notary\s*Address\s*(.*)\n>\s*(.*)/g
+  const regexMsigAddress = /####\s*Multisig\s*Notary\s*Address\s*(.*)\n>\s*(.*)/g
+  const regexClientAddress = /####\s*Client\s*Address\s*(.*)\n>\s*(.*)/g
   const regexIssue = /####\s*Notary\s*Governance\s*Issue\s*(.*)\n>\s*(.*)/g
 
   const requestType = matchGroupLargeNotary(regexRequest, commentContent)
-  const msigAddress = matchAll(regexAddress, commentContent)[0]
+  const msigAddress = matchAll(regexMsigAddress, commentContent)[0]
+  const clientAddress = matchAll(regexClientAddress, commentContent)[0]
   const issueURI = matchAll(regexIssue, commentContent)[0]
 
   if (requestType && msigAddress && issueURI) {
     return {
       correct: true,
       msigAddress,
+      clientAddress,
       issueURI,
     }
   }
 
   let errorMessage = ''
   if (msigAddress == null) { errorMessage += 'We could not find the **Multisig Notary Address** allocated in the information provided in the comment\n' }
+  if (clientAddress == null) { errorMessage += 'We could not find the **Client Address** allocated in the information provided in the comment\n' }
   if (issueURI == null) { errorMessage += 'We could not find the **Notary Governance Issue** allocated in the information provided in the comment\n' }
   return {
     multisigMessage: true,
