@@ -18,8 +18,8 @@ restart_lotus() {
 
 configure_lotus() {
 
-  mkdir ~/.lotus
-  mkdir ~/.lotusminer
+  mkdir -p ~/.lotus
+  mkdir -p ~/.lotusminer
 
   echo -e "\nPre-seal some sectors:\n"
   $LOTUS_SEED pre-seal --sector-size 2KiB --num-sectors 2
@@ -36,6 +36,7 @@ configure_lotus() {
 
   cp ~/config.toml ~/.lotus/config.toml
   sleep 5
+
 #  $LOTUS_BIN daemon --lotus-make-genesis=dev.gen --genesis-template=localnet.json --bootstrap=false
   tmux new-window -t lotus:1 -n daemon -d $LOTUS_BIN daemon --lotus-make-genesis=dev.gen --genesis-template=localnet.json --bootstrap=false
 
@@ -66,7 +67,11 @@ restart_lotus() {
 
 main() {
 
-  echo -e "\nUsing Lotus Path: $LOTUS_PATH \n"
+  echo -e "\nKey\n"
+
+  cat ~/.lotus/keystore/MF2XI2BNNJ3XILLQOJUXMYLUMU
+
+  chmod 600 ~/.lotus/keystore/MF2XI2BNNJ3XILLQOJUXMYLUMU
 
   if [ -f ~/.lotusminer/token ]; then
     restart_lotus

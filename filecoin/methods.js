@@ -306,11 +306,17 @@ function make(testnet) {
     if (schema === 'address' && typeof data === 'string') {
       return bytesToAddress(Buffer.from(data, 'base64'), true)
     }
+    if (schema === 'address' && data['/']) {
+      return bytesToAddress(Buffer.from(data['/'].bytes, 'base64'), true)
+    }
     if (schema === 'address') {
       return bytesToAddress(data, true)
     }
     if (schema === 'bigint' && typeof data === 'string') {
       return hamt.bytesToBig(Buffer.from(data, 'base64'))
+    }
+    if (schema === 'bigint' && data['/']) {
+      return hamt.bytesToBig(Buffer.from(data['/'].bytes, 'base64'))
     }
     if (schema === 'bigint') {
       return hamt.bytesToBig(data)
@@ -392,7 +398,7 @@ function make(testnet) {
 
   function encode(schema, data) {
     if (schema === 'address') {
-      // console.log(data)
+      console.log('address', data)
       return addressAsBytes(data)
     }
     if (schema === 'bigint') {

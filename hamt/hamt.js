@@ -54,6 +54,9 @@ function makeBuffers(obj) {
   if (typeof obj === 'string') {
     return Buffer.from(obj, 'base64')
   }
+  if (obj['/'] && obj['/'].bytes) {
+    return Buffer.from(obj['/'].bytes, 'base64')
+  }
   if (obj instanceof Array) {
     return obj.map(makeBuffers)
   }
@@ -89,7 +92,7 @@ exports.bytesToBig = bytesToBig
 function parseNode(data) {
   return {
     pointers: data[1],
-    bitfield: bytesToBig(Buffer.from(data[0], 'base64')),
+    bitfield: bytesToBig(Buffer.from(data[0]['/'] ? data[0]['/'].bytes : data[0], 'base64')),
   }
 }
 

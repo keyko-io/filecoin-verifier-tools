@@ -1,3 +1,8 @@
 [API]
   ListenAddress = "/ip4/0.0.0.0/tcp/2345/http"
   Timeout = "60s"
+[Dealmaking]
+  PublishMsgPeriod = "0h1m0s"
+[Sealing]
+  BatchPreCommits = false
+  AggregateCommits = false

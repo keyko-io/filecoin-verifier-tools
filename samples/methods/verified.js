@@ -38,6 +38,7 @@ async function run() {
   for (const it of await dta.asList(load)) {
     console.log(it)
   }
+  console.log(await dta.find(load, 't01005'))
   await provider.destroy()
 }
 
