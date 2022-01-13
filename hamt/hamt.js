@@ -92,7 +92,7 @@ exports.bytesToBig = bytesToBig
 function parseNode(data) {
   return {
     pointers: data[1],
-    bitfield: bytesToBig(Buffer.from(data[0]['/'].bytes, 'base64')),
+    bitfield: bytesToBig(Buffer.from(data[0]['/'] ? data[0]['/'].bytes : data[0], 'base64')),
   }
 }
 
