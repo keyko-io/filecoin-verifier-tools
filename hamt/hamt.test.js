@@ -29,24 +29,24 @@ describe('readVarInt()', () => {
 })
 
 const data = [
-  {'/': {bytes:'IkAAAA=='}},
+  { '/': { bytes: 'IkAAAA==' } },
   [
     [
       [
-        {'/': {bytes:'AOsH'}},
-        {'/': {bytes:'AAEl36NxoZ5vepcb1EmRplwAAA=='}},
+        { '/': { bytes: 'AOsH' } },
+        { '/': { bytes: 'AAEl36NxoZ5vepcb1EmRplwAAA==' } },
       ],
     ],
     [
       [
-        {'/': {bytes:'AOwH'}},
-        {'/': {bytes:'AAEl36NxoZ5vfLVDlcoAAAAAAA=='}},
+        { '/': { bytes: 'AOwH' } },
+        { '/': { bytes: 'AAEl36NxoZ5vfLVDlcoAAAAAAA==' } },
       ],
     ],
     [
       [
-        {'/': {bytes:'AFE='}},
-        {'/': {bytes:''}},
+        { '/': { bytes: 'AFE=' } },
+        { '/': { bytes: '' } },
       ],
     ],
   ],
