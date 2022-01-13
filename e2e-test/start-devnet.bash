@@ -7,6 +7,7 @@ __PARENT_DIR=$(dirname $__DIR)
 LOTUS_BIN="lotus"
 LOTUS_SEED="lotus-seed"
 LOTUS_MINER="lotus-miner"
+export LOTUS_SKIP_GENESIS_CHECK=_yes_
 
 ##### Functions
 
@@ -30,11 +31,13 @@ configure_lotus() {
 
   sleep 5
 #  $LOTUS_BIN daemon --lotus-make-genesis=dev.gen --genesis-template=localnet.json --bootstrap=false
-  tmux new-window -t lotus:1 -n daemon -d $LOTUS_BIN daemon --lotus-make-genesis=dev.gen --genesis-template=localnet.json --bootstrap=false
+  tmux new-window -t lotus:1 -n daemon -d $LOTUS_BIN daemon --lotus-make-genesis=devgen.car --genesis-template=localnet.json --bootstrap=false
+
+  sleep 5
 
   $LOTUS_BIN wait-api
   echo -e "\nImporting the genesis miner key:\n"
-  $LOTUS_BIN wallet import ~/.genesis-sectors/pre-seal-t01000.key
+  $LOTUS_BIN wallet import --as-default ~/.genesis-sectors/pre-seal-t01000.key
   $LOTUS_BIN wallet import rootkey1
 
   sleep 3

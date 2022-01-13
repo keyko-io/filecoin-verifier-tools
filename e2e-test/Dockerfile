@@ -1,9 +1,9 @@
 # initial version from https://github.com/openworklabs/filecoin-docker
 # build container stage
-FROM golang:1.16.8 AS build-env
+FROM golang:1.17.3 AS build-env
 
 # branch or tag of the lotus version to build
-ARG BRANCH=v1.11.0
+ARG BRANCH=v1.13.1
 
 RUN echo "Building lotus from branch $BRANCH"
 
