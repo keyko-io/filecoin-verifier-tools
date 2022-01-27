@@ -3,7 +3,7 @@
 FROM golang:1.17.3 AS build-env
 
 # branch or tag of the lotus version to build
-ARG BRANCH=v1.13.1
+ARG BRANCH=v1.13.2
 
 RUN echo "Building lotus from branch $BRANCH"
 
@@ -75,5 +75,5 @@ EXPOSE 2345
 
 ENTRYPOINT ["/bin/entrypoint"]
 
-# docker build . -t mrsmkl/lotus:21-10-27
-# docker run --name lotus --rm -ti -p 1234:1234 -p 2345:2345  mrsmkl/lotus:21-10-27
+# docker build . -t mrsmkl/lotus:22-01-27
+# docker run --name lotus --rm -ti -p 1234:1234 -p 2345:2345  mrsmkl/lotus:22-01-27
