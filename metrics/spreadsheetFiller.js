@@ -1,4 +1,4 @@
-const fs = require('fs')
+// const fs = require('fs')
 const { google } = require('googleapis')
 // const MOCK_ISSUES = require('./mock-issues.json')
 const MOCK_UPDATE = require('./mock-update.json')
@@ -28,22 +28,20 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.goo
 //   await authorizeAndRun(JSON.parse(content), fillorUpdateSheet)
 // })
 
-
-//to load credentials from env file
-export const run = async (content) => {
- try {
+// to load credentials from env file
+const run = async (content) => {
+  try {
     await authorizeAndRun(JSON.parse(content), fillorUpdateSheet)
- } catch (error) {
-   console.log('error filling up the spreadsheet', error)
- }
-
+  } catch (error) {
+    console.log('error filling up the spreadsheet', error)
+  }
 }
 
 const fillorUpdateSheet = async (auth) => {
   // const fillSpreadSheet = (spreadsheetId = "1VPp7ijhJYuDl1xNqosV1jm0sGkyKOGmcK4ujYtG8qZE", issueArray ) => {
   const sheets = google.sheets({ version: 'v4', auth })
 
-  spreadsheetId = '1VPp7ijhJYuDl1xNqosV1jm0sGkyKOGmcK4ujYtG8qZE'
+  const spreadsheetId = '1VPp7ijhJYuDl1xNqosV1jm0sGkyKOGmcK4ujYtG8qZE'
   const sheetName = 'Sheet1'
   // Get the values in the column A
   const firstColumn = (await sheets.spreadsheets.values.batchGet({
@@ -60,8 +58,8 @@ const fillorUpdateSheet = async (auth) => {
   for (const issue of MOCK_UPDATE) {
     // for(let issue of MOCK_ISSUES){
     // insert new issue if its number is not present in the spreadsheet
+    let range = ''
     if (!issuesInSheet.includes(issue.issueNumber)) {
-      let range = ''
       for (const key of Object.keys(issue)) {
         const values = [[]]
         const cellContent = issue[key]
@@ -74,9 +72,8 @@ const fillorUpdateSheet = async (auth) => {
         )
       }
       numberOfRowsInSheet++
-    }
-    // update existing issue
-    else {
+    } else {
+      // update existing issue
       const rowNumber = issuesInSheet.indexOf(issue.issueNumber) + 1
       for (const key of Object.keys(issue)) {
         const values = [[]]
@@ -117,61 +114,63 @@ const authorizeAndRun = async (credentials, callback) => {
   await callback(jwtAuth)
 }
 
-const createSpreadSheet = async (auth) => {
-  const sheets = google.sheets({
-    version: 'v4',
-    auth,
-  })
+// TODO export
+// const createSpreadSheet = async (auth) => {
+//   const sheets = google.sheets({
+//     version: 'v4',
+//     auth,
+//   })
 
-  const drive = google.drive({
-    version: 'v2',
-    auth,
-  })
+//   const drive = google.drive({
+//     version: 'v2',
+//     auth,
+//   })
 
-  //TODO make this a single function and put the mail addresses in an env var array
-  try {
-    await drive.permissions.insert({
-      auth,
-      fileId: '1VPp7ijhJYuDl1xNqosV1jm0sGkyKOGmcK4ujYtG8qZE',
-      requestBody: {
-        emailAddress: 'fabrizio@keyko.io', 
-        role: 'writer',
-        type: 'user',
-        value: 'fabrizio@keyko.io',
-      }
-    })
-    await drive.permissions.insert({
-      auth,
-      fileId: '1VPp7ijhJYuDl1xNqosV1jm0sGkyKOGmcK4ujYtG8qZE',
-      requestBody: {
-        emailAddress: 'ivan@keyko.io', 
-        role: 'writer',
-        type: 'user',
-        value: 'ivan@keyko.io',
-      }
-    })
-    await drive.permissions.insert({
-      auth,
-      fileId: '1VPp7ijhJYuDl1xNqosV1jm0sGkyKOGmcK4ujYtG8qZE',
-      requestBody: {
-        emailAddress: 'galen@fil.org', 
-        role: 'writer',
-        type: 'user',
-        value: 'galen@fil.org',
-      }
-    })
-    await drive.permissions.insert({
-      auth,
-      fileId: '1VPp7ijhJYuDl1xNqosV1jm0sGkyKOGmcK4ujYtG8qZE',
-      requestBody: {
-        emailAddress: 'deep.kapur@protocol.ai', 
-        role: 'writer',
-        type: 'user',
-        value: 'deep.kapur@protocol.ai',
-      }
-    })
-    
-  } catch (error) {
-    console.log(error)
-  }
-}
+//   // TODO make this a single function and put the mail addresses in an env var array
+//   try {
+//     await drive.permissions.insert({
+//       auth,
+//       fileId: '1VPp7ijhJYuDl1xNqosV1jm0sGkyKOGmcK4ujYtG8qZE',
+//       requestBody: {
+//         emailAddress: 'fabrizio@keyko.io',
+//         role: 'writer',
+//         type: 'user',
+//         value: 'fabrizio@keyko.io',
+//       },
+//     })
+//     await drive.permissions.insert({
+//       auth,
+//       fileId: '1VPp7ijhJYuDl1xNqosV1jm0sGkyKOGmcK4ujYtG8qZE',
+//       requestBody: {
+//         emailAddress: 'ivan@keyko.io',
+//         role: 'writer',
+//         type: 'user',
+//         value: 'ivan@keyko.io',
+//       },
+//     })
+//     await drive.permissions.insert({
+//       auth,
+//       fileId: '1VPp7ijhJYuDl1xNqosV1jm0sGkyKOGmcK4ujYtG8qZE',
+//       requestBody: {
+//         emailAddress: 'galen@fil.org',
+//         role: 'writer',
+//         type: 'user',
+//         value: 'galen@fil.org',
+//       },
+//     })
+//     await drive.permissions.insert({
+//       auth,
+//       fileId: '1VPp7ijhJYuDl1xNqosV1jm0sGkyKOGmcK4ujYtG8qZE',
+//       requestBody: {
+//         emailAddress: 'deep.kapur@protocol.ai',
+//         role: 'writer',
+//         type: 'user',
+//         value: 'deep.kapur@protocol.ai',
+//       },
+//     })
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
+
+exports.run = run
