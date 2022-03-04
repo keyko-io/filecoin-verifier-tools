@@ -1,3 +1,4 @@
 node_modules
 .env
 metrics/credentials.json
+git rm --cached metrics/credentials.json
