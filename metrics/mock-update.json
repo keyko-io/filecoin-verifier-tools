@@ -1,0 +1,17 @@
+[
+    {
+        "issueNumber": "1",
+        "clientName": "update X",
+        "clientAddress": "NUOVO ADDRESSS",
+        "msigAddress": "UPDATe msifg"
+    },
+    {
+        "issueNumber": "2",
+        "msigAddress": "NUVOV",
+        "weeklyDataCapRequested": "NUOVOW",
+        "totalDataCapRequested": "NUOVO",
+        "status": "UPDATED",
+        "githubLink": "XGITHUBLINK"
+
+    }
+]
