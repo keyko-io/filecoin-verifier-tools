@@ -1,48 +1,45 @@
 // const fs = require('fs')
 const { google } = require('googleapis')
 // const MOCK_ISSUES = require('./mock-issues.json')
-const MOCK_UPDATE = require('./mock-update.json')
+// const MOCK_UPDATE = require('./mock-update.json')
 
+// TODO make a constnts file
+const PATH_PREFIX = 'https://github.com/filecoin-project/filecoin-plus-large-datasets/issues'
 const COLUMN_MAPPING = [ // map issue object with header and letter of column
   { id: 'issueNumber', header: 'Issue Number', columnLetter: 'A' },
-  { id: 'clientName', header: 'Client Name', columnLetter: 'B' },
-  { id: 'githubLink', header: 'Github Link', columnLetter: 'C' },
-  { id: 'clientAddress', header: 'Client Address', columnLetter: 'D' },
-  { id: 'msigAddress', header: 'Multisig Address', columnLetter: 'E' },
-  { id: 'totalDataCapRequested', header: 'Total DataCap Requested', columnLetter: 'F' },
-  { id: 'weeklyDataCapRequested', header: 'Github Link', columnLetter: 'G' },
-  { id: 'numberOfRequests', header: 'Number of Requests', columnLetter: 'H' },
-  { id: 'status', header: 'Status', columnLetter: 'I' },
-  { id: 'region', header: 'Region', columnLetter: 'J' },
-  { id: 'author', header: 'Author', columnLetter: 'K' },
+  { id: 'title', header: 'Title', columnLetter: 'B' },
+  { id: 'clientName', header: 'Client Name', columnLetter: 'C' },
+  { id: 'created_at', header: 'Date of Creation', columnLetter: 'D' },
+  { id: 'updated_at', header: 'Date of Last Update', columnLetter: 'E' },
+  { id: 'closed_at', header: 'Date of Issue Closing', columnLetter: 'F' },
+  { id: 'isOpen', header: 'Is Open', columnLetter: 'G' },
+  { id: 'clientAddress', header: 'Client Address', columnLetter: 'H' },
+  { id: 'msigAddress', header: 'Multisig Address', columnLetter: 'I' },
+  { id: 'totalDataCapRequested', header: 'Total DataCap Requested', columnLetter: 'J' },
+  { id: 'weeklyDataCapRequested', header: 'Weekly DataCap Requested', columnLetter: 'K' },
+  { id: 'numberOfRequests', header: 'Number of Requests', columnLetter: 'L' },
+  { id: 'status', header: 'Status', columnLetter: 'M' },
+  { id: 'region', header: 'Region', columnLetter: 'N' },
+  { id: 'author', header: 'Author', columnLetter: 'O' },
+  { id: 'assignee', header: 'Assignee', columnLetter: 'P' },
 ]
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/drive.file']
 
-// Load client secrets from a local file.
-// fs.readFile('credentials.json', async (err, content) => {
-//   if (err) return console.log('Error loading client secret file:', err)
-
-//   // Authorize a client with credentials, then call the Google Sheets API.
-//   await authorizeAndRun(JSON.parse(content), fillorUpdateSheet)
-// })
-
 // to load credentials from env file
-const run = async (content) => {
+const run = async (credentials, spreadsheetId, sheetName, issuesArray) => {
   try {
-    await authorizeAndRun(JSON.parse(content), fillorUpdateSheet)
+    const jwtAuth = await authorizeAndRun(credentials)
+    await fillorUpdateSheet(jwtAuth, spreadsheetId, sheetName, issuesArray)
   } catch (error) {
     console.log('error filling up the spreadsheet', error)
   }
 }
 
-const fillorUpdateSheet = async (auth) => {
-  // const fillSpreadSheet = (spreadsheetId = "1VPp7ijhJYuDl1xNqosV1jm0sGkyKOGmcK4ujYtG8qZE", issueArray ) => {
+const fillorUpdateSheet = async (auth, spreadsheetId, sheetName, issuesArray) => {
   const sheets = google.sheets({ version: 'v4', auth })
 
-  const spreadsheetId = '1VPp7ijhJYuDl1xNqosV1jm0sGkyKOGmcK4ujYtG8qZE'
-  const sheetName = 'Sheet1'
   // Get the values in the column A
   const firstColumn = (await sheets.spreadsheets.values.batchGet({
     spreadsheetId,
@@ -52,17 +49,21 @@ const fillorUpdateSheet = async (auth) => {
 
   const issuesInSheet = firstColumn.data.valueRanges[0].values ? firstColumn.data.valueRanges[0].values[0] : []
   let numberOfRowsInSheet = issuesInSheet.length + 1 // counting how many issues are there in the spreadsheet
-
   // loop the issueArray, if the current issue number is not present, insert the issue info in the row
   const data = []
-  for (const issue of MOCK_UPDATE) {
-    // for(let issue of MOCK_ISSUES){
+  for (const issue of issuesArray) {
     // insert new issue if its number is not present in the spreadsheet
     let range = ''
-    if (!issuesInSheet.includes(issue.issueNumber)) {
+    if (!issuesInSheet.find(() => issue.issueNumber.toString())) {
       for (const key of Object.keys(issue)) {
         const values = [[]]
-        const cellContent = issue[key]
+        let cellContent = issue[key]
+
+        if (key === 'title') {
+          const hyperlink = `${PATH_PREFIX}/${issue.issueNumber}`
+          cellContent = `=HYPERLINK("${hyperlink}", "${issue[key]}")`
+        }
+
         const columnLetter = COLUMN_MAPPING.find(item => item.id === key).columnLetter
 
         // this is the cell to be updated
@@ -73,12 +74,19 @@ const fillorUpdateSheet = async (auth) => {
       }
       numberOfRowsInSheet++
     } else {
-      // update existing issue
-      const rowNumber = issuesInSheet.indexOf(issue.issueNumber) + 1
+      // update existing issue considering the header row
+      const rowNumber = issuesInSheet.indexOf(String(issue.issueNumber)) + 1
+
       for (const key of Object.keys(issue)) {
         const values = [[]]
         // console.log( issue[key])
-        const cellContent = issue[key]
+        let cellContent = issue[key]
+
+        if (key === 'title') {
+          const hyperlink = `${PATH_PREFIX}/${issue.issueNumber}`
+          cellContent = `=HYPERLINK("${hyperlink}", "${issue[key]}")`
+        }
+
         const columnLetter = COLUMN_MAPPING.find(item => item.id === key).columnLetter
 
         // this is the cell to be updated
@@ -91,7 +99,7 @@ const fillorUpdateSheet = async (auth) => {
   }
   await sheets.spreadsheets.values.batchUpdate({
     spreadsheetId,
-    valueInputOption: 'RAW',
+    valueInputOption: 'USER_ENTERED',
     requestBody: {
       data,
     },
@@ -100,9 +108,8 @@ const fillorUpdateSheet = async (auth) => {
 
 /**
  * @param {Object} credentials The authorization client credentials.
- * @param {function} callback The callback to call with the authorized client.
  */
-const authorizeAndRun = async (credentials, callback) => {
+const authorizeAndRun = async (credentials) => {
   const jwtAuth = new google.auth.JWT({
     email: credentials.client_email,
     key: credentials.private_key,
@@ -110,11 +117,10 @@ const authorizeAndRun = async (credentials, callback) => {
     scopes: SCOPES,
 
   })
-
-  await callback(jwtAuth)
+  return jwtAuth
 }
 
-// TODO export
+// TODO run once to create the spreadsheet
 // const createSpreadSheet = async (auth) => {
 //   const sheets = google.sheets({
 //     version: 'v4',
