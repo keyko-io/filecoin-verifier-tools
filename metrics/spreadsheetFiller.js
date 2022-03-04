@@ -21,12 +21,23 @@ const COLUMN_MAPPING = [ // map issue object with header and letter of column
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/drive.file']
 
 // Load client secrets from a local file.
-fs.readFile('credentials.json', async (err, content) => {
-  if (err) return console.log('Error loading client secret file:', err)
+// fs.readFile('credentials.json', async (err, content) => {
+//   if (err) return console.log('Error loading client secret file:', err)
 
-  // Authorize a client with credentials, then call the Google Sheets API.
-  await authorizeAndRun(JSON.parse(content), fillorUpdateSheet)
-})
+//   // Authorize a client with credentials, then call the Google Sheets API.
+//   await authorizeAndRun(JSON.parse(content), fillorUpdateSheet)
+// })
+
+
+//to load credentials from env file
+export const run = async (content) => {
+ try {
+    await authorizeAndRun(JSON.parse(content), fillorUpdateSheet)
+ } catch (error) {
+   console.log('error filling up the spreadsheet', error)
+ }
+
+}
 
 const fillorUpdateSheet = async (auth) => {
   // const fillSpreadSheet = (spreadsheetId = "1VPp7ijhJYuDl1xNqosV1jm0sGkyKOGmcK4ujYtG8qZE", issueArray ) => {
@@ -42,7 +53,6 @@ const fillorUpdateSheet = async (auth) => {
   }))
 
   const issuesInSheet = firstColumn.data.valueRanges[0].values ? firstColumn.data.valueRanges[0].values[0] : []
-  console.log(issuesInSheet)
   let numberOfRowsInSheet = issuesInSheet.length + 1 // counting how many issues are there in the spreadsheet
 
   // loop the issueArray, if the current issue number is not present, insert the issue info in the row
@@ -54,7 +64,6 @@ const fillorUpdateSheet = async (auth) => {
       let range = ''
       for (const key of Object.keys(issue)) {
         const values = [[]]
-        // console.log( issue[key])
         const cellContent = issue[key]
         const columnLetter = COLUMN_MAPPING.find(item => item.id === key).columnLetter
 
@@ -119,18 +128,49 @@ const createSpreadSheet = async (auth) => {
     auth,
   })
 
+  //TODO make this a single function and put the mail addresses in an env var array
   try {
     await drive.permissions.insert({
       auth,
       fileId: '1VPp7ijhJYuDl1xNqosV1jm0sGkyKOGmcK4ujYtG8qZE',
       requestBody: {
-        emailAddress: 'fabrizio@keyko.io',
+        emailAddress: 'fabrizio@keyko.io', 
         role: 'writer',
         type: 'user',
         value: 'fabrizio@keyko.io',
-      },
-
+      }
     })
+    await drive.permissions.insert({
+      auth,
+      fileId: '1VPp7ijhJYuDl1xNqosV1jm0sGkyKOGmcK4ujYtG8qZE',
+      requestBody: {
+        emailAddress: 'ivan@keyko.io', 
+        role: 'writer',
+        type: 'user',
+        value: 'ivan@keyko.io',
+      }
+    })
+    await drive.permissions.insert({
+      auth,
+      fileId: '1VPp7ijhJYuDl1xNqosV1jm0sGkyKOGmcK4ujYtG8qZE',
+      requestBody: {
+        emailAddress: 'galen@fil.org', 
+        role: 'writer',
+        type: 'user',
+        value: 'galen@fil.org',
+      }
+    })
+    await drive.permissions.insert({
+      auth,
+      fileId: '1VPp7ijhJYuDl1xNqosV1jm0sGkyKOGmcK4ujYtG8qZE',
+      requestBody: {
+        emailAddress: 'deep.kapur@protocol.ai', 
+        role: 'writer',
+        type: 'user',
+        value: 'deep.kapur@protocol.ai',
+      }
+    })
+    
   } catch (error) {
     console.log(error)
   }
