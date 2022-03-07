@@ -1,7 +1,8 @@
 const { google } = require('googleapis')
 const { PATH_PREFIX, COLUMN_MAPPING, SCOPES, spreadsheetId, sheetName } = require('./constants')
 const { credentials } = require('./credentials')
-const run = async (issuesArray) => {
+
+const runSpreadSheetFiller = async (issuesArray) => {
   try {
     const jwtAuth = await authorizeAndRun(credentials)
     // console.log("jwtAuth",jwtAuth)
@@ -13,6 +14,7 @@ const run = async (issuesArray) => {
 
 const fillOrUpdateSpreadsheet = async (jwtAuth, issuesArray) => {
   const sheets = google.sheets({ version: 'v4', auth: jwtAuth })
+  console.log('after shheeeet')
 
   // Get the values in the column A
   const firstColumn = (await sheets.spreadsheets.values.batchGet({
@@ -179,4 +181,4 @@ const authorizeAndRun = async (credentials) => {
 //   }
 // }
 
-exports.run = run
+exports.run = runSpreadSheetFiller
