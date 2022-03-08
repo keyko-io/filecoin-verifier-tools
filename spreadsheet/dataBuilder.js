@@ -15,7 +15,6 @@ const commentsForEachIssue = async (octokit, rawIssues) => {
           })
         return { issueNumber: issue.number, comments }
       }))
-    
   } catch (error) {
     console.log('error in dataBuilder commentsForEachIssue', error)
   }
@@ -23,13 +22,12 @@ const commentsForEachIssue = async (octokit, rawIssues) => {
 
 const prepareObject = async (octokit, rawIssues) => {
   try {
-    
     const commentsEachIssue = await commentsForEachIssue(octokit, rawIssues)
     const spreadsheetDataArray =
             await Promise.all(
               rawIssues.map(async (issue) => {
                 const { number, body, title, labels, user, state, assignee, created_at, updated_at, closed_at } = issue
-  
+
                 const parsedIssue = parseIssue(body)
                 let msigAddress = ''
                 let requestCount = 0
@@ -42,7 +40,7 @@ const prepareObject = async (octokit, rawIssues) => {
                     requestCount++
                   }
                 }
-  
+
                 const spreadsheetData = {
                   issueNumber: number,
                   status: labels ? labels.map((label) => label.name).toString() : '',
@@ -54,12 +52,12 @@ const prepareObject = async (octokit, rawIssues) => {
                   updated_at,
                   closed_at: closed_at || '',
                   clientName: parsedIssue ? parsedIssue.name : '',
-                  clientAddress: parsedIssue? parsedIssue.address : '',
+                  clientAddress: parsedIssue ? parsedIssue.address : '',
                   msigAddress,
-                  totalDataCapRequested: parsedIssue? parsedIssue.datacapRequested : '',
-                  weeklyDataCapRequested: parsedIssue? parsedIssue.dataCapWeeklyAllocation : '',
+                  totalDataCapRequested: parsedIssue ? parsedIssue.datacapRequested : '',
+                  weeklyDataCapRequested: parsedIssue ? parsedIssue.dataCapWeeklyAllocation : '',
                   numberOfRequests: String(requestCount),
-  
+
                 }
                 return spreadsheetData
               }),

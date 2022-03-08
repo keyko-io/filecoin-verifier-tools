@@ -15,92 +15,89 @@ const runSpreadSheetFiller = async (issuesArray) => {
 const fillOrUpdateSpreadsheet = async (jwtAuth, issuesArray) => {
   try {
     const sheets = google.sheets({ version: 'v4', auth: jwtAuth })
-  console.log('after shheeeet')
+    console.log('after shheeeet')
 
-  // Get the values in the column A
-  const firstColumn = (await sheets.spreadsheets.values.batchGet({
-    spreadsheetId,
-    ranges: [`${sheetName}!A2:A`],
-    majorDimension: 'COLUMNS',
-  }))
+    // Get the values in the column A
+    const firstColumn = (await sheets.spreadsheets.values.batchGet({
+      spreadsheetId,
+      ranges: [`${sheetName}!A2:A`],
+      majorDimension: 'COLUMNS',
+    }))
 
-  const issuesInSheet = firstColumn.data.valueRanges[0].values ? firstColumn.data.valueRanges[0].values[0] : []
+    const issuesInSheet = firstColumn.data.valueRanges[0].values ? firstColumn.data.valueRanges[0].values[0] : []
 
-  const data = await addOrUpdateSpreadsheet(issuesArray, issuesInSheet, sheets)
+    const data = await addOrUpdateSpreadsheet(issuesArray, issuesInSheet, sheets)
 
-  await sheets.spreadsheets.values.batchUpdate({
-    spreadsheetId,
-    valueInputOption: 'USER_ENTERED',
-    requestBody: {
-      data,
-    },
-  })
+    await sheets.spreadsheets.values.batchUpdate({
+      spreadsheetId,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        data,
+      },
+    })
   } catch (error) {
-    console.log("error in spreadsheetFiller fillOrUpdateSpreadsheet",error)
-    
+    console.log('error in spreadsheetFiller fillOrUpdateSpreadsheet', error)
   }
-  
 }
 
 const addOrUpdateSpreadsheet = async (issuesArray, issuesInSheet, sheets) => {
   try {
     let numberOfRowsInSheet = issuesInSheet.length + 1 // counting how many issues are there in the spreadsheet
-  const data = []
-  let range = ''
+    const data = []
+    let range = ''
 
-  for (const issue of issuesArray) {
-    if (issuesInSheet.includes(String(issue.issueNumber))) {
+    for (const issue of issuesArray) {
+      if (issuesInSheet.includes(String(issue.issueNumber))) {
       // if present --> get all the value of the cells of the issue
-      const rowNumber = issuesInSheet.indexOf(String(issue.issueNumber)) + 2
+        const rowNumber = issuesInSheet.indexOf(String(issue.issueNumber)) + 2
 
-      const allRowValues = (await sheets.spreadsheets.values.batchGet({
-        spreadsheetId,
-        ranges: [`${sheetName}!A${rowNumber}:P${rowNumber}`],
-        majorDimension: 'COLUMNS',
-      }))
+        const allRowValues = (await sheets.spreadsheets.values.batchGet({
+          spreadsheetId,
+          ranges: [`${sheetName}!A${rowNumber}:P${rowNumber}`],
+          majorDimension: 'COLUMNS',
+        }))
 
-      const arrayOfCellValuesInRow = allRowValues.data.valueRanges.map((value) => value.values.map(item => item[0] ? item[0] : ''))[0]
+        const arrayOfCellValuesInRow = allRowValues.data.valueRanges.map((value) => value.values.map(item => item[0] ? item[0] : ''))[0]
 
-      // map the array of values in the row
-      const mappedRowObject = {}
-      for (let i = 0; i < arrayOfCellValuesInRow.length; i++) {
-        mappedRowObject[COLUMN_MAPPING[i].id] = arrayOfCellValuesInRow[i]
-      }
+        // map the array of values in the row
+        const mappedRowObject = {}
+        for (let i = 0; i < arrayOfCellValuesInRow.length; i++) {
+          mappedRowObject[COLUMN_MAPPING[i].id] = arrayOfCellValuesInRow[i]
+        }
 
-      for (const key of Object.keys(issue)) {
-        const values = [[]]
-        const columnLetter = COLUMN_MAPPING.find(item => item.id === key).columnLetter
-        // this is the cell to be updated
-        range = `${sheetName}!${columnLetter}${rowNumber}:${columnLetter}${rowNumber}`
+        for (const key of Object.keys(issue)) {
+          const values = [[]]
+          const columnLetter = COLUMN_MAPPING.find(item => item.id === key).columnLetter
+          // this is the cell to be updated
+          range = `${sheetName}!${columnLetter}${rowNumber}:${columnLetter}${rowNumber}`
 
-        const incomingValue = issue[key]
-        const previousValue = mappedRowObject[key]
+          const incomingValue = issue[key]
+          const previousValue = mappedRowObject[key]
 
-        //  compare with the value of the issue passed in the funciton
-        if (incomingValue !== previousValue) {
-          if (key === 'title') {
-            const hyperlink = `${PATH_PREFIX}/${issue.issueNumber}`
-            const cellContent = `=HYPERLINK("${hyperlink}", "${incomingValue}")`
-            values[0].push(cellContent)
+          //  compare with the value of the issue passed in the funciton
+          if (incomingValue !== previousValue) {
+            if (key === 'title') {
+              const hyperlink = `${PATH_PREFIX}/${issue.issueNumber}`
+              const cellContent = `=HYPERLINK("${hyperlink}", "${incomingValue}")`
+              values[0].push(cellContent)
+              continue
+            }
+
+            values[0].push(incomingValue)
+          } else {
             continue
           }
-
-          values[0].push(incomingValue)
-        } else {
-          continue
+          data.push({ range, values })
         }
-        data.push({ range, values })
+      } else { // if not present --> add the issue in a new row
+        loopObjectKeysAndFillUpData(issue, numberOfRowsInSheet, range, data)
+        numberOfRowsInSheet++
       }
-    } else { // if not present --> add the issue in a new row
-      loopObjectKeysAndFillUpData(issue, numberOfRowsInSheet, range, data)
-      numberOfRowsInSheet++
     }
-  }
-  return data
+    return data
   } catch (error) {
-    console.log("error in spreadsheetFiller addOrUpdateSpreadsheet",error)
+    console.log('error in spreadsheetFiller addOrUpdateSpreadsheet', error)
   }
-  
 }
 
 const loopObjectKeysAndFillUpData = (issue, numberOfRowsInSheet, range, data) => {
