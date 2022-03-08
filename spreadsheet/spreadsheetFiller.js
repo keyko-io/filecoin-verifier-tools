@@ -1,3 +1,4 @@
+// @ts-nocheck
 const { google } = require('googleapis')
 const { PATH_PREFIX, COLUMN_MAPPING, SCOPES, spreadsheetId, sheetName } = require('./constants')
 const { credentials } = require('./credentials')
@@ -189,4 +190,4 @@ const authorizeAndRun = async (credentials) => {
 //   }
 // }
 
-exports.run = runSpreadSheetFiller
+exports.runSpreadSheetFiller = runSpreadSheetFiller
