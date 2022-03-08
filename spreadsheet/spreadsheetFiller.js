@@ -13,7 +13,8 @@ const runSpreadSheetFiller = async (issuesArray) => {
 }
 
 const fillOrUpdateSpreadsheet = async (jwtAuth, issuesArray) => {
-  const sheets = google.sheets({ version: 'v4', auth: jwtAuth })
+  try {
+    const sheets = google.sheets({ version: 'v4', auth: jwtAuth })
   console.log('after shheeeet')
 
   // Get the values in the column A
@@ -34,10 +35,16 @@ const fillOrUpdateSpreadsheet = async (jwtAuth, issuesArray) => {
       data,
     },
   })
+  } catch (error) {
+    console.log("error in spreadsheetFiller fillOrUpdateSpreadsheet",error)
+    
+  }
+  
 }
 
 const addOrUpdateSpreadsheet = async (issuesArray, issuesInSheet, sheets) => {
-  let numberOfRowsInSheet = issuesInSheet.length + 1 // counting how many issues are there in the spreadsheet
+  try {
+    let numberOfRowsInSheet = issuesInSheet.length + 1 // counting how many issues are there in the spreadsheet
   const data = []
   let range = ''
 
@@ -90,6 +97,10 @@ const addOrUpdateSpreadsheet = async (issuesArray, issuesInSheet, sheets) => {
     }
   }
   return data
+  } catch (error) {
+    console.log("error in spreadsheetFiller addOrUpdateSpreadsheet",error)
+  }
+  
 }
 
 const loopObjectKeysAndFillUpData = (issue, numberOfRowsInSheet, range, data) => {
