@@ -38,19 +38,19 @@ const prepareObject = async (octokit, rawIssues) => {
 
               const spreadsheetData = {
                 issueNumber: number,
-                status: labels?.map((label) => label.name).toString() || '',
-                author: user?.login || '',
+                status: labels ? labels.map((label) => label.name).toString() : '',
+                author: user ? user.login : '',
                 title,
                 isOpen: state === 'open' ? 'yes' : 'no',
-                assignee: assignee?.login || '',
+                assignee: assignee ? assignee.login : '',
                 created_at,
                 updated_at,
                 closed_at: closed_at || '',
-                clientName: parsedIssue?.name || '',
-                clientAddress: parsedIssue?.address || '',
+                clientName: parsedIssue ? parsedIssue.name : '',
+                clientAddress: parsedIssue? parsedIssue.address : '',
                 msigAddress,
-                totalDataCapRequested: parsedIssue?.datacapRequested || '',
-                weeklyDataCapRequested: parsedIssue?.dataCapWeeklyAllocation || '',
+                totalDataCapRequested: parsedIssue? parsedIssue.datacapRequested : '',
+                weeklyDataCapRequested: parsedIssue? parsedIssue.dataCapWeeklyAllocation : '',
                 numberOfRequests: String(requestCount),
 
               }
