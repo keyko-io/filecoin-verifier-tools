@@ -643,7 +643,7 @@ function make(testnet) {
     }
   }
 
-  const multisigCID = new CID(1, 'raw', multihashes.encode(Buffer.from('fil/6/multisig'), 'identity'))
+  const multisigCID = new CID(1, 'raw', multihashes.encode(Buffer.from('fil/7/multisig'), 'identity'))
 
   async function buildArrayData(data, load) {
     var dataArray = []
