@@ -3,7 +3,7 @@
 FROM golang:1.17.3 AS build-env
 
 # branch or tag of the lotus version to build
-ARG BRANCH=v1.13.2
+ARG BRANCH=v1.15.0
 
 RUN echo "Building lotus from branch $BRANCH"
 
