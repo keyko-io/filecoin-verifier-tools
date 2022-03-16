@@ -12,12 +12,11 @@ assignees: ''
 To apply as a large client, please fill out the following form. 
 
 ## Core Information
-- Organization Name:     Client A
-- Website / Social Media: info.org    
-- Total amount of DataCap being requested (between 500 TiB and 5 PiB):     10TiB
-- On-chain address for first allocation:     f1111222333
-- Weekly allocation of DataCap requested (usually between 1-100TiB):9TiB
-
+- Organization Name: TVCC
+- Website / Social Media: www.tvcc.kr / https://www.youtube.com/c/TVCC-Broadcast
+- Total amount of DataCap being requested (between 500 TiB and 5 PiB): 1PiB
+- Weekly allocation of DataCap requested (usually between 1-100TiB): 10TiB
+- On-chain address for first allocation: f3tbfu6dptaui5uwdt7tlhzmovocz47z2fv34dewwhvkf6heel63zqv6ro7we5fvfzndmofel64dggk5vdr5rq
 
 ## Project details
 - Describe the data being stored onto Filecoin

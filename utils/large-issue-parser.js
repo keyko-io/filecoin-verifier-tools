@@ -67,7 +67,7 @@ function parseIssue(issueContent, issueTitle = '') {
 }
 
 function parseApproveComment(commentContent) {
-  const regexApproved = /##\s*Request\s*Approved/m
+  const regexApproved = /##\s*Request\s*((Approved)|(Proposed))/m
   const regexAddress = /####\s*Address\W*^>\s*(.*)/m
   const regexDatacap = /####\s*Datacap\s*Allocated\W*^>\s*(.*)/m
 
@@ -105,7 +105,7 @@ function parseApproveComment(commentContent) {
 }
 
 function parseMultipleApproveComment(commentContent) {
-  const regexApproved = /##\s*Request\s*Approved/m
+  const regexApproved = /##\s*Request\s*((Approved)|(Proposed))/m
   const regexAddress = /####\s*Address\s*(.*)\n>\s*(.*)/g
   const regexDatacap = /####\s*Datacap\s*Allocated\s*(.*)\n>\s*(.*)/g
 
@@ -141,7 +141,7 @@ function parseMultipleApproveComment(commentContent) {
 }
 
 function parseApprovedRequestWithSignerAddress(commentContent) {
-  const regexApproved = /##\s*Request\s*Approved/m
+  const regexApproved = /##\s*Request\s*((Approved)|(Proposed))/m
   const regexAddress = /####\s*Address\W*^>\s*(.*)/m
   const regexDatacap = /####\s*Datacap\s*Allocated\W*^>\s*(.*)/m
   const regexSignerAddress = /####\s*Signer\s*Address\s*\n>\s*(.*)/g
