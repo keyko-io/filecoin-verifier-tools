@@ -3,6 +3,37 @@ const {
   matchAll,
 } = require('./common-utils')
 
+function parseOtherInfoIssue(issueContent) {
+  const rgxObj = {
+
+    // PRJ DETAILS
+    detailsHistory: /Share a brief history of your project and organization.\s*[\n]```\n\s*(.*)/,
+    detailsSrcFunding: /What is the primary source of funding for this project\?\s*[\n]```\n\s*(.*)/,
+    detailsSrcOtherProjects: /What other projects\/ecosystem stakeholders is this project associated with\?\s*[\n]```\n\s*(.*)/,
+
+    // Use-case details
+    useCaseDescribeData: /Describe the data being stored onto Filecoin\s*[\n]```\n\s*(.*)/,
+    useCaseWhereDataIsStored: /Where was the data in this dataset sourced from\?\s*[\n]```\n\s*(.*)/,
+    useCaseDataSample: /Can you share a sample of the data\? A link to a file, an image, a table, etc., are good ways to do this.\s*[\n]```\n\s*(.*)/,
+    useCaseIsPublicDataSet: /Confirm that this is a public dataset that can be retrieved by anyone on the Network \(i.e., no specific permissions or access rights are required to view the data\).\s*[\n]```\n\s*(.*)/,
+    useCaseExpectedRetrievalFrequency: /What is the expected retrieval frequency for this data\?\s*[\n]```\n\s*(.*)/,
+    useCaseHowLongStoredInFilecoin: /For how long do you plan to keep this dataset stored on Filecoin\?\s*[\n]```\n\s*(.*)/,
+
+    // DataCap allocation plan
+    dataCapAllocationPlanRegion: /In which geographies \(countries, regions\) do you plan on making storage deals\?\s*[\n]```\n\s*(.*)/,
+    dataCapAllocationPlanDistribute: /How will you be distributing your data to storage providers\? Is there an offline data transfer process\?\s*[\n]```\n\s*(.*)/,
+    dataCapAllocationPlanChooseSp: /How do you plan on choosing the storage providers with whom you will be making deals\? This should include a plan to ensure the data is retrievable in the future both by you and others.\s*[\n]```\n\s*(.*)/,
+    dataCapAllocationPlanDeals: /How will you be distributing deals across storage providers\?\s*[\n]```\n\s*(.*)/,
+    dataCapAllocationPlanHasResources: /Do you have the resources\/funding to start making deals as soon as you receive DataCap\? What support from the community would help you onboard onto Filecoin\?\s*[\n]```\n\s*(.*)/,
+  }
+
+  const retObj = {}
+  for (const key of Object.keys(rgxObj)) {
+    retObj[key] = rgxObj[key].exec(issueContent)[1]
+  }
+  return retObj
+}
+
 function parseIssue(issueContent, issueTitle = '') {
   const regexName = /[\n\r][ \t]*-\s*Organization\s*Name:[ \t]*([^\n\r]*)/
   const regexWebsite = /[\n\r][ \t]*-\s*Website\s*\/\s*Social\s*Media:[ \t]*([^\n\r]*)/m
@@ -352,3 +383,4 @@ exports.parseReleaseRequest = parseReleaseRequest
 exports.parseWeeklyDataCapAllocationUpdateRequest = parseWeeklyDataCapAllocationUpdateRequest
 exports.parseApprovedRequestWithSignerAddress = parseApprovedRequestWithSignerAddress
 exports.parseMultisigReconnectComment = parseMultisigReconnectComment
+exports.parseOtherInfoIssue = parseOtherInfoIssue

@@ -10,7 +10,37 @@ const {
   parseWeeklyDataCapAllocationUpdateRequest,
   parseApprovedRequestWithSignerAddress,
   parseMultisigReconnectComment,
+  parseOtherInfoIssue,
 } = require('./large-issue-parser')
+
+describe('parseOtherInfoIssue()', () => {
+  it('we can parse an issue including the right data', () => {
+    const issueContent = fs.readFileSync(
+      path.resolve(__dirname, '../samples/utils/large_client_application_other_info.test.md'),
+      { encoding: 'utf8' },
+    )
+    const parsedResult = parseOtherInfoIssue(issueContent)
+    // TODO test
+    for (const key of Object.keys(parsedResult)) {
+      expect(parsedResult[key]).toBe('Please answer here.')
+    }
+  })
+
+  it('we can not parse an invalid issue', () => {
+    const parsedResult = parseIssue('random string')
+    expect(parsedResult.correct).toBe(false)
+    expect(parsedResult.errorMessage).not.toBe('')
+  })
+
+  it('empty issue get not validated', () => {
+    const issueContentNoVals = fs.readFileSync(
+      path.resolve(__dirname, '../samples/utils/large_client_application_no_values.test.md'),
+      { encoding: 'utf8' },
+    )
+    const parsedResult = parseIssue(issueContentNoVals)
+    expect(parsedResult.correct).toBe(false)
+  })
+})
 
 describe('parseIssue()', () => {
   it('we can parse an issue including the right data', () => {
