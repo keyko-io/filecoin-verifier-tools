@@ -10,7 +10,7 @@ const {
   parseWeeklyDataCapAllocationUpdateRequest,
   parseApprovedRequestWithSignerAddress,
   parseMultisigReconnectComment,
-  parseOtherInfoIssue
+  parseOtherInfoIssue,
 } = require('./large-issue-parser')
 
 describe('parseOtherInfoIssue()', () => {
@@ -20,9 +20,9 @@ describe('parseOtherInfoIssue()', () => {
       { encoding: 'utf8' },
     )
     const parsedResult = parseOtherInfoIssue(issueContent)
-    //TODO test
-    for(let key of Object.keys(parsedResult)){
-      expect( parsedResult[key]).toBe('Please answer here.')
+    // TODO test
+    for (const key of Object.keys(parsedResult)) {
+      expect(parsedResult[key]).toBe('Please answer here.')
     }
   })
 
