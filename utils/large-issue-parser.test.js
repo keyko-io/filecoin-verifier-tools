@@ -51,7 +51,7 @@ describe('parseIssue()', () => {
     const parsedResult = parseIssue(issueContent)
     // expect(parsedResult.correct).toBe(true)
     // expect(parsedResult.name).toBe('Client A')
-    expect(parsedResult.address).toBe('f3tbfu6dptaui5uwdt7tlhzmovocz47z2fv34dewwhvkf6heel63zqv6ro7we5fvfzndmofel64dggk5vdr5rq')
+    expect(parsedResult.region).toBe('Asia excl. Japan')
     // expect(parsedResult.datacapRequested).toBe('10TiB')
     // expect(parsedResult.website).toBe('info.org')
     // expect(parsedResult.dataCapWeeklyAllocation).toBe('9TiB')

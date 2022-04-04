@@ -36,6 +36,7 @@ function parseOtherInfoIssue(issueContent) {
 
 function parseIssue(issueContent, issueTitle = '') {
   const regexName = /[\n\r][ \t]*-\s*Organization\s*Name:[ \t]*([^\n\r]*)/
+  const regexRegion = /[\n\r][ \t]*-\s*Region:[ \t]*([^\n\r]*)/
   const regexWebsite = /[\n\r][ \t]*-\s*Website\s*\/\s*Social\s*Media:[ \t]*([^\n\r]*)/m
   const regexAddress = /[\n\r][ \t]*-\s*On-chain\s*address\s*for\s*first\s*allocation:[ \t]*([^\n\r]*)/m
   const regexDatacapRequested = /[\n\r][ \t]*-\s*Total\s*amount\s*of\s*DataCap\s*being\s*requested\s*\(between 500 TiB and 5 PiB\)\s*:[ \t]*([^\n\r]*)/m
@@ -43,6 +44,7 @@ function parseIssue(issueContent, issueTitle = '') {
   const regexWeeklyDataCapAllocation = /[\n\r][ \t]*-\s*Weekly\s*allocation\s*of\s*DataCap\s*requested\s*\(usually between 1-100TiB\)\s*:[ \t]*([^\n\r]*)/m
 
   const name = matchGroupLargeNotary(regexName, issueContent)
+  const region = matchGroupLargeNotary(regexRegion, issueContent)
   const website = matchGroupLargeNotary(regexWebsite, issueContent)
   const address = matchGroupLargeNotary(regexAddress, issueContent)
   const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
@@ -59,6 +61,7 @@ function parseIssue(issueContent, issueTitle = '') {
       dataCapWeeklyAllocation: dataCapWeeklyAllocation,
       website: website,
       datacapRemoval: false,
+      region: region,
     }
   }
 
@@ -75,6 +78,7 @@ function parseIssue(issueContent, issueTitle = '') {
         dataCapWeeklyAllocation: '0B',
         website: '',
         datacapRemoval: true,
+        region: '',
       }
     }
   }
@@ -85,6 +89,7 @@ function parseIssue(issueContent, issueTitle = '') {
   if (!datacapRequested) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
   if (!website) { errorMessage += 'We could not find any **Web site or social media info** in the information provided\n' }
   if (!dataCapWeeklyAllocation) { errorMessage += 'We could not find any **Expected weekly DataCap usage rate** in the information provided\n' }
+  if (!region) { errorMessage += 'We could not find any **Region** in the information provided\n' }
 
   return {
     correct: false,
