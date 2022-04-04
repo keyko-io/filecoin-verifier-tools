@@ -61,7 +61,7 @@ function parseIssue(issueContent, issueTitle = '') {
       dataCapWeeklyAllocation: dataCapWeeklyAllocation,
       website: website,
       datacapRemoval: false,
-      region: region
+      region: region,
     }
   }
 
@@ -78,7 +78,7 @@ function parseIssue(issueContent, issueTitle = '') {
         dataCapWeeklyAllocation: '0B',
         website: '',
         datacapRemoval: true,
-        region:''
+        region: '',
       }
     }
   }
