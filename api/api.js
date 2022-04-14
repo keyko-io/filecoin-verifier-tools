@@ -333,6 +333,16 @@ class VerifyAPI {
       return { success: false, error }
     }
   }
+
+  async mpoolPush(walletSignMessage){
+    try {
+      const pushedMsgId = await this.client.mpoolPush(walletSignMessage)
+      return pushedMsgId
+      
+    } catch (error) {
+      return false
+    }
+  }
 }
 
 module.exports = VerifyAPI
