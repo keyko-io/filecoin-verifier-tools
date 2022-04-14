@@ -293,49 +293,46 @@ class VerifyAPI {
     return returnList
   }
 
-  async  signAndPushCustomTransaction(from, to, params){
+  async signAndPushCustomTransaction(from, to, params) {
     try {
       const nonce = await this.client.mpoolGetNonce(from)
-      
-      let msg = {
+
+      const msg = {
         // version: 42,
         to,
         from,
         nonce,
-        value: '0', 
+        value: '0',
         gaslimit: 208863,
-        gasfeecap: "100000000",
-        gaspremium: "0",
+        gasfeecap: '100000000',
+        gaspremium: '0',
         method: 1,
-        params
+        params,
       }
-      const walletSignMessage =  await this.client.walletSignMessage(from, msg)
+      const walletSignMessage = await this.client.walletSignMessage(from, msg)
       const pushedMsgId = await this.client.mpoolPush(walletSignMessage)
-      return {success:true, walletSignMessage, pushedMsgId}
-      
+      return { success: true, walletSignMessage, pushedMsgId }
     } catch (error) {
-      return {success:false, error}
+      return { success: false, error }
     }
   }
 
-  async  listMessagesFromToAddress(From, To, heightPerc = 0.5){
+  async listMessagesFromToAddress(From, To, heightPerc = 0.5) {
     try {
-      const head = await api.client.chainHead()
-      const messages = await api.client.stateListMessages(
+      const head = await this.client.chainHead()
+      const messages = await this.client.stateListMessages(
         {
           To,
-          From
-        }, 
+          From,
+        },
         head.Cids,
-        Math.round(head.Height-head.Height*heightPerc) 
+        Math.round(head.Height - head.Height * heightPerc),
       )
-      return messages ? {success:true, messages} :  {success:false}
+      return messages ? { success: true, messages } : { success: false }
     } catch (error) {
-      return {success:false, error} 
+      return { success: false, error }
     }
-
   }
-
 }
 
 module.exports = VerifyAPI
