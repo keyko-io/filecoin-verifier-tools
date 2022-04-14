@@ -237,11 +237,11 @@ function make(testnet) {
     return Buffer.from(pad(bn.toString(16)), 'hex')
   }
 
-  function encodeSend(to, params='') {
+  function encodeSend(to, params = '') {
     return {
       to,
       method: 0,
-      params: params? cborEncode(params) : '',
+      params: params ? cborEncode(params) : '',
       value: 0n,
     }
   }
