@@ -1,9 +1,11 @@
 var fs = require('fs')
 var path = require('path')
-const { parseIssue, 
-  parseApproveComment, 
+const {
+  parseIssue,
+  parseApproveComment,
   parseMultipleApproveComment,
-  parseNotaryLedgerVerifiedComment } = require('./notary-issue-parser')
+  parseNotaryLedgerVerifiedComment,
+} = require('./notary-issue-parser')
 
 describe('parseIssue()', () => {
   it('we can parse an issue including the right data', () => {

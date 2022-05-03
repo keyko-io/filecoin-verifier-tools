@@ -180,7 +180,7 @@ function parseNotaryLedgerVerifiedComment(commentContent) {
   if (verified && messageCid) {
     return {
       correct: true,
-      messageCid: messageCid
+      messageCid: messageCid,
     }
   }
 
@@ -190,7 +190,7 @@ function parseNotaryLedgerVerifiedComment(commentContent) {
   return {
     correct: false,
     errorMessage: errorMessage,
-    errorDetails: `Unable to find required attributes.`,
+    errorDetails: 'Unable to find required attributes.',
   }
 }
 
