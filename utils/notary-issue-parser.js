@@ -7,6 +7,7 @@ function parseIssue(issueContent, issueTitle = '') {
   const regexName = /-\s*Name:\s*(.*)/m
   const regexWebsite = /-\s*Website\s*\/\s*Social\s*Media:\s*(.*)/m
   const regexAddress = /-\s*On-chain\s*Address\(es\)\s*to\s*be\s*Notarized:\s*(.*)/m
+  const regexAlternativeAddress = /-\s*On-chain\s*address\s*to\s*be\s*notarized\s*\(recommend using a new address\):\s*(.*)/m
   const regexRegion = /-\s*Region\s*of\s*Operation:\s*(.*)/m
   const regexUseCases = /-\s*Use\s*case\(s\)\s*to\s*be\s*supported:\s*(.*)/m
   const regexDatacapRequested = /-\s*DataCap\s*Requested:\s*(.*)/m
@@ -16,6 +17,7 @@ function parseIssue(issueContent, issueTitle = '') {
   const name = matchGroupLargeNotary(regexName, issueContent)
   const website = matchGroupLargeNotary(regexWebsite, issueContent)
   const address = matchGroupLargeNotary(regexAddress, issueContent)
+  const alternativeAddress = matchGroupLargeNotary(regexAlternativeAddress, issueContent)
   const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
   const region = matchGroupLargeNotary(regexRegion, issueContent)
   const useCases = matchGroupLargeNotary(regexUseCases, issueContent)
@@ -27,6 +29,7 @@ function parseIssue(issueContent, issueTitle = '') {
       errorDetails: '',
       name: name,
       address: address,
+      alternativeAddress: alternativeAddress,
       datacapRequested: datacapRequested,
       website: website,
       region: region,

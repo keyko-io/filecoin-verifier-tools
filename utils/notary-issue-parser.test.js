@@ -13,6 +13,7 @@ describe('parseIssue()', () => {
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.name).toBe('Notary A')
     expect(parsedResult.address).toBe('f1111222333')
+    expect(parsedResult.alternativeAddress).toBe('f1111222333')
     expect(parsedResult.datacapRequested).toBe('10TiB')
     expect(parsedResult.website).toBe('info.org')
     expect(parsedResult.region).toBe('[North America]')
