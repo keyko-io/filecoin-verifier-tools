@@ -1,6 +1,9 @@
 var fs = require('fs')
 var path = require('path')
-const { parseIssue, parseApproveComment, parseMultipleApproveComment } = require('./notary-issue-parser')
+const { parseIssue, 
+  parseApproveComment, 
+  parseMultipleApproveComment,
+  parseNotaryLedgerVerifiedComment } = require('./notary-issue-parser')
 
 describe('parseIssue()', () => {
   it('we can parse an issue including the right data', () => {
@@ -72,5 +75,18 @@ describe('parseApprovedMultiple()', () => {
     expect(parsedResult.datacaps[1]).toBe('1TiB')
     expect(parsedResult.addresses[2]).toBe('f222233334444')
     expect(parsedResult.datacaps[2]).toBe('10TiB')
+  })
+})
+
+describe('parseNotaryLedgerVerifiedComment()', () => {
+  it('we can parse the Notary Ledger Verified comment', () => {
+    const commentContent = fs.readFileSync(
+      path.resolve(__dirname, '../samples/utils/notary_ledger_verified_comment.test.md'),
+      { encoding: 'utf8' },
+    )
+    const parsedResult = parseNotaryLedgerVerifiedComment(commentContent)
+
+    expect(parsedResult.correct).toBe(true)
+    expect(parsedResult.messageCid).toBe('bafy2bzacedeu7ymgdg3gwy522gtoy4a6j6v433cur4wjlv2xjeqtvm4bkymoi')
   })
 })
