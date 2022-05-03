@@ -16,6 +16,7 @@ To apply as a notary, please fill out the following form.
 - (Optional) Affiliated Organization: 
 - Website / Social Media: info.org
 - On-chain Address(es) to be Notarized: f1111222333
+- On-chain address to be notarized (recommend using a new address): f1111222333
 - Region of Operation: [North America]
 - Use case(s) to be supported: [Developer Tools, Web 3.0]
 - DataCap Requested: 10TiB

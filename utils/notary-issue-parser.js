@@ -7,6 +7,7 @@ function parseIssue(issueContent, issueTitle = '') {
   const regexName = /-\s*Name:\s*(.*)/m
   const regexWebsite = /-\s*Website\s*\/\s*Social\s*Media:\s*(.*)/m
   const regexAddress = /-\s*On-chain\s*Address\(es\)\s*to\s*be\s*Notarized:\s*(.*)/m
+  const regexAlternativeAddress = /-\s*On-chain\s*address\s*to\s*be\s*notarized\s*\(recommend using a new address\):\s*(.*)/m
   const regexRegion = /-\s*Region\s*of\s*Operation:\s*(.*)/m
   const regexUseCases = /-\s*Use\s*case\(s\)\s*to\s*be\s*supported:\s*(.*)/m
   const regexDatacapRequested = /-\s*DataCap\s*Requested:\s*(.*)/m
@@ -16,6 +17,7 @@ function parseIssue(issueContent, issueTitle = '') {
   const name = matchGroupLargeNotary(regexName, issueContent)
   const website = matchGroupLargeNotary(regexWebsite, issueContent)
   const address = matchGroupLargeNotary(regexAddress, issueContent)
+  const alternativeAddress = matchGroupLargeNotary(regexAlternativeAddress, issueContent)
   const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
   const region = matchGroupLargeNotary(regexRegion, issueContent)
   const useCases = matchGroupLargeNotary(regexUseCases, issueContent)
@@ -27,6 +29,7 @@ function parseIssue(issueContent, issueTitle = '') {
       errorDetails: '',
       name: name,
       address: address,
+      alternativeAddress: alternativeAddress,
       datacapRequested: datacapRequested,
       website: website,
       region: region,
@@ -166,6 +169,32 @@ function parseMultipleApproveComment(commentContent) {
   }
 }
 
+function parseNotaryLedgerVerifiedComment(commentContent) {
+  const regexVerified = /##\s*Notary\s*Ledger\s*Verified/m
+  const regexMessageCid = />\s*Message\s*CID:\s*(.*)/m
+
+  const verified = matchGroupLargeNotary(regexVerified, commentContent)
+
+  const messageCid = matchGroupLargeNotary(regexMessageCid, commentContent)
+
+  if (verified && messageCid) {
+    return {
+      correct: true,
+      messageCid: messageCid,
+    }
+  }
+
+  let errorMessage = ''
+  if (!verified) { errorMessage += 'The issue is not verified\n' }
+  if (!messageCid) { errorMessage += 'Message CID not found in the comment\n' }
+  return {
+    correct: false,
+    errorMessage: errorMessage,
+    errorDetails: 'Unable to find required attributes.',
+  }
+}
+
 exports.parseIssue = parseIssue
 exports.parseApproveComment = parseApproveComment
 exports.parseMultipleApproveComment = parseMultipleApproveComment
+exports.parseNotaryLedgerVerifiedComment = parseNotaryLedgerVerifiedComment
