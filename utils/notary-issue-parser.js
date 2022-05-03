@@ -171,22 +171,22 @@ function parseMultipleApproveComment(commentContent) {
 
 function parseNotaryLedgerVerifiedComment(commentContent) {
   const regexVerified = /##\s*Notary\s*Ledger\s*Verified/m
-  const regexMessageCid = />\s*Message\s*CID:\s*(.*)/m
+  // const regexMessageCid = />\s*Message\s*CID:\s*(.*)/m
 
   const verified = matchGroupLargeNotary(regexVerified, commentContent)
 
-  const messageCid = matchGroupLargeNotary(regexMessageCid, commentContent)
+  // const messageCid = matchGroupLargeNotary(regexMessageCid, commentContent)
 
-  if (verified && messageCid) {
+  if (verified) {
     return {
       correct: true,
-      messageCid: messageCid,
+      // messageCid: messageCid,
     }
   }
 
   let errorMessage = ''
   if (!verified) { errorMessage += 'The issue is not verified\n' }
-  if (!messageCid) { errorMessage += 'Message CID not found in the comment\n' }
+  // if (!messageCid) { errorMessage += 'Message CID not found in the comment\n' }
   return {
     correct: false,
     errorMessage: errorMessage,
