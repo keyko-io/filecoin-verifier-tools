@@ -4,23 +4,20 @@ const {
 } = require('./common-utils')
 
 function parseNotaryAddress(issueContent) {
-
   const regexObj = {
-    regexAddressZero : /-\s*On-chain\s*Address\(es\)\s*to\s*be\s*Notarized:\s*(.*)/mi,
-    regexAddressOne : /-\s*On-chain\s*Address\s*to\s*be\s*Notarized:\s*(.*)/mi,
-    regexAddressTwo : /-\s*On-chain\s*address\s*to\s*be\s*notarized\s*\(recommend using a new address\):\s*(.*)/mi,
+    regexAddressZero: /-\s*On-chain\s*Address\(es\)\s*to\s*be\s*Notarized:\s*(.*)/mi,
+    regexAddressOne: /-\s*On-chain\s*Address\s*to\s*be\s*Notarized:\s*(.*)/mi,
+    regexAddressTwo: /-\s*On-chain\s*address\s*to\s*be\s*notarized\s*\(recommend using a new address\):\s*(.*)/mi,
   }
-  
-  for(let key of Object.keys(regexObj)){
+
+  for (const key of Object.keys(regexObj)) {
     const address = matchGroupLargeNotary(regexObj[key], issueContent)
-    if(address){
+    if (address) {
       return address
     }
   }
   return false
-
 }
-
 
 function parseIssue(issueContent, issueTitle = '') {
   const regexName = /-\s*Name:\s*(.*)/m
@@ -43,13 +40,13 @@ function parseIssue(issueContent, issueTitle = '') {
   const region = matchGroupLargeNotary(regexRegion, issueContent)
   const useCases = matchGroupLargeNotary(regexUseCases, issueContent)
 
-  if (name != null && (address || alternativeAddress || alternativeAddressX ) && datacapRequested != null && website != null && region != null && useCases != null) {
+  if (name != null && (address || alternativeAddress || alternativeAddressX) && datacapRequested != null && website != null && region != null && useCases != null) {
     return {
       correct: true,
       errorMessage: '',
       errorDetails: '',
       name: name,
-      address: address ? address : alternativeAddress ? alternativeAddress : alternativeAddressX,
+      address: address || (alternativeAddress || alternativeAddressX),
       datacapRequested: datacapRequested,
       website: website,
       region: region,

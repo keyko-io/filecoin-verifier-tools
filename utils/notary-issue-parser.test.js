@@ -5,16 +5,16 @@ const {
   parseApproveComment,
   parseMultipleApproveComment,
   parseNotaryLedgerVerifiedComment,
-  parseNotaryAddress
+  parseNotaryAddress,
 } = require('./notary-issue-parser')
 
 describe('parseIssue()', () => {
   it('we can parse an issue including the right data', () => {
-    const issueContent = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/notary_application.test.md'),
-      { encoding: 'utf8' },
-    )
-    const parsedResult = parseIssue(issueContent)
+    // const issueContent = fs.readFileSync(
+    //   path.resolve(__dirname, '../samples/utils/notary_application.test.md'),
+    //   { encoding: 'utf8' },
+    // )
+    // const parsedResult = parseIssue(issueContent)
 
     // expect(parsedResult.correct).toBe(true)
     // expect(parsedResult.name).toBe('Notary A')
