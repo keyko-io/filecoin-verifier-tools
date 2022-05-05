@@ -3,11 +3,31 @@ const {
   matchAll,
 } = require('./common-utils')
 
+function parseNotaryAddress(issueContent) {
+
+  const regexObj = {
+    regexAddressZero : /-\s*On-chain\s*Address\(es\)\s*to\s*be\s*Notarized:\s*(.*)/mi,
+    regexAddressOne : /-\s*On-chain\s*Address\s*to\s*be\s*Notarized:\s*(.*)/mi,
+    regexAddressTwo : /-\s*On-chain\s*address\s*to\s*be\s*notarized\s*\(recommend using a new address\):\s*(.*)/mi,
+  }
+  
+  for(let key of Object.keys(regexObj)){
+    const address = matchGroupLargeNotary(regexObj[key], issueContent)
+    if(address){
+      return address
+    }
+  }
+  return false
+
+}
+
+
 function parseIssue(issueContent, issueTitle = '') {
   const regexName = /-\s*Name:\s*(.*)/m
   const regexWebsite = /-\s*Website\s*\/\s*Social\s*Media:\s*(.*)/m
-  const regexAddress = /-\s*On-chain\s*Address\(es\)\s*to\s*be\s*Notarized:\s*(.*)/m
-  const regexAlternativeAddress = /-\s*On-chain\s*address\s*to\s*be\s*notarized\s*\(recommend using a new address\):\s*(.*)/m
+  const regexAddress = /-\s*On-chain\s*Address\(es\)\s*to\s*be\s*Notarized:\s*(.*)/mi
+  const regexAddressX = /-\s*On-chain\s*Address\s*to\s*be\s*Notarized:\s*(.*)/mi
+  const regexAlternativeAddress = /-\s*On-chain\s*address\s*to\s*be\s*notarized\s*\(recommend using a new address\):\s*(.*)/mi
   const regexRegion = /-\s*Region\s*of\s*Operation:\s*(.*)/m
   const regexUseCases = /-\s*Use\s*case\(s\)\s*to\s*be\s*supported:\s*(.*)/m
   const regexDatacapRequested = /-\s*DataCap\s*Requested:\s*(.*)/m
@@ -18,18 +38,18 @@ function parseIssue(issueContent, issueTitle = '') {
   const website = matchGroupLargeNotary(regexWebsite, issueContent)
   const address = matchGroupLargeNotary(regexAddress, issueContent)
   const alternativeAddress = matchGroupLargeNotary(regexAlternativeAddress, issueContent)
+  const alternativeAddressX = matchGroupLargeNotary(regexAddressX, issueContent)
   const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
   const region = matchGroupLargeNotary(regexRegion, issueContent)
   const useCases = matchGroupLargeNotary(regexUseCases, issueContent)
 
-  if (name != null && address != null && datacapRequested != null && website != null && region != null && useCases != null) {
+  if (name != null && (address || alternativeAddress || alternativeAddressX ) && datacapRequested != null && website != null && region != null && useCases != null) {
     return {
       correct: true,
       errorMessage: '',
       errorDetails: '',
       name: name,
-      address: address,
-      alternativeAddress: alternativeAddress,
+      address: address ? address : alternativeAddress ? alternativeAddress : alternativeAddressX,
       datacapRequested: datacapRequested,
       website: website,
       region: region,
@@ -58,7 +78,7 @@ function parseIssue(issueContent, issueTitle = '') {
 
   let errorMessage = ''
   if (name == null) { errorMessage += 'We could not find your **Name** in the information provided\n' }
-  if (address == null) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
+  if (!address && !alternativeAddress) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
   if (datacapRequested == null) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
   if (website == null) { errorMessage += 'We could not find any **Web site or social media info** in the information provided\n' }
   if (region == null) { errorMessage += 'We could not find any **Region** in the information provided\n' }
@@ -198,3 +218,4 @@ exports.parseIssue = parseIssue
 exports.parseApproveComment = parseApproveComment
 exports.parseMultipleApproveComment = parseMultipleApproveComment
 exports.parseNotaryLedgerVerifiedComment = parseNotaryLedgerVerifiedComment
+exports.parseNotaryAddress = parseNotaryAddress
