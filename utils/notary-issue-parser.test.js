@@ -103,7 +103,7 @@ describe('parseNotaryAddress()', () => {
     const parsedResult = parseNotaryAddress(commentContent)
 
     console.log(parsedResult)
-    expect(parsedResult).toBe('f1fkxkfxgopjf3ufnfg5i3m6qlwf73kp4w5zz7nnq')
+    expect(parsedResult).toBe('f1111222333')
     // expect(parsedResult.messageCid).toBe('bafy2bzacedeu7ymgdg3gwy522gtoy4a6j6v433cur4wjlv2xjeqtvm4bkymoi')
   })
 })
