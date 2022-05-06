@@ -148,14 +148,16 @@ function make(testnet) {
     const head = await client.chainHead()
     const address = (await walletContext.getAccounts())[indexAccount]
 
-    const state = await client.stateGetActor(address, head.Cids)
-    let nonce = state.Nonce
-    const pending = await client.mpoolPending(head.Cids)
-    for (const { Message: tx } of pending) {
-      if (tx.From === address && tx.Nonce + 1 > nonce) {
-        nonce = tx.Nonce + 1
-      }
-    }
+    // const state = await client.stateGetActor(address, head.Cids)
+    // let nonce = state.Nonce
+    const nonce = await client.mpoolGetNonce(address)
+    // console.log(nonce)
+    // const pending = await client.mpoolPending(head.Cids)
+    // for (const { Message: tx } of pending) {
+    //   if (tx.From === address && tx.Nonce + 1 > nonce) {
+    //     nonce = tx.Nonce + 1
+    //   }
+    // }
     /*
     console.log('Start estimnate gas...')
     const msg = await iterateGas(client, { ...tx, from: address, nonce })
