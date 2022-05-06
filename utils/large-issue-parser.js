@@ -65,7 +65,7 @@ function parseIssue(issueContent, issueTitle = '') {
       website: website,
       datacapRemoval: false,
       region: region,
-      isAddressFormatted
+      isAddressFormatted,
     }
   }
 
