@@ -53,8 +53,6 @@ function parseIssue(issueContent, issueTitle = '') {
   const regexForAdress = /^(f1|f3)/
   const isAddressFormatted = regexForAdress.test(address)
 
-  console.log(isAddressFormatted)
-
   if (name && address && datacapRequested && website && dataCapWeeklyAllocation) {
     return {
       correct: true,
