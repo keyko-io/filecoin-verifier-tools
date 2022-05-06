@@ -52,6 +52,7 @@ describe('parseIssue()', () => {
     // expect(parsedResult.correct).toBe(true)
     // expect(parsedResult.name).toBe('Client A')
     expect(parsedResult.region).toBe('Asia excl. Japan')
+    expect(parsedResult.isAddressFormatted).toBe(true)
     // expect(parsedResult.datacapRequested).toBe('10TiB')
     // expect(parsedResult.website).toBe('info.org')
     // expect(parsedResult.dataCapWeeklyAllocation).toBe('9TiB')
