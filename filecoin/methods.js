@@ -150,7 +150,7 @@ function make(testnet) {
 
     // const state = await client.stateGetActor(address, head.Cids)
     // let nonce = state.Nonce
-    let nonce = await client.mpoolGetNonce(address)
+    const nonce = await client.mpoolGetNonce(address)
     // console.log(nonce)
     // const pending = await client.mpoolPending(head.Cids)
     // for (const { Message: tx } of pending) {
