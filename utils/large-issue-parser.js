@@ -50,6 +50,9 @@ function parseIssue(issueContent, issueTitle = '') {
   const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
   const dataCapWeeklyAllocation = matchGroupLargeNotary(regexWeeklyDataCapAllocation, issueContent)
 
+  const regexForAdress = /^(f1|f3)/
+  const isAddressFormatted = address.match(regexForAdress)
+
   if (name && address && datacapRequested && website && dataCapWeeklyAllocation) {
     return {
       correct: true,
@@ -62,6 +65,7 @@ function parseIssue(issueContent, issueTitle = '') {
       website: website,
       datacapRemoval: false,
       region: region,
+      isAddressFormatted
     }
   }
 
