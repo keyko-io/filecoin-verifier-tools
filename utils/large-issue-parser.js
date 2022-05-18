@@ -182,12 +182,16 @@ function parseMultipleApproveComment(commentContent) {
 
 function parseApprovedRequestWithSignerAddress(commentContent) {
   const regexApproved = /##\s*Request\s*((Approved)|(Proposed))/m
+  const regexIsApproved = /##\s*Request\s*Approved\s*/m
+  const regexIsProposed = /##\s*Request\s*Proposed\s*/m
   const regexAddress = /####\s*Address\W*^>\s*(.*)/m
   const regexDatacap = /####\s*Datacap\s*Allocated\W*^>\s*(.*)/m
   const regexSignerAddress = /####\s*Signer\s*Address\s*\n>\s*(.*)/g
   const regexMessage = /####\s*Message\s*sent\s*to\s*Filecoin\s*Network\s*\n>\s*(.*)/g
 
   const approved = matchGroupLargeNotary(regexApproved, commentContent)
+  const isApproved = matchGroupLargeNotary(regexIsApproved, commentContent)
+  const isProposed = matchGroupLargeNotary(regexIsProposed, commentContent)
 
   if (approved == null) {
     return {
@@ -208,6 +212,7 @@ function parseApprovedRequestWithSignerAddress(commentContent) {
       datacap: datacap,
       signerAddress: signerAddress,
       message: message,
+      type: isApproved ? 'approved' : 'proposed'
     }
   }
 
