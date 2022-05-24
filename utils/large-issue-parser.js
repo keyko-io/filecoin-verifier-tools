@@ -224,6 +224,11 @@ function parseApprovedRequestWithSignerAddress(commentContent) {
   }
 }
 
+function ldnv3TriggerCommentParser(commentBody) {
+  const regexTrigger = /##\s*datacap\s*request\s*trigger/mi
+  return regexTrigger.test(commentBody)
+}
+
 function parseMultisigNotaryRequest(commentContent) {
   const regexMultisig = /##\s*Multisig\s*Notary\s*requested/m
   const regexTotalDatacap = /####\s*Total\s*DataCap\s*requested\s*(.*)\n>\s*(.*)/g
@@ -393,3 +398,4 @@ exports.parseWeeklyDataCapAllocationUpdateRequest = parseWeeklyDataCapAllocation
 exports.parseApprovedRequestWithSignerAddress = parseApprovedRequestWithSignerAddress
 exports.parseMultisigReconnectComment = parseMultisigReconnectComment
 exports.parseOtherInfoIssue = parseOtherInfoIssue
+exports.ldnv3TriggerCommentParser = ldnv3TriggerCommentParser
