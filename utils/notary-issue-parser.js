@@ -22,7 +22,7 @@ function parseNotaryAddress(issueContent) {
 
 function parseIssue(issueContent, issueTitle = '') {
   const regexName = /-\s*Name:\s*(.*)/m
-  const regexWebsite = /-\s*Website\s*\/\s*Social\s*Media:\s*(.*)/m
+  // const regexWebsite = /-\s*Website\s*\/\s*Social\s*Media:\s*(.*)/m
   const regexAddress = /-\s*On-chain\s*Address\(es\)\s*to\s*be\s*Notarized:\s*(.*)/mi
   const regexAddressX = /-\s*On-chain\s*Address\s*to\s*be\s*Notarized:\s*(.*)/mi
   const regexAlternativeAddress = /-\s*On-chain\s*address\s*to\s*be\s*notarized\s*\(recommend using a new address\):\s*(.*)/mi
@@ -33,7 +33,7 @@ function parseIssue(issueContent, issueTitle = '') {
   const regextRemovalTitle = /\s*Notary\s*DataCap\s*Removal:\s*(.*)/m
 
   const name = matchGroupLargeNotary(regexName, issueContent)
-  const website = matchGroupLargeNotary(regexWebsite, issueContent)
+  // const website = matchGroupLargeNotary(regexWebsite, issueContent)
   const address = matchGroupLargeNotary(regexAddress, issueContent)
   const alternativeAddress = matchGroupLargeNotary(regexAlternativeAddress, issueContent)
   const alternativeAddressX = matchGroupLargeNotary(regexAddressX, issueContent)
@@ -41,7 +41,8 @@ function parseIssue(issueContent, issueTitle = '') {
   const region = matchGroupLargeNotary(regexRegion, issueContent)
   const useCases = matchGroupLargeNotary(regexUseCases, issueContent)
 
-  if (name != null && (address || alternativeAddress || alternativeAddressX) && datacapRequested != null && website != null && region != null && useCases != null) {
+  if (name != null && (address || alternativeAddress || alternativeAddressX) && datacapRequested != null && region != null && useCases != null) {
+  // if (name != null && (address || alternativeAddress || alternativeAddressX) && datacapRequested != null && website != null && region != null && useCases != null) {
     return {
       correct: true,
       errorMessage: '',
@@ -49,7 +50,8 @@ function parseIssue(issueContent, issueTitle = '') {
       name: name,
       address: address || (alternativeAddress || alternativeAddressX),
       datacapRequested: datacapRequested,
-      website: website,
+      website: '',
+      // website: website,
       region: region,
       useCases: useCases,
       datacapRemoval: false,
@@ -78,7 +80,7 @@ function parseIssue(issueContent, issueTitle = '') {
   if (name == null) { errorMessage += 'We could not find your **Name** in the information provided\n' }
   if (!address && !alternativeAddress) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
   if (datacapRequested == null) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
-  if (website == null) { errorMessage += 'We could not find any **Web site or social media info** in the information provided\n' }
+  // if (website == null) { errorMessage += 'We could not find any **Web site or social media info** in the information provided\n' }
   if (region == null) { errorMessage += 'We could not find any **Region** in the information provided\n' }
   if (useCases == null) { errorMessage += 'We could not find any **Use Case** in the information provided\n' }
 
@@ -89,7 +91,7 @@ function parseIssue(issueContent, issueTitle = '') {
         The name= ${name},
         address= ${address},
         datacapRequested= ${datacapRequested},
-        website= ${website},
+        website= ${''},
         region= ${region},
         useCases= ${useCases}`,
   }
