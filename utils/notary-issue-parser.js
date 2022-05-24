@@ -28,7 +28,7 @@ function parseIssue(issueContent, issueTitle = '') {
   const regexAlternativeAddress = /-\s*On-chain\s*address\s*to\s*be\s*notarized\s*\(recommend using a new address\):\s*(.*)/mi
   const regexRegion = /-\s*Region\s*of\s*Operation:\s*(.*)/m
   const regexUseCases = /-\s*Use\s*case\(s\)\s*to\s*be\s*supported:\s*(.*)/m
-  const regexDatacapRequested = /-\s*DataCap\s*Requested:\s*(.*)/m
+  const regexDatacapRequested = /-\s*DataCap\s*requested\s*for\s*allocation\s*\(10TiB - 10 PiB\):\s*(.*)/m
 
   const regextRemovalTitle = /\s*Notary\s*DataCap\s*Removal:\s*(.*)/m
 

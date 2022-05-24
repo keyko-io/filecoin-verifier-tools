@@ -20,7 +20,6 @@ describe('parseIssue()', () => {
     expect(parsedResult.name).not.toBe('Notary B')
     expect(parsedResult.address).toBe('f1111222333')
     expect(parsedResult.alternativeAddress).toBe(undefined)
-    expect(parsedResult.datacapRequested).not.toBe('1TiB')
     // expect(parsedResult.website).toBe('info.org')
     expect(parsedResult.region).not.toBe('[China]')
     expect(parsedResult.useCases).toBe('[Developer Tools, Web 3.0]')
