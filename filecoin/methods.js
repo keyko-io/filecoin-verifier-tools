@@ -200,7 +200,7 @@ function make(testnet) {
 
   // returns tx hash
   async function sendTx(client, indexAccount, walletContext, obj) {
-    console.log("obj - sendTx", JSON.stringify(obj))
+    console.log('obj - sendTx', JSON.stringify(obj))
     const tx = await signTx(client, indexAccount, walletContext, obj)
     console.log('going to send', tx)
     return await client.mpoolPush(JSON.parse(tx))
