@@ -68,7 +68,7 @@ function parseIssue(issueContent, issueTitle = '') {
       datacapRemoval: false,
       region: region,
       isAddressFormatted,
-      isCustomNotary
+      isCustomNotary,
     }
   }
 
