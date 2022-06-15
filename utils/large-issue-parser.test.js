@@ -53,9 +53,36 @@ describe('parseIssue()', () => {
     // expect(parsedResult.name).toBe('Client A')
     expect(parsedResult.region).toBe('Asia excl. Japan')
     expect(parsedResult.isAddressFormatted).toBe(true)
+     expect(parsedResult.isCustomNotary).toBe(false)
     // expect(parsedResult.datacapRequested).toBe('10TiB')
     // expect(parsedResult.website).toBe('info.org')
     // expect(parsedResult.dataCapWeeklyAllocation).toBe('9TiB')
+  })
+
+  it('we can not parse an invalid issue', () => {
+    const parsedResult = parseIssue('random string')
+    expect(parsedResult.correct).toBe(false)
+    expect(parsedResult.errorMessage).not.toBe('')
+  })
+
+  it('empty issue get not validated', () => {
+    const issueContentNoVals = fs.readFileSync(
+      path.resolve(__dirname, '../samples/utils/large_client_application_no_values.test.md'),
+      { encoding: 'utf8' },
+    )
+    const parsedResult = parseIssue(issueContentNoVals)
+    expect(parsedResult.correct).toBe(false)
+  })
+})
+
+describe('parseIssue with custom notary()', () => {
+  it('wpare issue with type: custom notary', () => {
+    const issueContent = fs.readFileSync(
+      path.resolve(__dirname, '../samples/utils/large_client_application_custom_notary.test.md'),
+      { encoding: 'utf8' },
+    )
+    const parsedResult = parseIssue(issueContent)
+    expect(parsedResult.isCustomNotary).toBe(true)
   })
 
   it('we can not parse an invalid issue', () => {
