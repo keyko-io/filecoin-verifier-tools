@@ -400,7 +400,6 @@ function make(testnet) {
 
   function encode(schema, data) {
     if (schema === 'address') {
-      console.log('address', data)
       return addressAsBytes(data)
     }
     if (schema === 'bigint') {

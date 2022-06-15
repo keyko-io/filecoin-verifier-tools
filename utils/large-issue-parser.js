@@ -42,6 +42,7 @@ function parseIssue(issueContent, issueTitle = '') {
   const regexDatacapRequested = /[\n\r][ \t]*-\s*Total\s*amount\s*of\s*DataCap\s*being\s*requested\s*\(between 500 TiB and 5 PiB\)\s*:[ \t]*([^\n\r]*)/m
   const regextRemovalTitle = /#\s*Large\s*Client\s*Request\s*DataCap\s*Removal:[ \t]*([^\n\r]*)/m
   const regexWeeklyDataCapAllocation = /[\n\r][ \t]*-\s*Weekly\s*allocation\s*of\s*DataCap\s*requested\s*\(usually between 1-100TiB\)\s*:[ \t]*([^\n\r]*)/m
+  const regexCustomNotary = /-\s*Type:\s*Custom\s*Notary\s*/mi
 
   const name = matchGroupLargeNotary(regexName, issueContent)
   const region = matchGroupLargeNotary(regexRegion, issueContent)
@@ -49,6 +50,7 @@ function parseIssue(issueContent, issueTitle = '') {
   const address = matchGroupLargeNotary(regexAddress, issueContent)
   const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
   const dataCapWeeklyAllocation = matchGroupLargeNotary(regexWeeklyDataCapAllocation, issueContent)
+  const isCustomNotary = regexCustomNotary.test(issueContent)
 
   const regexForAdress = /^(f1|f3)/
   const isAddressFormatted = regexForAdress.test(address)
@@ -66,6 +68,7 @@ function parseIssue(issueContent, issueTitle = '') {
       datacapRemoval: false,
       region: region,
       isAddressFormatted,
+      isCustomNotary,
     }
   }
 
