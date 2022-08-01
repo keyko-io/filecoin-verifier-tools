@@ -29,6 +29,7 @@ function parseIssue(issueContent, issueTitle = '') {
   const regexRegion = /-\s*Region\s*of\s*Operation:\s*(.*)/m
   const regexUseCases = /-\s*Use\s*case\(s\)\s*to\s*be\s*supported:\s*(.*)/m
   const regexDatacapRequested = /-\s*DataCap\s*requested\s*for\s*allocation\s*\(10TiB - 10 PiB\):\s*(.*)/m
+  const regexDatacapRequested2 = /-\s*DataCap\s*Requested:\s*(.*)/m
 
   const regextRemovalTitle = /\s*Notary\s*DataCap\s*Removal:\s*(.*)/m
 
@@ -37,12 +38,12 @@ function parseIssue(issueContent, issueTitle = '') {
   const address = matchGroupLargeNotary(regexAddress, issueContent)
   const alternativeAddress = matchGroupLargeNotary(regexAlternativeAddress, issueContent)
   const alternativeAddressX = matchGroupLargeNotary(regexAddressX, issueContent)
-  const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
+  const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent) || matchGroupLargeNotary(regexDatacapRequested2, issueContent)
   const region = matchGroupLargeNotary(regexRegion, issueContent)
   const useCases = matchGroupLargeNotary(regexUseCases, issueContent)
 
   if (name != null && (address || alternativeAddress || alternativeAddressX) && datacapRequested != null && region != null && useCases != null) {
-  // if (name != null && (address || alternativeAddress || alternativeAddressX) && datacapRequested != null && website != null && region != null && useCases != null) {
+    // if (name != null && (address || alternativeAddress || alternativeAddressX) && datacapRequested != null && website != null && region != null && useCases != null) {
     return {
       correct: true,
       errorMessage: '',
