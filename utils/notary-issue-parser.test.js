@@ -32,6 +32,30 @@ describe('parseIssue()', () => {
   })
 })
 
+describe('parseIssue()', () => {
+  it('should parse the amount of datacap request correctly', () => {
+    const issueContent = fs.readFileSync(
+      path.resolve(__dirname, '../samples/utils/notary_application.test.md'),
+      { encoding: 'utf8' },
+    )
+    const parsedResult = parseIssue(issueContent)
+
+    expect(parsedResult.datacapRequested).toBe('1PiB')
+  })
+})
+
+describe('parseIssue()', () => {
+  it('should parse the amount of datacap request correctly', () => {
+    const issueContent = fs.readFileSync(
+      path.resolve(__dirname, '../samples/utils/notary_application2.test.md'),
+      { encoding: 'utf8' },
+    )
+    const parsedResult = parseIssue(issueContent)
+
+    expect(parsedResult.datacapRequested).toBe('5PiB')
+  })
+})
+
 describe('parseRemovalIssue()', () => {
   it('we can parse an issue including the right data', () => {
     const issueContent = 'This is an issue to remove the DataCap associated with f1sdzgaqmitbvgktkklpuaxohg6nuhce5eyvwxhbb.\nThis address was used by the Filecoin Foundation during the Filecoin Beta for allocations. Now that a new allocation has been made to a new address, this should be set to 0.'
