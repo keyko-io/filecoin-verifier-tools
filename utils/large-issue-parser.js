@@ -43,12 +43,14 @@ function parseIssue(issueContent, issueTitle = '') {
   const regextRemovalTitle = /#\s*Large\s*Client\s*Request\s*DataCap\s*Removal:[ \t]*([^\n\r]*)/m
   const regexWeeklyDataCapAllocation = /[\n\r][ \t]*-\s*Weekly\s*allocation\s*of\s*DataCap\s*requested\s*\(usually between 1-100TiB\)\s*:[ \t]*([^\n\r]*)/m
   const regexCustomNotary = /-\s*Type:\s*Custom\s*Notary\s*/mi
+  const regexIdentifier = /[\n\r][ \t]*-\s*Identifier:[ \t]*([^\n\r]*)/
 
   const name = matchGroupLargeNotary(regexName, issueContent)
   const region = matchGroupLargeNotary(regexRegion, issueContent)
   const website = matchGroupLargeNotary(regexWebsite, issueContent)
   const address = matchGroupLargeNotary(regexAddress, issueContent)
   const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
+  const identifier = matchGroupLargeNotary(regexIdentifier, issueContent)
   const dataCapWeeklyAllocation = matchGroupLargeNotary(regexWeeklyDataCapAllocation, issueContent)
   const isCustomNotary = regexCustomNotary.test(issueContent)
 
@@ -61,6 +63,7 @@ function parseIssue(issueContent, issueTitle = '') {
       errorMessage: '',
       errorDetails: '',
       name: name,
+      identifier,
       address: address,
       datacapRequested: datacapRequested,
       dataCapWeeklyAllocation: dataCapWeeklyAllocation,
