@@ -256,7 +256,7 @@ class VerifyAPI {
       const to = getMessage.To
 
       const pendingTxs = await this.pendingTransactions(to)
-      const tx = pendingTxs.find(tx => { tx.id = txId })
+      const tx = pendingTxs.find(tx => {return tx.id === txId} )
 
       if (!tx) return null
       return tx
