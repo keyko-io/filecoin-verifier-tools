@@ -1,6 +1,5 @@
 const VerifyAPI = require('../../api/api.js')
 const MockWallet = require('../mockWallet')
-const fs = require('fs')
 const constants = require('../constants')
 
 const endpointUrl = constants.lotus_endpoint
@@ -15,7 +14,7 @@ const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
 
 async function main() {
   const tx = await api.getTxFromMsgCid('bafy2bzacecwcemtcctinqjjrjcnchds5ceiqaffac6vlp4mn5i4plsb5cohcw')
-  console.log("TRANSACTION", tx)
+  console.log('TRANSACTION', tx)
 }
 
 main()
