@@ -226,7 +226,7 @@ function make(testnet) {
 
   async function stateWaitMsg(client, cid) {
     try {
-      const res = await client.stateWaitMsg({ '/': cid },1)
+      const res = await client.stateWaitMsg({ '/': cid }, 1)
       return res
     } catch (error) {
       //  console.log(error)

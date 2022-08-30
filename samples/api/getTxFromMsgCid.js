@@ -16,9 +16,8 @@ const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
 }), mockWallet)
 
 async function main() {
-  const tx = await api.getTxFromMsgCid("bafy2bzaceddtzvgkckisl6fy76qyjqkt5wxqu2622xfjkqf6z7bzhwue77nns")
+  const tx = await api.getTxFromMsgCid('bafy2bzaceddtzvgkckisl6fy76qyjqkt5wxqu2622xfjkqf6z7bzhwue77nns')
   console.log(tx)
 }
 
 main()
-

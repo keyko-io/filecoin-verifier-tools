@@ -254,13 +254,12 @@ class VerifyAPI {
 
       const getMessage = await this.getMessage(cid)
       const to = getMessage.To
-    
+
       const pendingTxs = await this.pendingTransactions(to)
-      const tx = pendingTxs.find(tx => tx.id = txId)
+      const tx = pendingTxs.find(tx => { tx.id = txId })
 
-      if(!tx) return null
+      if (!tx) return null
       return tx
-
     } catch (error) {
       console.log(error)
     }
