@@ -610,7 +610,22 @@ function make(testnet) {
         cap: 'bigint',
       },
     },
+    7: {
+      name: 'removeVerifiedClientDataCap',
+      input: {
+        address: 'address',
+        cap: 'bigint',
+        verifierRequest1 : 'buffer',
+        verifierRequest2 : 'buffer',
+      },
+    },
   }
+
+  /*
+  VerifiedClientToRemove addr.Address
+	DataCapAmountToRemove  DataCap
+	VerifierRequest1       RemoveDataCapRequest
+	VerifierRequest2       RemoveDataCapRequest*/
 
   const table = {
     type: 'hamt',
