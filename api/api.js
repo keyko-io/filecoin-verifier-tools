@@ -87,6 +87,10 @@ class VerifyAPI {
     return this.methods.getMessage(this.client, cid)
   }
 
+  async stateWaitMessage(cid) {
+    return this.methods.stateWaitMsg(this.client, cid)
+  }
+
   async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, indexAccount, wallet, { gas } = { gas: 0 }) {
     // Not address but account in the form "t01003", for instance
     const add = this.methods.verifreg.addVerifier(verifierAccount, datacap)
@@ -241,6 +245,25 @@ class VerifyAPI {
   async cancelPending(msig, tx, from, wallet) {
     const m1_actor = this.methods.actor(msig, this.methods.multisig)
     await this.send(m1_actor.cancel(parseInt(tx.id), tx.tx), from, wallet)
+  }
+
+  async getTxFromMsgCid(cid) {
+    try {
+      const waitMsg = await this.stateWaitMessage(cid)
+      const txId = waitMsg.ReturnDec.TxnID
+
+      const getMessage = await this.getMessage(cid)
+      const to = getMessage.To
+    
+      const pendingTxs = await this.pendingTransactions(to)
+      const tx = pendingTxs.find(tx => tx.id = txId)
+
+      if(!tx) return null
+      return tx
+
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   async multisigProposeClient(m0_addr, m1_addr, client, cap, from, wallet) {

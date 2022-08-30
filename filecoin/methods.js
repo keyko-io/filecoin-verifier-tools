@@ -220,7 +220,16 @@ function make(testnet) {
       const res = await client.chainGetMessage({ '/': cid })
       return res
     } catch (error) {
-      // return new Error(error)
+      // console.log(error)
+    }
+  }
+
+  async function stateWaitMsg(client, cid) {
+    try {
+      const res = await client.stateWaitMsg({ '/': cid },1)
+      return res
+    } catch (error) {
+      //  console.log(error)
     }
   }
 
@@ -667,6 +676,7 @@ function make(testnet) {
     actor,
     getReceipt,
     getMessage,
+    stateWaitMsg,
     multisig,
     multisigCID,
     pending,
