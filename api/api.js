@@ -4,6 +4,7 @@ const { BrowserProvider } = require('@filecoin-shipyard/lotus-client-provider-br
 const { NodejsProvider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const cbor = require('cbor')
+const { toHexString } = require('multihashes/src/')
 
 const cacheAddress = {}
 const cacheKey = {}
@@ -336,6 +337,35 @@ class VerifyAPI {
       return { success: true, walletSignMessage, pushedMsgId }
     } catch (error) {
       return { success: false, error }
+    }
+  }
+
+  async signRemoveDataCapProposal(sender, msig, datacap) {
+    // console.log('started must specify notary address, client address, and allowance to remove')
+    try {
+      const arr = this.methods.encodeSignRemoveDataCapProposal(sender, msig, datacap)
+      console.log('after building object:', arr)
+
+      const signed = await this.client.walletSign('t0101', arr) // t0101 to change --> it is the --from param
+      console.log('signed object:', signed)
+
+      // 'ascii'|'utf8'|'utf16le'|'ucs2'(alias of 'utf16le')|'base64'|'binary'(deprecated)|'hex'
+      console.log('buuferfrom', Buffer.from(signed.Data, 'base64'))
+
+      const b = Buffer.from(signed.Data, 'base64')
+
+      const signedBytesArr = new TextEncoder().encode(b)
+
+      const toHex = toHexString(signedBytesArr)
+
+      return new TextEncoder().encode(signed.Type) + toHex
+
+      // RESULT: 494631326835456b6f3051344349647350544248423870334d505772774477494838384b463938357359496b535a3962392b587653432b426948364c33357a646145426f32386d67734545502b35546f4f317a69683041453d
+      // testing in the lotus node with the same parameters I receive:
+      // 010c13af22c43e49d044dd9c147629fa21a86709d720154181f358210d162c78df4b803d2e82d3aae8320e812cc0a6a68ce8e68737482f21f70d2684c7f9619cb301
+      // not sure how should encode-decode the object
+    } catch (error) {
+      console.log(error)
     }
   }
 
