@@ -296,10 +296,13 @@ function make(testnet) {
     if (schema === 'bool') {
       return data
     }
-    if (schema.type === 'hash') {
+    if (schema.type === 'hash' ) {
       const hashData = cborEncode(encode(schema.input, data))
       const hash = blake.blake2bHex(hashData, null, 32)
       return Buffer.from(hash, 'hex')
+    }
+     if (schema === 'signature') {
+      return Buffer.from(data, 'hex')
     }
     if (schema instanceof Array) {
       if (schema[0] === 'list') {
@@ -332,17 +335,6 @@ function make(testnet) {
     throw new Error(`Unknown type ${schema}`)
   }
 
-  function encodeSignRemoveDataCapProposal(notaryAddr, msigAddr, datacap) {
-    // console.log("signer.addressAsBytes('t01003')",signer.addressAsBytes('t01003'))
-
-    const notary = new TextEncoder().encode(Buffer.from(notaryAddr, 'base64'))
-    // const notary = new TextEncoder().encode(address.newFromString(notaryAddr).str)
-    const msig = new TextEncoder().encode(Buffer.from(msigAddr, 'base64'))
-    // const msig = new TextEncoder().encode(address.newFromString(msigAddr).str)
-    const dc = new TextEncoder().encode(Buffer.from(datacap, 'base64'))
-
-    return [...notary, ...msig, ...dc]
-  }
 
   function actor(address, spec) {
     const res = {}
@@ -354,7 +346,6 @@ function make(testnet) {
         } else {
           params = encode(method.input, data)
         }
-        // console.log("params", params)
         return {
           to: address,
           value: 0n,
@@ -365,6 +356,43 @@ function make(testnet) {
     }
     return res
   }
+
+
+  const verifreg = {
+    2: {
+      name: 'addVerifier',
+      input: {
+        verifier: 'address',
+        cap: 'bigint',
+      },
+    },
+    3: {
+      name: 'removeVerifier',
+      input: 'address',
+    },
+    4: {
+      name: 'addVerifiedClient',
+      input: {
+        address: 'address',
+        cap: 'bigint',
+      },
+    },
+    7: {
+      name: 'removeVerifiedClientDataCap',
+      input: {
+        verifiedClientToRemove: 'address',
+        dataCapAmountToRemove: 'bigint',
+        verifierRequest1:{
+          verifier:'address',
+          signature: 'signature'
+        },
+        verifierRequest2:{
+          verifier:'address',
+          signature: 'signature'
+        }
+        }
+      }
+    }
 
   const multisig = {
     3: {
@@ -476,35 +504,6 @@ function make(testnet) {
     pending: ['ref', pending],
   }
 
-  const verifreg = {
-    2: {
-      name: 'addVerifier',
-      input: {
-        verifier: 'address',
-        cap: 'bigint',
-      },
-    },
-    3: {
-      name: 'removeVerifier',
-      input: 'address',
-    },
-    4: {
-      name: 'addVerifiedClient',
-      input: {
-        address: 'address',
-        cap: 'bigint',
-      },
-    },
-    7: {
-      name: 'removeVerifiedClientDataCap',
-      input: {
-        address: 'address',
-        cap: 'bigint',
-        verifierRequest1: 'buffer',
-        verifierRequest2: 'buffer',
-      },
-    },
-  }
 
   const table = {
     type: 'hamt',
@@ -575,8 +574,7 @@ function make(testnet) {
     buildArrayData,
     ROOTKEY,
     VERIFREG,
-    INIT_ACTOR,
-    encodeSignRemoveDataCapProposal,
+    INIT_ACTOR
   }
 }
 
