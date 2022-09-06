@@ -4,7 +4,6 @@ const { BrowserProvider } = require('@filecoin-shipyard/lotus-client-provider-br
 const { NodejsProvider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const cbor = require('cbor')
-const { toHexString } = require('multihashes/src/')
 
 const cacheAddress = {}
 const cacheKey = {}
@@ -67,11 +66,11 @@ class VerifyAPI {
   }
 
   async proposeRemoveDataCap(clientToRemoveDcFrom, datacap, verifier1, signature1, verifier2, signature2, indexAccount, wallet, { gas } = { gas: 0 }) {
-    const removeDatacapProposal =  this.methods.verifreg.removeVerifiedClientDataCap(
-          clientToRemoveDcFrom,datacap,
-          {verifier:verifier1, signature:signature1},
-          {verifier:verifier2, signature:signature2}
-        )
+    const removeDatacapProposal = this.methods.verifreg.removeVerifiedClientDataCap(
+      clientToRemoveDcFrom, datacap,
+      { verifier: verifier1, signature: signature1 },
+      { verifier: verifier2, signature: signature2 },
+    )
     const tx = this.methods.rootkey.propose(removeDatacapProposal)
     const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas })
     return res['/']
@@ -354,7 +353,6 @@ class VerifyAPI {
       return { success: false, error }
     }
   }
-
 
   async listMessagesFromToAddress(From, To, heightPerc = 0.5) {
     try {

@@ -296,12 +296,12 @@ function make(testnet) {
     if (schema === 'bool') {
       return data
     }
-    if (schema.type === 'hash' ) {
+    if (schema.type === 'hash') {
       const hashData = cborEncode(encode(schema.input, data))
       const hash = blake.blake2bHex(hashData, null, 32)
       return Buffer.from(hash, 'hex')
     }
-     if (schema === 'signature') {
+    if (schema === 'signature') {
       return Buffer.from(data, 'hex')
     }
     if (schema instanceof Array) {
@@ -335,7 +335,6 @@ function make(testnet) {
     throw new Error(`Unknown type ${schema}`)
   }
 
-
   function actor(address, spec) {
     const res = {}
     for (const [num, method] of Object.entries(spec)) {
@@ -356,7 +355,6 @@ function make(testnet) {
     }
     return res
   }
-
 
   const verifreg = {
     2: {
@@ -382,17 +380,17 @@ function make(testnet) {
       input: {
         verifiedClientToRemove: 'address',
         dataCapAmountToRemove: 'bigint',
-        verifierRequest1:{
-          verifier:'address',
-          signature: 'signature'
+        verifierRequest1: {
+          verifier: 'address',
+          signature: 'signature',
         },
-        verifierRequest2:{
-          verifier:'address',
-          signature: 'signature'
-        }
-        }
-      }
-    }
+        verifierRequest2: {
+          verifier: 'address',
+          signature: 'signature',
+        },
+      },
+    },
+  }
 
   const multisig = {
     3: {
@@ -504,7 +502,6 @@ function make(testnet) {
     pending: ['ref', pending],
   }
 
-
   const table = {
     type: 'hamt',
     key: 'address',
@@ -574,7 +571,7 @@ function make(testnet) {
     buildArrayData,
     ROOTKEY,
     VERIFREG,
-    INIT_ACTOR
+    INIT_ACTOR,
   }
 }
 
