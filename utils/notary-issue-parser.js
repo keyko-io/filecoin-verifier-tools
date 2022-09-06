@@ -38,11 +38,12 @@ function parseIssue(issueContent, issueTitle = '') {
   const address = matchGroupLargeNotary(regexAddress, issueContent)
   const alternativeAddress = matchGroupLargeNotary(regexAlternativeAddress, issueContent)
   const alternativeAddressX = matchGroupLargeNotary(regexAddressX, issueContent)
-  const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent) || matchGroupLargeNotary(regexDatacapRequested2, issueContent)
+  const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
+  const datacapRequested2 = matchGroupLargeNotary(regexDatacapRequested2, issueContent)
   const region = matchGroupLargeNotary(regexRegion, issueContent)
   const useCases = matchGroupLargeNotary(regexUseCases, issueContent)
 
-  if (name != null && (address || alternativeAddress || alternativeAddressX) && datacapRequested != null && region != null && useCases != null) {
+  if (name != null && (address || alternativeAddress || alternativeAddressX) && (datacapRequested != null || datacapRequested2 != null) && region != null && useCases != null) {
     // if (name != null && (address || alternativeAddress || alternativeAddressX) && datacapRequested != null && website != null && region != null && useCases != null) {
     return {
       correct: true,
@@ -50,7 +51,7 @@ function parseIssue(issueContent, issueTitle = '') {
       errorDetails: '',
       name: name,
       address: address || (alternativeAddress || alternativeAddressX),
-      datacapRequested: datacapRequested,
+      datacapRequested: datacapRequested || datacapRequested2,
       website: '',
       // website: website,
       region: region,
