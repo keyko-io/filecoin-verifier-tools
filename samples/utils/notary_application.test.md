@@ -19,7 +19,7 @@ To apply as a notary, please fill out the following form.
 - On-chain address to be notarized (recommend using a new address): f1111222333
 - Region of Operation: [North America]
 - Use case(s) to be supported: [Developer Tools, Web 3.0]
-- DataCap requested for allocation (10TiB - 10 PiB): 1PiB
+- DataCap requested for allocation (10TiB - 10 PiB): 5PiB
 
 
 _Please respond to the questions below in pargraph form, replacing the text saying "Please answer here". Include as much detail as you can in your answer!_

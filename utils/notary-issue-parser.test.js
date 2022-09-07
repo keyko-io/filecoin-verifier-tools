@@ -40,7 +40,7 @@ describe('parseIssue()', () => {
     )
     const parsedResult = parseIssue(issueContent)
 
-    expect(parsedResult.datacapRequested).toBe('1PiB')
+    expect(parsedResult.datacapRequested).toBe('5PiB')
   })
 })
 
