@@ -21,11 +21,11 @@ async function removeDatacap() {
     // process.exit(0)
 
     // get signature manually in test node using: lotus filplus sign-remove-data-cap-proposal t01004 t01019 600
-    const signature1 = '0140c597d471f0856d7a81e9a090b25d46a8be1dc297e8e57f36471e7a37f4ffc40c7cff3c061bcad9e5feb53ed70e18a8cc5402f961a67df7802aef919d87fe9a01'
+    const signature1 = '013c225da5e6380774ef85cdc47266513e148ea7a167cd9a45b3baecb157dd30030a1179cd2aeee464af5264e1111d08ab27047b8effc75a9e91c6aa6a98a3012100'
     const signature2 =
-    '01649f17c1e9212a4155d94b1a947416c9a98463d72f40d65602e6b003ff086a992b0090fb94b18e85f6f6145a932fe577b206de275ed1a73a3938d822d71b5cfd00'
+    '0175d8950d29fc5224a6d873fe25cc7b0745be263209bd3b643eb625b35a6bbe7d4fa46eb71fe526dd09e9580409e90e79c934450054442a7c593b8f4bbf27636000'
 
-    const tx = await api.proposeRemoveDataCap('t01019', 1000, 't01004', signature1, 't01008', signature2, 2, rootkeyWallet)
+    const tx = await api.proposeRemoveDataCap('t01019', 1000, 't01004', signature1, 't01001', signature2, 2, rootkeyWallet)
     console.log('TX:', tx)
     process.exit(0)
   } catch (error) {

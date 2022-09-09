@@ -11,15 +11,19 @@ const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
   token,
 }), mockWallet)
 
-async function tSignRemoveDataCapProposal() {
+async function tsignDatacapRemoval() {
   try {
-    // console.log('started must specify notary address, client address, and allowance to remove')
-    const res = await api.signRemoveDataCapProposal('t01004', 't01019', '600')
-    console.log('RESULT:', res)
+    const rkAccounts = await mockWallet.getAccounts()
+    // console.log('accounts', rkAccounts)
+    // process.exit(0)
+
+    const res = await api.signDatacapRemoval('t01004', 1000, 't01019', mockWallet, 0)
+
+    console.log('RESULT SIGNATURE:', res)
     process.exit(0)
   } catch (error) {
     console.log(error)
   }
 }
 
-tSignRemoveDataCapProposal()
+tsignDatacapRemoval()

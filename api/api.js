@@ -4,6 +4,7 @@ const { BrowserProvider } = require('@filecoin-shipyard/lotus-client-provider-br
 const { NodejsProvider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const cbor = require('cbor')
+const { toHexString } = require('multihashes/src/')
 
 const cacheAddress = {}
 const cacheKey = {}
@@ -76,9 +77,56 @@ class VerifyAPI {
     return res['/']
   }
 
-  // async approveRemoveDataCap(msig, tx, from, wallet) {
-  // return await this.approvePending(msig, tx, from, wallet)
-  // }
+
+
+  // async signDatacapRemoval (notary,datacapAmount=1000,verifiedClient='t01019') {
+  async signDatacapRemoval(notary, datacapAmount, verifiedClient, walletContext, indexAccount) {
+    try {
+      const fil_removedatacap_buffer = Buffer.from("fil_removedatacap:")
+      const obj = 
+        {
+          removalProposalID: 1,
+          datacapAmount,
+          verifiedClient,
+        }
+
+      console.log("////////////////////CBOR DECODING SAMPLES")
+      const cbr = cbor.encode(obj)
+      // console.log('dec',cbor.decode(cbr))
+      const enc = Buffer.concat([fil_removedatacap_buffer,cbr])
+
+      // TODO find removeDataCapProposalIDs from verifreg state
+      // loading verifreg state
+      // const data = await this.getPath(this.methods.VERIFREG, '')
+      // const info = this.methods.decode(this.methods.verifreg_state, data)
+
+      // const verifiers = await info.verifiers(a => this.load(a))
+      // console.log('clients', await verifiers.asList(a => this.load(a)))
+      
+      
+
+
+      const bytesToSign = []
+      for (const i of enc) { bytesToSign.push(i) }
+      
+      // sign the bytes
+      const signResult = await this.client.walletSign(notary, bytesToSign)
+      console.log('signResult', signResult)
+      const typeAsBuffer = this.methods.encode('bigint-key', signResult.Type)
+      const dataAsBuffer =  Buffer.from(signResult.Data,'base64')
+
+
+
+
+      const cc = Buffer.concat([typeAsBuffer, dataAsBuffer])
+      return toHexString(cc)
+
+    } catch (error) {
+      console.log(error)
+      process.exit(0)
+    }
+  }
+
 
   async proposeRemoveVerifier(verifierAccount, indexAccount, wallet, { gas } = { gas: 0 }) {
     // Not address but account in the form "t01004", for instance

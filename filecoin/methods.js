@@ -284,7 +284,7 @@ function make(testnet) {
     if (schema === 'bigint-key') {
       return encodeBigKey(data)
     }
-    if (schema === 'int' || typeof data === 'string') {
+    if (schema === 'int' || typeof data === 'string' && schema !== 'signature') {
       return parseInt(data)
     }
     if (schema === 'int' || schema === 'buffer') {
@@ -514,6 +514,12 @@ function make(testnet) {
     clients: ['ref', table],
   }
 
+  const REMOVE_DATACAP_PROPOSAL = {
+    removalProposalID: 'bigint',
+    datacapAmount: 'bigint',
+    verifiedClient: 'address',
+  }
+
   const reg = {
     t080: multisig,
     t06: verifreg,
@@ -572,6 +578,9 @@ function make(testnet) {
     ROOTKEY,
     VERIFREG,
     INIT_ACTOR,
+    RemoveDataCapProposal: REMOVE_DATACAP_PROPOSAL,
+    
+
   }
 }
 
