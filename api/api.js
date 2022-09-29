@@ -240,7 +240,7 @@ class VerifyAPI {
 
   async cancelPending(msig, tx, from, wallet) {
     const m1_actor = this.methods.actor(msig, this.methods.multisig)
-    await this.send(m1_actor.cancel(parseInt(tx.id), tx.tx), from, wallet)
+    return await this.send(m1_actor.cancel(parseInt(tx.id), tx.tx), from, wallet)
   }
 
   async multisigProposeClient(m0_addr, m1_addr, client, cap, from, wallet) {
