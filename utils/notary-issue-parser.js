@@ -22,41 +22,63 @@ function parseNotaryAddress(issueContent) {
 
 function parseIssue(issueContent, issueTitle = '') {
   const regexName = /-\s*Name:\s*(.*)/m
-  // const regexWebsite = /-\s*Website\s*\/\s*Social\s*Media:\s*(.*)/m
+  const regexAffilOrg = /-\s*Affiliated\s*organization:\s*(.*)/m
+
+  // address
   const regexAddress = /-\s*On-chain\s*Address\(es\)\s*to\s*be\s*Notarized:\s*(.*)/mi
-  const regexAddressX = /-\s*On-chain\s*Address\s*to\s*be\s*Notarized:\s*(.*)/mi
   const regexAlternativeAddress = /-\s*On-chain\s*address\s*to\s*be\s*notarized\s*\(recommend using a new address\):\s*(.*)/mi
+  const regexCountry = /-\s*Country\s*of\s*Operation:\s*(.*)/m
   const regexRegion = /-\s*Region\s*of\s*Operation:\s*(.*)/m
   const regexUseCases = /-\s*Use\s*case\(s\)\s*to\s*be\s*supported:\s*(.*)/m
-  const regexDatacapRequested = /-\s*DataCap\s*requested\s*for\s*allocation\s*\(10TiB - 10 PiB\):\s*(.*)/m
+
+  // datacap
+  const regexDatacapRequested = /-\s*DataCap\s*requested\s*for\s*allocation\s*\(10TiB - 1PiB\):\s*(.*)/m
   const regexDatacapRequested2 = /-\s*DataCap\s*Requested:\s*(.*)/m
+  const regexBehalf = /-\s*Are you applying on behalf of yourself or an organization\?:\s*(.*)/m
 
   const regextRemovalTitle = /\s*Notary\s*DataCap\s*Removal:\s*(.*)/m
 
   const name = matchGroupLargeNotary(regexName, issueContent)
   // const website = matchGroupLargeNotary(regexWebsite, issueContent)
+
   const address = matchGroupLargeNotary(regexAddress, issueContent)
   const alternativeAddress = matchGroupLargeNotary(regexAlternativeAddress, issueContent)
-  const alternativeAddressX = matchGroupLargeNotary(regexAddressX, issueContent)
+
   const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
   const datacapRequested2 = matchGroupLargeNotary(regexDatacapRequested2, issueContent)
+  console.log('datacapRequested,datacapRequested2', datacapRequested, datacapRequested2)
   const region = matchGroupLargeNotary(regexRegion, issueContent)
-  const useCases = matchGroupLargeNotary(regexUseCases, issueContent)
+  const country = matchGroupLargeNotary(regexCountry, issueContent)
 
-  if (name != null && (address || alternativeAddress || alternativeAddressX) && (datacapRequested != null || datacapRequested2 != null) && region != null && useCases != null) {
-    // if (name != null && (address || alternativeAddress || alternativeAddressX) && datacapRequested != null && website != null && region != null && useCases != null) {
+  const useCases = matchGroupLargeNotary(regexUseCases, issueContent)
+  const behalf = matchGroupLargeNotary(regexBehalf, issueContent)
+  const organization = matchGroupLargeNotary(regexAffilOrg, issueContent)
+
+  if (
+    name != null &&
+  (address || alternativeAddress) &&
+  (datacapRequested != null || datacapRequested2 != null) &&
+  region != null &&
+  useCases != null &&
+  behalf != null &&
+  organization != null &&
+  country != null
+  ) {
     return {
       correct: true,
       errorMessage: '',
       errorDetails: '',
-      name: name,
-      address: address || (alternativeAddress || alternativeAddressX),
+      name,
+      organization,
+      address: address || (alternativeAddress),
+      country,
+      region,
+      useCases,
       datacapRequested: datacapRequested || datacapRequested2,
-      website: '',
-      // website: website,
-      region: region,
-      useCases: useCases,
+      behalf,
       datacapRemoval: false,
+      website: '',
+
     }
   }
 
@@ -81,10 +103,12 @@ function parseIssue(issueContent, issueTitle = '') {
   let errorMessage = ''
   if (name == null) { errorMessage += 'We could not find your **Name** in the information provided\n' }
   if (!address && !alternativeAddress) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
-  if (datacapRequested == null) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
+  if (!datacapRequested || !datacapRequested2) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
   // if (website == null) { errorMessage += 'We could not find any **Web site or social media info** in the information provided\n' }
   if (region == null) { errorMessage += 'We could not find any **Region** in the information provided\n' }
   if (useCases == null) { errorMessage += 'We could not find any **Use Case** in the information provided\n' }
+  if (country == null) { errorMessage += 'We could not find any **Country** in the information provided\n' }
+  if (behalf == null) { errorMessage += 'We could not find any answer to: **Are you applying on behalf of yourself or an organization?** in the information provided\n' }
 
   return {
     correct: false,
