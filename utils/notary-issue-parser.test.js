@@ -11,18 +11,20 @@ const {
 describe('parseIssue()', () => {
   it('we can parse an issue including the right data', () => {
     const issueContent = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/notary_application.test.md'),
+      path.resolve(__dirname, '../samples/utils/notary_application_new_temp.test.md'),
       { encoding: 'utf8' },
     )
     const parsedResult = parseIssue(issueContent)
-
+    console.log("parsedResult", parsedResult)
     expect(parsedResult.correct).toBe(true)
-    expect(parsedResult.name).not.toBe('Notary B')
-    expect(parsedResult.address).toBe('f1111222333')
-    expect(parsedResult.alternativeAddress).toBe(undefined)
-    // expect(parsedResult.website).toBe('info.org')
-    expect(parsedResult.region).not.toBe('[China]')
-    expect(parsedResult.useCases).toBe('[Developer Tools, Web 3.0]')
+    expect(parsedResult.name).toBe('JLow Cen')
+    expect(parsedResult.organization).toBe('XXX Technologies Limited')
+    expect(parsedResult.address).toBe('f3qkxwggmup3troacakwz6u6f3u2cytfp5rkf3qxtksbruoffahyhd37krbosa4j2oywzql3vyqdvyu2skkasd')
+    expect(parsedResult.region).toBe('Greater China Region')
+    expect(parsedResult.country).toBe('Greater China Region')
+    expect(parsedResult.useCases).toBe('General')
+    expect(parsedResult.datacapRequested).toBe('1PiB')
+    expect(parsedResult.behalf).toBe('Organization')
   })
 
   it('we can not parse an invalid issue', () => {
@@ -35,24 +37,24 @@ describe('parseIssue()', () => {
 describe('parseIssue()', () => {
   it('should parse the amount of datacap request correctly', () => {
     const issueContent = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/notary_application.test.md'),
+      path.resolve(__dirname, '../samples/utils/notary_application_new_temp.test.md'),
       { encoding: 'utf8' },
     )
     const parsedResult = parseIssue(issueContent)
 
-    expect(parsedResult.datacapRequested).toBe('5PiB')
+    expect(parsedResult.datacapRequested).toBe('1PiB')
   })
 })
 
 describe('parseIssue()', () => {
   it('should parse the amount of datacap request correctly', () => {
     const issueContent = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/notary_application2.test.md'),
+      path.resolve(__dirname, '../samples/utils/notary_application_new_temp.test.md'),
       { encoding: 'utf8' },
     )
     const parsedResult = parseIssue(issueContent)
 
-    expect(parsedResult.datacapRequested).toBe('5PiB')
+    expect(parsedResult.datacapRequested).toBe('1PiB')
   })
 })
 
