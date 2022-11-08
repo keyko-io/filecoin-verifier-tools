@@ -24,14 +24,14 @@ function parseIssue(issueContent, issueTitle = '') {
   const regexName = /-\s*Name:\s*(.*)/m
   const regexAffilOrg = /-\s*Affiliated\s*organization:\s*(.*)/m
 
-  //address
+  // address
   const regexAddress = /-\s*On-chain\s*Address\(es\)\s*to\s*be\s*Notarized:\s*(.*)/mi
   const regexAlternativeAddress = /-\s*On-chain\s*address\s*to\s*be\s*notarized\s*\(recommend using a new address\):\s*(.*)/mi
   const regexCountry = /-\s*Country\s*of\s*Operation:\s*(.*)/m
   const regexRegion = /-\s*Region\s*of\s*Operation:\s*(.*)/m
   const regexUseCases = /-\s*Use\s*case\(s\)\s*to\s*be\s*supported:\s*(.*)/m
 
-  //datacap
+  // datacap
   const regexDatacapRequested = /-\s*DataCap\s*requested\s*for\s*allocation\s*\(10TiB - 1PiB\):\s*(.*)/m
   const regexDatacapRequested2 = /-\s*DataCap\s*Requested:\s*(.*)/m
   const regexBehalf = /-\s*Are you applying on behalf of yourself or an organization\?:\s*(.*)/m
@@ -46,7 +46,7 @@ function parseIssue(issueContent, issueTitle = '') {
 
   const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
   const datacapRequested2 = matchGroupLargeNotary(regexDatacapRequested2, issueContent)
-  console.log("datacapRequested,datacapRequested2", datacapRequested, datacapRequested2)
+  console.log('datacapRequested,datacapRequested2', datacapRequested, datacapRequested2)
   const region = matchGroupLargeNotary(regexRegion, issueContent)
   const country = matchGroupLargeNotary(regexCountry, issueContent)
 
@@ -55,14 +55,14 @@ function parseIssue(issueContent, issueTitle = '') {
   const organization = matchGroupLargeNotary(regexAffilOrg, issueContent)
 
   if (
-  name != null && 
-  (address || alternativeAddress) && 
-  (datacapRequested != null || datacapRequested2 != null) && 
+    name != null &&
+  (address || alternativeAddress) &&
+  (datacapRequested != null || datacapRequested2 != null) &&
   region != null &&
   useCases != null &&
   behalf != null &&
   organization != null &&
-  country != null 
+  country != null
   ) {
     return {
       correct: true,
