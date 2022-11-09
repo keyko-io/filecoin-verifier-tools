@@ -57,7 +57,7 @@ function parseIssue(issueContent, issueTitle = '') {
   if (
     name != null &&
   (address || alternativeAddress) &&
-  (datacapRequested != null || datacapRequested2 != null) &&
+  (datacapRequested || datacapRequested2) &&
   region != null &&
   useCases != null &&
   behalf != null &&
@@ -103,7 +103,7 @@ function parseIssue(issueContent, issueTitle = '') {
   let errorMessage = ''
   if (name == null) { errorMessage += 'We could not find your **Name** in the information provided\n' }
   if (!address && !alternativeAddress) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
-  if (!datacapRequested || !datacapRequested2) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
+  if (!datacapRequested && !datacapRequested2) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
   // if (website == null) { errorMessage += 'We could not find any **Web site or social media info** in the information provided\n' }
   if (region == null) { errorMessage += 'We could not find any **Region** in the information provided\n' }
   if (useCases == null) { errorMessage += 'We could not find any **Use Case** in the information provided\n' }
