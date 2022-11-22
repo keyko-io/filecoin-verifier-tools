@@ -49,9 +49,9 @@ function parseIssue(issueContent, issueTitle = '') {
   const region = matchGroupLargeNotary(regexRegion, issueContent)
   const website = matchGroupLargeNotary(regexWebsite, issueContent)
   const address = matchGroupLargeNotary(regexAddress, issueContent)
-  const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
+  const datacapRequested = parseInt(matchGroupLargeNotary(regexDatacapRequested, issueContent))
   const identifier = matchGroupLargeNotary(regexIdentifier, issueContent)
-  const dataCapWeeklyAllocation = matchGroupLargeNotary(regexWeeklyDataCapAllocation, issueContent)
+  const dataCapWeeklyAllocation = parseInt(matchGroupLargeNotary(regexWeeklyDataCapAllocation, issueContent))
   const isCustomNotary = regexCustomNotary.test(issueContent)
 
   const regexForAdress = /^(f1|f3)/
