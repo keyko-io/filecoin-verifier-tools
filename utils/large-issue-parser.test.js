@@ -67,7 +67,6 @@ describe('parseIssue()', () => {
 
     const parsedResult = parseIssue(issueContent)
 
-    console.log({ parsedResult })
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.name).toBe('Efes Pilsen')
     expect(parsedResult.region).toBe('Turkey')
