@@ -27,7 +27,7 @@ function test_new_template(issueContent) {
   const weekly = matchGroupLargeNotary(weeklyData, issueContent)
   const address = matchGroupLargeNotary(onchain, issueContent)
 
-  const x = {
+  return {
     name,
     website,
     country,
@@ -35,8 +35,6 @@ function test_new_template(issueContent) {
     weekly,
     address,
   }
-
-  return x
 }
 
 exports.test_new_template = test_new_template
