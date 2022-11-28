@@ -75,7 +75,7 @@ describe('parseIssue()', () => {
     expect(parsedResult.datacapRequested).toBe('3 PiB')
     expect(parsedResult.website).toBe('www.efes.com')
     expect(parsedResult.dataCapWeeklyAllocation).toBe('500 TiB')
-    expect(parsedResult.address).toBe('f1234')
+    expect(parsedResult.address).toBe('f1000')
     expect(parsedResult.isCustomNotary).toBe(true)
     expect(parsedResult.identifier).toBe('E-fil')
   },
