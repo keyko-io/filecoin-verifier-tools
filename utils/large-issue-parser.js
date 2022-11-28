@@ -47,7 +47,7 @@ function parseIssue(issueContent, issueTitle = '') {
 
   // new yaml template parser
   const regexName2 = /[\n\r]*###\s*Data\s*Owner\s*Name[\n\t]*([^\n\r]*)/
-  const regexRegion2 = /[\n\r]*###\s*Data\s*Owner\s*Country-Region[\n\t]*([^\n\r]*)/
+  const regexRegion2 = /[\n\r]*###\s*Data\s*Owner\s*Country\/Region[\n\t]*([^\n\r]*)/
   const regexWebSite2 = /[\n\r]*###\s*Website[\n\t]*([^\n\r]*)/
   const regexAddress2 = /[\n\r]*###\s*On-chain\s*address\s*for\s*first\s*allocation[\n\t]*([^\n\r]*)/
   const regexDatacapRequested2 = /[\n\r]*###\s*Total\s*amount\s*of\s*DataCap\s*being\s*requested[\n\t]*([^\n\r]*)/
