@@ -2,7 +2,7 @@
 
 Efes Pilsen
 
-### Data Owner Country-Region
+### Data Owner Country/Region
 
 Turkey
 
@@ -31,7 +31,7 @@ www.efes.com
 
 ### On-chain address for first allocation
 
-f1234
+f1000
 
 ### Type
 
@@ -50,7 +50,7 @@ E-fil
 
 ### Is this project associated with other projects/ecosystem stakeholders?
 
-Yes
+No
 
 ### If answered yes, what are the other projects/ecosystem stakeholders
 
@@ -65,7 +65,7 @@ _No response_
 
 ### Where was the data currently stored in this dataset sourced from
 
-Azure Cloud
+Google Cloud
 
 ### If you answered "Other" in the previous question, enter the details here
 
@@ -100,19 +100,19 @@ Weekly
 
 ### For how long do you plan to keep this dataset stored on Filecoin
 
-Less than 1 year
+1 to 1.5 years
 
 ### In which geographies do you plan on making storage deals
 
-Africa
+Greater China
 
 ### How will you be distributing your data to storage providers
 
-IPFS
+HTTP or FTP server
 
 ### How do you plan to choose storage providers
 
-Slack
+Filmine
 
 ### If you answered "Others" in the previous question, what is the tool or platform you plan to use
 
