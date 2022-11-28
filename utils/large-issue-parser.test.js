@@ -59,6 +59,28 @@ describe('parseIssue()', () => {
     // expect(parsedResult.dataCapWeeklyAllocation).toBe('9TiB')
   })
 
+  it.only('we can parse new template correctly', () => {
+    const issueContent = fs.readFileSync(
+      path.resolve(__dirname, '../samples/utils/new_ldn_template_yaml.md'),
+      { encoding: 'utf8' },
+    )
+
+    const parsedResult = parseIssue(issueContent)
+
+    console.log({ parsedResult })
+    expect(parsedResult.correct).toBe(true)
+    expect(parsedResult.name).toBe('Efes Pilsen')
+    expect(parsedResult.region).toBe('Turkey')
+    expect(parsedResult.isAddressFormatted).toBe(true)
+    expect(parsedResult.datacapRequested).toBe('3 PiB')
+    expect(parsedResult.website).toBe('www.efes.com')
+    expect(parsedResult.dataCapWeeklyAllocation).toBe('500 TiB')
+    expect(parsedResult.address).toBe('f1234')
+    expect(parsedResult.isCustomNotary).toBe(true)
+    expect(parsedResult.identifier).toBe('E-fil')
+  },
+  )
+
   it('we can not parse an invalid issue', () => {
     const parsedResult = parseIssue('random string')
     expect(parsedResult.correct).toBe(false)
