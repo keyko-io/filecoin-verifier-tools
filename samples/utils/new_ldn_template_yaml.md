@@ -1,42 +1,52 @@
 ### Data Owner Name
 
-hello
+Efes Pilsen
 
-### Data Owner Country
+### Data Owner Country-Region
 
-Algeria
+Turkey
 
 ### Data Owner Industry
 
-Environment
+Other
 
 ### Website
 
-www.test.com
+www.efes.com
 
 ### Social Media
 
 ```text
-www.data.com
+www.efes.com
 ```
+
 
 ### Total amount of DataCap being requested
 
-3TiB
+3 PiB
 
 ### Weekly allocation of DataCap requested
 
-5TiB
+500 TiB
 
 ### On-chain address for first allocation
 
-f12312
+f1234
+
+### Type
+
+Custom Notary
+
+### Identifier
+
+E-fil
 
 ### Share a brief history of your project and organization
 
 ```text
-yeah
+-
 ```
+
 
 ### Is this project associated with other projects/ecosystem stakeholders?
 
@@ -44,27 +54,26 @@ Yes
 
 ### If answered yes, what are the other projects/ecosystem stakeholders
 
-```text
-wow
-```
+_No response_
 
 ### Describe the data being stored onto Filecoin
 
 ```text
-yes
+-
 ```
+
 
 ### Where was the data currently stored in this dataset sourced from
 
-Google Cloud
+Azure Cloud
 
 ### If you answered "Other" in the previous question, enter the details here
 
-oh wow
+_No response_
 
 ### How do you plan to prepare the dataset
 
-lotus
+_No response_
 
 ### If you answered "other/custom tool" in the previous question, enter the details here
 
@@ -73,8 +82,9 @@ _No response_
 ### Please share a sample of the data
 
 ```text
-yeah
+-
 ```
+
 
 ### Confirm that this is a public dataset that can be retrieved by anyone on the Network
 
@@ -90,7 +100,7 @@ Weekly
 
 ### For how long do you plan to keep this dataset stored on Filecoin
 
-2 to 3 years
+Less than 1 year
 
 ### In which geographies do you plan on making storage deals
 
@@ -98,11 +108,11 @@ Africa
 
 ### How will you be distributing your data to storage providers
 
-HTTP or FTP server
+IPFS
 
 ### How do you plan to choose storage providers
 
-Big data exchange
+Slack
 
 ### If you answered "Others" in the previous question, what is the tool or platform you plan to use
 
