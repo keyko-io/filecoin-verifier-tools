@@ -45,15 +45,26 @@ function parseIssue(issueContent, issueTitle = '') {
   const regexCustomNotary = /-\s*Type:\s*Custom\s*Notary\s*/mi
   const regexIdentifier = /[\n\r][ \t]*-\s*Identifier:[ \t]*([^\n\r]*)/
 
-  const name = matchGroupLargeNotary(regexName, issueContent)
-  const region = matchGroupLargeNotary(regexRegion, issueContent)
-  const website = matchGroupLargeNotary(regexWebsite, issueContent)
-  const address = matchGroupLargeNotary(regexAddress, issueContent)
-  const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
-  const identifier = matchGroupLargeNotary(regexIdentifier, issueContent)
-  const dataCapWeeklyAllocation = matchGroupLargeNotary(regexWeeklyDataCapAllocation, issueContent)
-  const isCustomNotary = regexCustomNotary.test(issueContent)
+  // new yaml template parser
+  const regexName2 = /[\n\r]*###\s*Data\s*Owner\s*Name[\n\t]*([^\n\r]*)/
+  const regexRegion2 = /[\n\r]*###\s*Data\s*Owner\s*Country\/Region[\n\t]*([^\n\r]*)/
+  const regexWebSite2 = /[\n\r]*###\s*Website[\n\t]*([^\n\r]*)/
+  const regexAddress2 = /[\n\r]*###\s*On-chain\s*address\s*for\s*first\s*allocation[\n\t]*([^\n\r]*)/
+  const regexDatacapRequested2 = /[\n\r]*###\s*Total\s*amount\s*of\s*DataCap\s*being\s*requested[\n\t]*([^\n\r]*)/
+  const regexWeeklyDataCapAllocation2 = /[\n\r]*###\s*Weekly\s*allocation\s*of\s*DataCap\s*requested[\n\t]*([^\n\r]*)/
+  const regexCustomNotary2 = /[\n\r]*###\s*Type[\n\t]*([^\n\r]*)/
+  const regexIdentifier2 = /[\n\r]*###\s*Identifier[\n\t]*([^\n\r]*)/
 
+  const name = matchGroupLargeNotary(regexName, issueContent) || matchGroupLargeNotary(regexName2, issueContent)
+  const region = matchGroupLargeNotary(regexRegion, issueContent) || matchGroupLargeNotary(regexRegion2, issueContent)
+  const website = matchGroupLargeNotary(regexWebsite, issueContent) || matchGroupLargeNotary(regexWebSite2, issueContent)
+  const address = matchGroupLargeNotary(regexAddress, issueContent) || matchGroupLargeNotary(regexAddress2, issueContent)
+  const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent) || matchGroupLargeNotary(regexDatacapRequested2, issueContent)
+  const identifier = matchGroupLargeNotary(regexIdentifier, issueContent) || matchGroupLargeNotary(regexIdentifier2, issueContent)
+  const dataCapWeeklyAllocation = matchGroupLargeNotary(regexWeeklyDataCapAllocation, issueContent) || matchGroupLargeNotary(regexWeeklyDataCapAllocation2, issueContent)
+  const regexCustomNotary2check = matchGroupLargeNotary(regexCustomNotary2, issueContent)
+
+  const isCustomNotary = regexCustomNotary.test(issueContent) || (regexCustomNotary2check === 'Custom Notary')
   const regexForAdress = /^(f1|f3)/
   const isAddressFormatted = regexForAdress.test(address)
 
