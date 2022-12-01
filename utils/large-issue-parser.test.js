@@ -59,7 +59,7 @@ describe('parseIssue()', () => {
     // expect(parsedResult.dataCapWeeklyAllocation).toBe('9TiB')
   })
 
-  it.only('we can parse new template correctly', () => {
+  it('we can parse new template correctly', () => {
     const issueContent = fs.readFileSync(
       path.resolve(__dirname, '../samples/utils/new_ldn_template_yaml.md'),
       { encoding: 'utf8' },
@@ -68,15 +68,15 @@ describe('parseIssue()', () => {
     const parsedResult = parseIssue(issueContent)
 
     expect(parsedResult.correct).toBe(true)
-    expect(parsedResult.name).toBe('Efes Pilsen')
-    expect(parsedResult.region).toBe('Turkey')
+    expect(parsedResult.name).toBe('alberto')
+    expect(parsedResult.region).toBe('Åland Islands')
     expect(parsedResult.isAddressFormatted).toBe(true)
-    expect(parsedResult.datacapRequested).toBe('3 PiB')
-    expect(parsedResult.website).toBe('www.efes.com')
-    expect(parsedResult.dataCapWeeklyAllocation).toBe('500 TiB')
-    expect(parsedResult.address).toBe('f1000')
+    expect(parsedResult.datacapRequested).toBe('4PiB')
+    expect(parsedResult.dataCapWeeklyAllocation).toBe('200TiB')
+    expect(parsedResult.website).toBe('rob.co')
+    expect(parsedResult.address).toBe('f1212121212121')
     expect(parsedResult.isCustomNotary).toBe(true)
-    expect(parsedResult.identifier).toBe('E-fil')
+    expect(parsedResult.identifier).toBe('e-fil')
   },
   )
 

@@ -35,6 +35,9 @@ function parseOtherInfoIssue(issueContent) {
 }
 
 function parseIssue(issueContent, issueTitle = '') {
+  const trimmed = issueContent.replace(/(\n)|(\r)/gm, '')
+  if (trimmed.startsWith('### Data Owner Name')) return parseTrimmedIssue(trimmed)
+
   const regexName = /[\n\r][ \t]*-\s*Organization\s*Name:[ \t]*([^\n\r]*)/
   const regexRegion = /[\n\r][ \t]*-\s*Region:[ \t]*([^\n\r]*)/
   const regexWebsite = /[\n\r][ \t]*-\s*Website\s*\/\s*Social\s*Media:[ \t]*([^\n\r]*)/m
@@ -45,26 +48,15 @@ function parseIssue(issueContent, issueTitle = '') {
   const regexCustomNotary = /-\s*Type:\s*Custom\s*Notary\s*/mi
   const regexIdentifier = /[\n\r][ \t]*-\s*Identifier:[ \t]*([^\n\r]*)/
 
-  // new yaml template parser
-  const regexName2 = /[\n\r]*###\s*Data\s*Owner\s*Name[\n\t]*([^\n\r]*)/
-  const regexRegion2 = /[\n\r]*###\s*Data\s*Owner\s*Country\/Region[\n\t]*([^\n\r]*)/
-  const regexWebSite2 = /[\n\r]*###\s*Website[\n\t]*([^\n\r]*)/
-  const regexAddress2 = /[\n\r]*###\s*On-chain\s*address\s*for\s*first\s*allocation[\n\t]*([^\n\r]*)/
-  const regexDatacapRequested2 = /[\n\r]*###\s*Total\s*amount\s*of\s*DataCap\s*being\s*requested[\n\t]*([^\n\r]*)/
-  const regexWeeklyDataCapAllocation2 = /[\n\r]*###\s*Weekly\s*allocation\s*of\s*DataCap\s*requested[\n\t]*([^\n\r]*)/
-  const regexCustomNotary2 = /[\n\r]*###\s*Type[\n\t]*([^\n\r]*)/
-  const regexIdentifier2 = /[\n\r]*###\s*Identifier[\n\t]*([^\n\r]*)/
+  const name = matchGroupLargeNotary(regexName, issueContent)
+  const region = matchGroupLargeNotary(regexRegion, issueContent)
+  const website = matchGroupLargeNotary(regexWebsite, issueContent)
+  const address = matchGroupLargeNotary(regexAddress, issueContent)
+  const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
+  const identifier = matchGroupLargeNotary(regexIdentifier, issueContent)
+  const dataCapWeeklyAllocation = matchGroupLargeNotary(regexWeeklyDataCapAllocation, issueContent)
 
-  const name = matchGroupLargeNotary(regexName, issueContent) || matchGroupLargeNotary(regexName2, issueContent)
-  const region = matchGroupLargeNotary(regexRegion, issueContent) || matchGroupLargeNotary(regexRegion2, issueContent)
-  const website = matchGroupLargeNotary(regexWebsite, issueContent) || matchGroupLargeNotary(regexWebSite2, issueContent)
-  const address = matchGroupLargeNotary(regexAddress, issueContent) || matchGroupLargeNotary(regexAddress2, issueContent)
-  const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent) || matchGroupLargeNotary(regexDatacapRequested2, issueContent)
-  const identifier = matchGroupLargeNotary(regexIdentifier, issueContent) || matchGroupLargeNotary(regexIdentifier2, issueContent)
-  const dataCapWeeklyAllocation = matchGroupLargeNotary(regexWeeklyDataCapAllocation, issueContent) || matchGroupLargeNotary(regexWeeklyDataCapAllocation2, issueContent)
-  const regexCustomNotary2check = matchGroupLargeNotary(regexCustomNotary2, issueContent)
-
-  const isCustomNotary = regexCustomNotary.test(issueContent) || (regexCustomNotary2check === 'Custom Notary')
+  const isCustomNotary = regexCustomNotary.test(issueContent)
   const regexForAdress = /^(f1|f3)/
   const isAddressFormatted = regexForAdress.test(address)
 
@@ -121,6 +113,54 @@ function parseIssue(issueContent, issueTitle = '') {
         datacapRequested= ${datacapRequested},
         website= ${website}`,
   }
+}
+
+function parseTrimmedIssue(trimmed) {
+  const regexForAdress = /^(f1|f3)/
+
+  const data = {
+    name: 'Data Owner Name',
+    region: 'Data Owner Country\/Region', //eslint-disable-line
+    website: 'Website',
+    datacapRequested: 'Total amount of DataCap being requested',
+    dataCapWeeklyAllocation: 'Weekly allocation of DataCap requested',
+    address: 'On-chain address for first allocation',
+    isCustomNotary: 'Custom multisig',
+    identifier: 'Identifier',
+  }
+
+  const parsedData = {
+    correct: true,
+    errorMessage: '',
+    errorDetails: '',
+  }
+
+  for (const [k, v] of Object.entries(data)) {
+    const rg = new RegExp(`(?<=${v})(.*?)(?=#)`)
+    const regexIsNull = !trimmed.match(rg) || !trimmed.match(rg).length || !trimmed.match(rg)[0]
+
+    if ((k === 'identifier' || k === 'Custom multisig') && regexIsNull) continue
+
+    if (regexIsNull) {
+      parsedData.correct = false
+      parsedData.errorMessage += `We could not find **${v}** field in the information provided\n`
+      if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
+      continue
+    }
+
+    parsedData[k] = trimmed.match(rg) ? trimmed.match(rg)[0] : null
+
+    const isCustomRg = /- \[x\] Use Custom Multisig/gi
+
+    if (k === 'isCustomNotary') parsedData[k] = isCustomRg.test(parsedData[k])
+
+    if (parsedData[k] === '_No response_') parsedData[k] = null
+
+    if (k === 'address') {
+      parsedData['isAddressFormatted'] = regexForAdress.test(parsedData[k]) //eslint-disable-line
+    }
+  }
+  return parsedData
 }
 
 function parseApproveComment(commentContent) {
