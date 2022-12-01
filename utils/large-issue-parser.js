@@ -149,8 +149,10 @@ function parseTrimmedIssue(trimmed) {
     }
 
     parsedData[k] = trimmed.match(rg) ? trimmed.match(rg)[0] : null
+   
     const isCustomRg = /- \[x\] Use Custom Multisig/gi
-    parsedData[k] = isCustomRg.test(parsedData[k])
+
+    if(k === 'isCustomNotary')  parsedData[k] = isCustomRg.test(parsedData[k])
 
     if (parsedData[k] === '_No response_') parsedData[k] = null
 
