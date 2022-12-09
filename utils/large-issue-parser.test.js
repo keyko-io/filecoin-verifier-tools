@@ -214,6 +214,7 @@ describe('parseApprovedRequestWithSignerAddress()', () => {
     expect(parsedResult.datacap).toBe('50TiB')
     expect(parsedResult.signerAddress).toBe('t1gechnbsldgbqan4q2dwjsicbh25n5xvvdzhqd3y')
     expect(parsedResult.message).toBe('bafy2bzacec7gf6xycdqw3fzgs76ppn3mgtojntd5tvqrrmedvcqciw5tghjps')
+    expect(parsedResult.uuid).toBe('ffbab51c-2c7c-4a0e-b0b7-e2d4e7f86875')
   })
   it('parse proposed comment', () => {
     const commentContent = fs.readFileSync(
