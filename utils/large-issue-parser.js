@@ -243,6 +243,7 @@ function parseApprovedRequestWithSignerAddress(commentContent) {
   const regexDatacap = /####\s*Datacap\s*Allocated\W*^>\s*(.*)/m
   const regexSignerAddress = /####\s*Signer\s*Address\s*\n>\s*(.*)/g
   const regexMessage = /####\s*Message\s*sent\s*to\s*Filecoin\s*Network\s*\n>\s*(.*)/g
+  const regexUuid = /####\s*Id\s*\n>\s*(.*)/g
 
   const approved = matchGroupLargeNotary(regexApproved, commentContent)
 
@@ -256,6 +257,7 @@ function parseApprovedRequestWithSignerAddress(commentContent) {
   const address = matchGroupLargeNotary(regexAddress, commentContent)
   const signerAddress = matchGroupLargeNotary(regexSignerAddress, commentContent)
   const message = matchGroupLargeNotary(regexMessage, commentContent)
+  const uuid = matchGroupLargeNotary(regexUuid, commentContent)
 
   if (address != null && datacap != null && signerAddress != null && message != null) {
     return {
@@ -265,6 +267,7 @@ function parseApprovedRequestWithSignerAddress(commentContent) {
       datacap: datacap,
       signerAddress: signerAddress,
       message: message,
+      uuid: uuid,
     }
   }
 
