@@ -267,7 +267,7 @@ function parseApprovedRequestWithSignerAddress(commentContent) {
       datacap: datacap,
       signerAddress: signerAddress,
       message: message,
-      uuid: uuid
+      uuid: uuid,
     }
   }
 
