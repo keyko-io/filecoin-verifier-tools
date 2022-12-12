@@ -2,7 +2,6 @@ var fs = require('fs')
 var path = require('path')
 const {
   parseIssue,
-  parseApproveComment,
   parseNotaryConfirmation,
   parseMultisigNotaryRequest,
   parseReleaseRequest,
@@ -105,33 +104,6 @@ describe('parseRemovalIssue()', () => {
     expect(parsedResult.datacapRemoval).toBe(true)
     expect(parsedResult.address).toBe('f1sdzgaqmitbvgktkklpuaxohg6nuhce5eyvwxhbb')
     expect(parsedResult.datacapRequested).toBe('0B')
-  })
-})
-
-describe('parseApproved()', () => {
-  it('we can parse an approve comment including the right data', () => {
-    const commentContent = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/large_request_approved_comment.test.md'),
-      { encoding: 'utf8' },
-    )
-    const parsedResult = parseApproveComment(commentContent)
-
-    expect(parsedResult.correct).toBe(true)
-    expect(parsedResult.approvedMessage).toBe(true)
-    expect(parsedResult.address).toBe('f1111222333')
-    expect(parsedResult.datacap).toBe('5TiB')
-  })
-  it('parse the word proposed', () => {
-    const commentContent = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/large_request_proposed_comment.test.md'),
-      { encoding: 'utf8' },
-    )
-    const parsedResult = parseApproveComment(commentContent)
-
-    expect(parsedResult.correct).toBe(true)
-    expect(parsedResult.approvedMessage).toBe(true)
-    expect(parsedResult.address).toBe('f1111222333')
-    expect(parsedResult.datacap).toBe('5TiB')
   })
 })
 
