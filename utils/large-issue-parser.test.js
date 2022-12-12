@@ -43,20 +43,22 @@ describe('parseOtherInfoIssue()', () => {
 })
 
 describe('parseIssue()', () => {
-  it('we can parse an issue including the right data', () => {
+  it.only('we can parse an issue including the right data', () => {
     const issueContent = fs.readFileSync(
       path.resolve(__dirname, '../samples/utils/large_client_application.test.md'),
       { encoding: 'utf8' },
     )
+
     const parsedResult = parseIssue(issueContent)
-    // expect(parsedResult.correct).toBe(true)
-    // expect(parsedResult.name).toBe('Client A')
+
+    expect(parsedResult.correct).toBe(true)
+    expect(parsedResult.name).toBe('TVCC')
     expect(parsedResult.region).toBe('Asia excl. Japan')
     expect(parsedResult.isAddressFormatted).toBe(true)
-    expect(parsedResult.isCustomNotary).toBe(false)
-    // expect(parsedResult.datacapRequested).toBe('10TiB')
-    // expect(parsedResult.website).toBe('info.org')
-    // expect(parsedResult.dataCapWeeklyAllocation).toBe('9TiB')
+    expect(parsedResult.datacapRequested).toBe('1PiB')
+    expect(parsedResult.dataCapWeeklyAllocation).toBe('10TiB')
+    expect(parsedResult.isCustomNotary).toBe(true)
+    expect(parsedResult.website).toBe('www.wow.com')
   })
 
   it('we can parse new template correctly', () => {
@@ -75,8 +77,7 @@ describe('parseIssue()', () => {
     expect(parsedResult.dataCapWeeklyAllocation).toBe('200TiB')
     expect(parsedResult.website).toBe('rob.co')
     expect(parsedResult.address).toBe('f1212121212121')
-    expect(parsedResult.isCustomNotary).toBe(true)
-    expect(parsedResult.identifier).toBe('e-fil')
+    expect(parsedResult.identifier).toBe('E-fil')
   },
   )
 
