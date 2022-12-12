@@ -2,6 +2,8 @@ const {
   matchGroupLargeNotary,
   matchAll,
 } = require('./common-utils')
+const { parseTrimmedIssue } = require('./helpers/new-ldn-parser')
+const { parseOldLDN } = require('./helpers/old-ldn-parser')
 
 function parseOtherInfoIssue(issueContent) {
   const rgxObj = {
@@ -34,133 +36,12 @@ function parseOtherInfoIssue(issueContent) {
   return retObj
 }
 
-function parseIssue(issueContent, issueTitle = '') {
+function parseIssue(issueContent) {
   const trimmed = issueContent.replace(/(\n)|(\r)/gm, '')
-  if (trimmed.startsWith('### Data Owner Name')) return parseTrimmedIssue(trimmed)
 
-  const regexName = /[\n\r][ \t]*-\s*Organization\s*Name:[ \t]*([^\n\r]*)/
-  const regexRegion = /[\n\r][ \t]*-\s*Region:[ \t]*([^\n\r]*)/
-  const regexWebsite = /[\n\r][ \t]*-\s*Website\s*\/\s*Social\s*Media:[ \t]*([^\n\r]*)/m
-  const regexAddress = /[\n\r][ \t]*-\s*On-chain\s*address\s*for\s*first\s*allocation:[ \t]*([^\n\r]*)/m
-  const regexDatacapRequested = /[\n\r][ \t]*-\s*Total\s*amount\s*of\s*DataCap\s*being\s*requested\s*\(between 500 TiB and 5 PiB\)\s*:[ \t]*([^\n\r]*)/m
-  const regextRemovalTitle = /#\s*Large\s*Client\s*Request\s*DataCap\s*Removal:[ \t]*([^\n\r]*)/m
-  const regexWeeklyDataCapAllocation = /[\n\r][ \t]*-\s*Weekly\s*allocation\s*of\s*DataCap\s*requested\s*\(usually between 1-100TiB\)\s*:[ \t]*([^\n\r]*)/m
-  const regexCustomNotary = /-\s*Type:\s*Custom\s*Notary\s*/mi
-  const regexIdentifier = /[\n\r][ \t]*-\s*Identifier:[ \t]*([^\n\r]*)/
+  if (trimmed.startsWith('### Data Owner Name')) { return parseTrimmedIssue(trimmed) }
 
-  const name = matchGroupLargeNotary(regexName, issueContent)
-  const region = matchGroupLargeNotary(regexRegion, issueContent)
-  const website = matchGroupLargeNotary(regexWebsite, issueContent)
-  const address = matchGroupLargeNotary(regexAddress, issueContent)
-  const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
-  const identifier = matchGroupLargeNotary(regexIdentifier, issueContent)
-  const dataCapWeeklyAllocation = matchGroupLargeNotary(regexWeeklyDataCapAllocation, issueContent)
-
-  const isCustomNotary = regexCustomNotary.test(issueContent)
-  const regexForAdress = /^(f1|f3)/
-  const isAddressFormatted = regexForAdress.test(address)
-
-  if (name && address && datacapRequested && website && dataCapWeeklyAllocation) {
-    return {
-      correct: true,
-      errorMessage: '',
-      errorDetails: '',
-      name: name,
-      identifier,
-      address: address,
-      datacapRequested: datacapRequested,
-      dataCapWeeklyAllocation: dataCapWeeklyAllocation,
-      website: website,
-      datacapRemoval: false,
-      region: region,
-      isAddressFormatted,
-      isCustomNotary,
-    }
-  }
-
-  if (issueTitle !== '') {
-    const removalAddress = matchGroupLargeNotary(regextRemovalTitle, issueContent)
-    if (removalAddress) {
-      return {
-        correct: true,
-        errorMessage: '',
-        errorDetails: '',
-        name: '',
-        address: removalAddress,
-        datacapRequested: '0B',
-        dataCapWeeklyAllocation: '0B',
-        website: '',
-        datacapRemoval: true,
-        region: '',
-      }
-    }
-  }
-
-  let errorMessage = ''
-  if (!name) { errorMessage += 'We could not find your **Name** in the information provided\n' }
-  if (!address) { errorMessage += 'We could not find your **Filecoin address** in the information provided\n' }
-  if (!datacapRequested) { errorMessage += 'We could not find the **Datacap** requested in the information provided\n' }
-  if (!website) { errorMessage += 'We could not find any **Web site or social media info** in the information provided\n' }
-  if (!dataCapWeeklyAllocation) { errorMessage += 'We could not find any **Expected weekly DataCap usage rate** in the information provided\n' }
-  if (!region) { errorMessage += 'We could not find any **Region** in the information provided\n' }
-
-  return {
-    correct: false,
-    errorMessage: errorMessage,
-    errorDetails: `Unable to find required attributes.
-        The name= ${name},
-        address= ${address},
-        datacapRequested= ${datacapRequested},
-        website= ${website}`,
-  }
-}
-
-function parseTrimmedIssue(trimmed) {
-  const regexForAdress = /^(f1|f3)/
-
-  const data = {
-    name: 'Data Owner Name',
-    region: 'Data Owner Country\/Region', //eslint-disable-line
-    website: 'Website',
-    datacapRequested: 'Total amount of DataCap being requested',
-    dataCapWeeklyAllocation: 'Weekly allocation of DataCap requested',
-    address: 'On-chain address for first allocation',
-    isCustomNotary: 'Custom multisig',
-    identifier: 'Identifier',
-  }
-
-  const parsedData = {
-    correct: true,
-    errorMessage: '',
-    errorDetails: '',
-  }
-
-  for (const [k, v] of Object.entries(data)) {
-    const rg = new RegExp(`(?<=${v})(.*?)(?=#)`)
-    const regexIsNull = !trimmed.match(rg) || !trimmed.match(rg).length || !trimmed.match(rg)[0]
-
-    if ((k === 'identifier' || k === 'Custom multisig') && regexIsNull) continue
-
-    if (regexIsNull) {
-      parsedData.correct = false
-      parsedData.errorMessage += `We could not find **${v}** field in the information provided\n`
-      if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
-      continue
-    }
-
-    parsedData[k] = trimmed.match(rg) ? trimmed.match(rg)[0] : null
-
-    const isCustomRg = /- \[x\] Use Custom Multisig/gi
-
-    if (k === 'isCustomNotary') parsedData[k] = isCustomRg.test(parsedData[k])
-
-    if (parsedData[k] === '_No response_') parsedData[k] = null
-
-    if (k === 'address') {
-      parsedData['isAddressFormatted'] = regexForAdress.test(parsedData[k]) //eslint-disable-line
-    }
-  }
-  return parsedData
+  return parseOldLDN(issueContent)
 }
 
 function parseApproveComment(commentContent) {
