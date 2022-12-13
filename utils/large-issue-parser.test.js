@@ -11,7 +11,7 @@ const {
 } = require('./large-issue-parser')
 
 describe('parseIssue()', () => {
-  it.only('we can parse an issue including the right data', () => {
+  it('we can parse an issue including the right data', () => {
     const issueContent = fs.readFileSync(
       path.resolve(__dirname, '../samples/utils/large_client_application.test.md'),
       { encoding: 'utf8' },
@@ -108,7 +108,7 @@ describe('parseRemovalIssue()', () => {
 })
 
 describe('parseApprovedRequestWithSignerAddress()', () => {
-  it.only('we can parse an approve comment including the right data', () => {
+  it('we can parse an approve comment including the right data', () => {
     const proposeComment = fs.readFileSync(
       path.resolve(__dirname, '../samples/utils/ldn_propose_dc_request_comment.test.md'),
       { encoding: 'utf8' },
