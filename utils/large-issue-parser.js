@@ -185,11 +185,13 @@ function parseWeeklyDataCapAllocationUpdateRequest(commentContent) {
   }
 }
 
-exports.parseIssue = parseIssue
-exports.parseMultisigNotaryRequest = parseMultisigNotaryRequest
-exports.parseNotaryConfirmation = parseNotaryConfirmation
-exports.parseReleaseRequest = parseReleaseRequest
-exports.parseWeeklyDataCapAllocationUpdateRequest = parseWeeklyDataCapAllocationUpdateRequest
-exports.parseApprovedRequestWithSignerAddress = parseApprovedRequestWithSignerAddress
-exports.parseMultisigReconnectComment = parseMultisigReconnectComment
-exports.ldnv3TriggerCommentParser = ldnv3TriggerCommentParser
+module.exports = {
+  parseIssue,
+  parseMultisigNotaryRequest,
+  parseNotaryConfirmation,
+  parseReleaseRequest,
+  parseWeeklyDataCapAllocationUpdateRequest,
+  parseApprovedRequestWithSignerAddress,
+  parseMultisigReconnectComment,
+  ldnv3TriggerCommentParser,
+}
