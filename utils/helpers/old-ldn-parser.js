@@ -29,7 +29,6 @@ function parseOldLDN(issueContent) {
       if (key === 'isCustomNotary' || key === 'identifier') continue
       parsedData.correct = false
       parsedData.errorMessage += `We could not find **${key}** field in the information provided\n`
-      parsedData[key] = ''
       continue
     }
 
