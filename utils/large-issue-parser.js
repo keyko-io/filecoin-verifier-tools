@@ -5,6 +5,7 @@ const {
 const { parseTrimmedIssue } = require('./helpers/new-ldn-parser')
 const { parseOldLDN } = require('./helpers/old-ldn-parser')
 const { proposedApprovedCommentParser } = require('./helpers/parse-approve-comment')
+const { v3TriggerParser } = require('./helpers/ldn-v3-parser')
 
 // ldn template parser
 function parseIssue(issueContent) {
@@ -20,41 +21,9 @@ function parseApprovedRequestWithSignerAddress(commentContent) {
   return proposedApprovedCommentParser(commentContent)
 }
 
+// parsing v3 triggering comment
 function ldnv3TriggerCommentParser(commentBody) {
-  const regexTrigger = /##\s*datacap\s*request\s*trigger/mi
-
-  const regexTotalDatacap = /####\s*Total\s*DataCap\s*requested\s*(.*)\n>\s*(.*)/g
-  const regexWeeklyDatacap = /####\s*Expected\s*weekly\s*DataCap\s*usage\s*rate\s*(.*)\n>\s*(.*)/g
-  // const regexClientAddress = /####\s*Client\s*address\s*(.*)\n>\s*(.*)/g
-
-  const totalDatacap = matchAll(regexTotalDatacap, commentBody)
-  const weeklyDatacap = matchAll(regexWeeklyDatacap, commentBody)
-
-  const triggerMessageMatch = regexTrigger.test(commentBody)
-
-  if (!triggerMessageMatch) {
-    return {
-      triggerMessage: false,
-    }
-  }
-
-  if (totalDatacap && weeklyDatacap) {
-    return {
-      correct: true,
-      totalDatacap: totalDatacap[0],
-      weeklyDatacap: weeklyDatacap[0],
-    }
-  }
-
-  let errorMessage = ''
-  // if (addresses == null || addresses.length === 0) { errorMessage += 'We could not find the **Filecoin addresses** in the information provided in the comment\n' }
-  if (totalDatacap == null) { errorMessage += 'We could not find the **Total Datacap** allocated in the information provided in the comment\n' }
-  if (weeklyDatacap == null) { errorMessage += 'We could not find the **Weekly Datacap** allocated in the information provided in the comment\n' }
-  return {
-    correct: false,
-    errorMessage,
-    errorDetails: 'Unable to find required attributes.',
-  }
+  return v3TriggerParser(commentBody)
 }
 
 function parseMultisigNotaryRequest(commentContent) {
