@@ -4,7 +4,9 @@ const {
 } = require('./common-utils')
 const { parseTrimmedIssue } = require('./helpers/new-ldn-parser')
 const { parseOldLDN } = require('./helpers/old-ldn-parser')
+const { proposedApprovedCommentParser } = require('./helpers/parse-approve-comment')
 
+// ldn template parser
 function parseIssue(issueContent) {
   const trimmed = issueContent.replace(/(\n)|(\r)/gm, '')
 
@@ -13,48 +15,9 @@ function parseIssue(issueContent) {
   return parseOldLDN(issueContent)
 }
 
+// propose/approve comment parser
 function parseApprovedRequestWithSignerAddress(commentContent) {
-  const regexApproved = /##\s*Request\s*((Approved)|(Proposed))/m
-  const regexAddress = /####\s*Address\W*^>\s*(.*)/m
-  const regexDatacap = /####\s*Datacap\s*Allocated\W*^>\s*(.*)/m
-  const regexSignerAddress = /####\s*Signer\s*Address\s*\n>\s*(.*)/g
-  const regexMessage = /####\s*Message\s*sent\s*to\s*Filecoin\s*Network\s*\n>\s*(.*)/g
-
-  const approved = matchGroupLargeNotary(regexApproved, commentContent)
-
-  if (approved == null) {
-    return {
-      approvedMessage: false,
-    }
-  }
-
-  const datacap = matchGroupLargeNotary(regexDatacap, commentContent)
-  const address = matchGroupLargeNotary(regexAddress, commentContent)
-  const signerAddress = matchGroupLargeNotary(regexSignerAddress, commentContent)
-  const message = matchGroupLargeNotary(regexMessage, commentContent)
-
-  if (address != null && datacap != null && signerAddress != null && message != null) {
-    return {
-      approvedMessage: true,
-      correct: true,
-      address: address,
-      datacap: datacap,
-      signerAddress: signerAddress,
-      message: message,
-    }
-  }
-
-  let errorMessage = ''
-  if (address == null) { errorMessage += 'We could not find the **Filecoin address** in the information provided in the comment\n' }
-  if (datacap == null) { errorMessage += 'We could not find the **Datacap** allocated in the information provided in the comment\n' }
-  if (signerAddress == null) { errorMessage += 'We could not find the **signerAddress** in the information provided in the comment\n' }
-  if (message == null) { errorMessage += 'We could not find the **message** in the information provided in the comment\n' }
-  return {
-    approvedMessage: true,
-    correct: false,
-    errorMessage: errorMessage,
-    errorDetails: 'Unable to find required attributes.',
-  }
+  return proposedApprovedCommentParser(commentContent)
 }
 
 function ldnv3TriggerCommentParser(commentBody) {
