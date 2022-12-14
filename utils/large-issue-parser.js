@@ -6,25 +6,7 @@ const { ldnv3TriggerCommentParser } = require('./ldn-parser-functions/ldnv3Trigg
 const { parseIssue } = require('./ldn-parser-functions/parseIssue')
 const { parseMultisigNotaryRequest } = require('./ldn-parser-functions/parseMultisigNotaryRequest')
 const { parseMultisigReconnectComment } = require('./ldn-parser-functions/parseMultisigReconnectComment')
-
-function parseNotaryConfirmation(commentContent, title) {
-  const regexConfirmation = /##\s*The\s*request\s*has\s*been\s*signed\s*by\s*a\s*new\s*Root\s*Key\s*Holder/m
-  const regexTitleNumber = /Large\sdataset\smultisig\srequest\s#\s*([0-9]*)/m
-
-  const confirmation = matchGroupLargeNotary(regexConfirmation, commentContent)
-  const number = Number([...title.match(regexTitleNumber)][1])
-
-  if (confirmation == null) {
-    return {
-      confirmationMessage: false,
-    }
-  } else {
-    return {
-      confirmationMessage: true,
-      number: number,
-    }
-  }
-}
+const { parseNotaryConfirmation } = require('./ldn-parser-functions/parseNotaryConfirmation')
 
 function parseReleaseRequest(commentContent) {
   const regexMultisig = /##\s*DataCap\s*Allocation\s*requested/m

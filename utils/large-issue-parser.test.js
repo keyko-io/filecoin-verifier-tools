@@ -1,7 +1,6 @@
 var fs = require('fs')
 var path = require('path')
 const {
-  parseNotaryConfirmation,
   parseReleaseRequest,
   parseWeeklyDataCapAllocationUpdateRequest,
 } = require('./large-issue-parser')
@@ -21,25 +20,6 @@ const {
 //     expect(parsedResult.datacapRequested).toBe('0B')
 //   })
 // })
-
-describe('parseNotaryConfirmation()', () => {
-  const commentContent = fs.readFileSync(
-    path.resolve(__dirname, '../samples/utils/notary_confirmation.test.md'),
-    { encoding: 'utf8' },
-
-  )
-  const title = 'Large dataset multisig request #12345'
-
-  it('we can parse notary confirmation message and number of title', () => {
-    const parsedResult = parseNotaryConfirmation(commentContent, title)
-    expect(parsedResult.confirmationMessage).toBe(true)
-    expect(parsedResult.number).toBe(12345)
-  })
-  it('we cannnot parse a null confirmation', () => {
-    const parsedResult = parseNotaryConfirmation(null, title)
-    expect(parsedResult.confirmationMessage).toBe(false)
-  })
-})
 
 describe('parseReleaseRequest()', () => {
   it('we can parse dataCap allocation requests', () => {
@@ -70,5 +50,3 @@ describe('parseWeeklyDataCapAllocationUpdateRequest()', () => {
     expect(parsedResult.allocationDatacap).toBe('10TiB')
   })
 })
-
-
