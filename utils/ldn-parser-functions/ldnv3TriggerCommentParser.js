@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-function v3TriggerParser(commentBody) {
+function ldnv3TriggerCommentParser(commentBody) {
     const data = {
         regexTrigger: /##\s*datacap\s*request\s*trigger/mi,
         totalDatacap: /Total DataCap requested[\S\s]*?>(.*?)\n/,
@@ -41,4 +41,4 @@ function v3TriggerParser(commentBody) {
     return parsedData
 }
 
-exports.v3TriggerParser = v3TriggerParser
+exports.ldnv3TriggerCommentParser = ldnv3TriggerCommentParser

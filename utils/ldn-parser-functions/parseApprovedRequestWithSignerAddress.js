@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-function proposedApprovedCommentParser(commentBody) {
+function parseApprovedRequestWithSignerAddress(commentBody) {
     const data = {
         method: /##\s*Request\s*((Approved)|(Proposed))/m,
         address: /#### Address\s*>\s*(.*)/,
@@ -38,4 +38,4 @@ function proposedApprovedCommentParser(commentBody) {
     return parsedData
 }
 
-exports.proposedApprovedCommentParser = proposedApprovedCommentParser
+exports.parseApprovedRequestWithSignerAddress = parseApprovedRequestWithSignerAddress

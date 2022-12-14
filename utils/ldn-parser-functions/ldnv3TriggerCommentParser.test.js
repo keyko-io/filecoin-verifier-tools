@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 const fs = require('fs')
 const path = require('path')
-const { ldnv3TriggerCommentParser } = require('../large-issue-parser')
+const { ldnv3TriggerCommentParser } = require('./ldnv3TriggerCommentParser')
 
 describe('v3 Datacap Request Trigger', () => {
     it('we can parse trigger comment correctly', () => {

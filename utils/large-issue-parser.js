@@ -2,29 +2,9 @@ const {
   matchGroupLargeNotary,
   matchAll,
 } = require('./common-utils')
-const { parseTrimmedIssue } = require('./helpers/new-ldn-parser')
-const { parseOldLDN } = require('./helpers/old-ldn-parser')
-const { proposedApprovedCommentParser } = require('./helpers/parse-approve-comment')
-const { v3TriggerParser } = require('./helpers/ldn-v3-parser')
-
-// ldn template parser
-function parseIssue(issueContent) {
-  const trimmed = issueContent.replace(/(\n)|(\r)/gm, '')
-
-  if (trimmed.startsWith('### Data Owner Name')) { return parseTrimmedIssue(trimmed) }
-
-  return parseOldLDN(issueContent)
-}
-
-// propose/approve comment parser
-function parseApprovedRequestWithSignerAddress(commentContent) {
-  return proposedApprovedCommentParser(commentContent)
-}
-
-// parsing v3 triggering comment
-function ldnv3TriggerCommentParser(commentBody) {
-  return v3TriggerParser(commentBody)
-}
+const { parseApprovedRequestWithSignerAddress } = require('./ldn-parser-functions/parseApprovedRequestWithSignerAddress')
+const { ldnv3TriggerCommentParser } = require('./ldn-parser-functions/ldnv3TriggerCommentParser')
+const { parseIssue } = require('./ldn-parser-functions/parseIssue')
 
 function parseMultisigNotaryRequest(commentContent) {
   const regexMultisig = /##\s*Multisig\s*Notary\s*requested/m

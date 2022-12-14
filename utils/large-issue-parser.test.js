@@ -6,64 +6,8 @@ const {
   parseMultisigNotaryRequest,
   parseReleaseRequest,
   parseWeeklyDataCapAllocationUpdateRequest,
-  parseApprovedRequestWithSignerAddress,
   parseMultisigReconnectComment,
 } = require('./large-issue-parser')
-
-describe('parseIssue()', () => {
-  it('we can parse an issue including the right data', () => {
-    const issueContent = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/large_client_application.test.md'),
-      { encoding: 'utf8' },
-    )
-
-    const parsedResult = parseIssue(issueContent)
-
-    expect(parsedResult.correct).toBe(true)
-    expect(parsedResult.name).toBe('TVCC')
-    expect(parsedResult.region).toBe('Asia excl. Japan')
-    expect(parsedResult.isAddressFormatted).toBe(true)
-    expect(parsedResult.datacapRequested).toBe('1PiB')
-    expect(parsedResult.dataCapWeeklyAllocation).toBe('10TiB')
-    expect(parsedResult.isCustomNotary).toBe(true)
-    expect(parsedResult.website).toBe('www.wow.com')
-  })
-
-  it('we can parse new template correctly', () => {
-    const issueContent = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/new_ldn_template_yaml.md'),
-      { encoding: 'utf8' },
-    )
-
-    const parsedResult = parseIssue(issueContent)
-
-    expect(parsedResult.correct).toBe(true)
-    expect(parsedResult.name).toBe('alberto')
-    expect(parsedResult.region).toBe('Åland Islands')
-    expect(parsedResult.isAddressFormatted).toBe(true)
-    expect(parsedResult.datacapRequested).toBe('4PiB')
-    expect(parsedResult.dataCapWeeklyAllocation).toBe('200TiB')
-    expect(parsedResult.website).toBe('rob.co')
-    expect(parsedResult.address).toBe('f1212121212121')
-    expect(parsedResult.identifier).toBe('E-fil')
-  },
-  )
-
-  it('we can not parse an invalid issue', () => {
-    const parsedResult = parseIssue('random string')
-    expect(parsedResult.correct).toBe(false)
-    expect(parsedResult.errorMessage).not.toBe('')
-  })
-
-  it('empty issue get not validated', () => {
-    const issueContentNoVals = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/large_client_application_no_values.test.md'),
-      { encoding: 'utf8' },
-    )
-    const parsedResult = parseIssue(issueContentNoVals)
-    expect(parsedResult.correct).toBe(false)
-  })
-})
 
 describe('parseIssue with custom notary()', () => {
   it('wpare issue with type: custom notary', () => {
@@ -104,42 +48,6 @@ describe('parseRemovalIssue()', () => {
     expect(parsedResult.datacapRemoval).toBe(true)
     expect(parsedResult.address).toBe('f1sdzgaqmitbvgktkklpuaxohg6nuhce5eyvwxhbb')
     expect(parsedResult.datacapRequested).toBe('0B')
-  })
-})
-
-describe('parseApprovedRequestWithSignerAddress()', () => {
-  it('we can parse an approve comment including the right data', () => {
-    const proposeComment = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/ldn_propose_dc_request_comment.test.md'),
-      { encoding: 'utf8' },
-    )
-
-    const parsedResultProposed = parseApprovedRequestWithSignerAddress(proposeComment)
-
-    console.log(parsedResultProposed, 'XX')
-
-    expect(parsedResultProposed.method).toBe('Proposed')
-    expect(parsedResultProposed.correct).toBe(true)
-    expect(parsedResultProposed.approvedMessage).toBe(true)
-    expect(parsedResultProposed.address).toBe('t1rbfyvybljzd5xcouqjx22juucdj3xbwtro2crwq')
-    expect(parsedResultProposed.datacap).toBe('50TiB')
-    expect(parsedResultProposed.signerAddress).toBe('t1gechnbsldgbqan4q2dwjsicbh25n5xvvdzhqd3y')
-    expect(parsedResultProposed.message).toBe('bafy2bzacec7gf6xycdqw3fzgs76ppn3mgtojntd5tvqrrmedvcqciw5tghjps')
-  })
-  it('we can parse an approve comment including the right data', () => {
-    const approveComment = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/ldn_approve_dc_request_comment.test.md'),
-      { encoding: 'utf8' },
-    )
-    const parsedResultApprove = parseApprovedRequestWithSignerAddress(approveComment)
-
-    expect(parsedResultApprove.method).toBe('Approved')
-    expect(parsedResultApprove.correct).toBe(true)
-    expect(parsedResultApprove.approvedMessage).toBe(true)
-    expect(parsedResultApprove.address).toBe('t1rbfyvybljzd5xcouqjx22juucdj3xbwtro2crwq')
-    expect(parsedResultApprove.datacap).toBe('50TiB')
-    expect(parsedResultApprove.signerAddress).toBe('t1gechnbsldgbqan4q2dwjsicbh25n5xvvdzhqd3y')
-    expect(parsedResultApprove.message).toBe('bafy2bzacec7gf6xycdqw3fzgs76ppn3mgtojntd5tvqrrmedvcqciw5tghjps')
   })
 })
 

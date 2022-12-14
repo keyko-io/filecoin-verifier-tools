@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-function parseTrimmedIssue(trimmed) {
+function parseNewLdn(trimmed) {
     const regexForAdress = /^(f1|f3)/
 
     const data = {
@@ -47,4 +47,4 @@ function parseTrimmedIssue(trimmed) {
     return parsedData
 }
 
-exports.parseTrimmedIssue = parseTrimmedIssue
+exports.parseNewLdn = parseNewLdn
