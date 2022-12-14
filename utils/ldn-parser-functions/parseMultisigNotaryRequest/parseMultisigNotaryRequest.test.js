@@ -1,12 +1,12 @@
 /* eslint-disable indent */
 const fs = require('fs')
 const path = require('path')
-const { parseMultisigNotaryRequest } = require('./parseMultisigNotaryRequest')
+const { parseMultisigNotaryRequest } = require('.')
 
 describe('parseMultisigNotaryRequest()', () => {
     it('we can parse dataCap allocation requests', () => {
         const commentContent = fs.readFileSync(
-            path.resolve(__dirname, '../.././samples/utils/multising_notary_requested.test.md'),
+            path.resolve(__dirname, '../../../samples/utils/multising_notary_requested.test.md'),
             { encoding: 'utf8' },
         )
         const parsedResult = parseMultisigNotaryRequest(commentContent)

@@ -1,16 +1,18 @@
 /* eslint-disable indent */
 const fs = require('fs')
 const path = require('path')
-const { parseOldLDN } = require('./parseOldLdn')
+const { parseOldLDN } = require('.')
 
 describe('parseOldLDN()', () => {
-  it('we can parse trigger comment correctly', () => {
+  it.only('we can parse trigger comment correctly', () => {
     const issueContent = fs.readFileSync(
-      path.resolve(__dirname, '../.././samples/utils/large_client_application.test.md'),
+      path.resolve(__dirname, '../../../samples/utils/large_client_application.test.md'),
       { encoding: 'utf8' },
     )
 
     const parsedResult = parseOldLDN(issueContent)
+
+    console.log(parsedResult, 'XX')
 
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.name).toBe('TVCC')
@@ -20,11 +22,12 @@ describe('parseOldLDN()', () => {
     expect(parsedResult.dataCapWeeklyAllocation).toBe('10TiB')
     expect(parsedResult.isCustomNotary).toBe(true)
     expect(parsedResult.website).toBe('www.wow.com')
+    expect(parsedResult.identifier).toBe('E-fil')
   })
 
-  it.only('empty issue get not validated', () => {
+  it('empty issue get not validated', () => {
     const issueContentNoVals = fs.readFileSync(
-      path.resolve(__dirname, '../.././samples/utils/large_client_application_no_values.test.md'),
+      path.resolve(__dirname, '../../../samples/utils/large_client_application_no_values.test.md'),
       { encoding: 'utf8' },
     )
     const parsedResult = parseOldLDN(issueContentNoVals)

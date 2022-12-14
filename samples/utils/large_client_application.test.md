@@ -19,7 +19,7 @@ To apply as a large client, please fill out the following form.
 - Weekly allocation of DataCap requested (usually between 1-100TiB): 10TiB
 - On-chain address for first allocation: f3tbfu6dptaui5uwdt7tlhzmovocz47z2fv34dewwhvkf6heel63zqv6ro7we5fvfzndmofel64dggk5vdr5rq
 - Type: Custom Notary
-- Identifier :  E-fil
+- Identifier: E-fil
 
 ## Project details
 - Describe the data being stored onto Filecoin

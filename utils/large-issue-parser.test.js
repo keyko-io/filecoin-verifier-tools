@@ -1,54 +1,26 @@
 var fs = require('fs')
 var path = require('path')
 const {
-  parseIssue,
   parseNotaryConfirmation,
   parseReleaseRequest,
   parseWeeklyDataCapAllocationUpdateRequest,
-  parseMultisigReconnectComment,
 } = require('./large-issue-parser')
 
-describe('parseIssue with custom notary()', () => {
-  it('wpare issue with type: custom notary', () => {
-    const issueContent = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/large_client_application_custom_notary.test.md'),
-      { encoding: 'utf8' },
-    )
-    const parsedResult = parseIssue(issueContent)
-    expect(parsedResult.isCustomNotary).toBe(true)
-  })
+// describe('parseRemovalIssue()', () => {
+//   it('we can parse an issue including the right data', () => {
+//     const issueTitle = 'Large Client Request DataCap Removal: f1sdzgaqmitbvgktkklpuaxohg6nuhce5eyvwxhbb'
+//     const removalIssueContent = fs.readFileSync(
+//       path.resolve(__dirname, '../samples/utils/large_client_datacap_removal.test.md'),
+//       { encoding: 'utf8' },
+//     )
+//     const parsedResult = parseIssue(removalIssueContent, issueTitle)
 
-  it('we can not parse an invalid issue', () => {
-    const parsedResult = parseIssue('random string')
-    expect(parsedResult.correct).toBe(false)
-    expect(parsedResult.errorMessage).not.toBe('')
-  })
-
-  it('empty issue get not validated', () => {
-    const issueContentNoVals = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/large_client_application_no_values.test.md'),
-      { encoding: 'utf8' },
-    )
-    const parsedResult = parseIssue(issueContentNoVals)
-    expect(parsedResult.correct).toBe(false)
-  })
-})
-
-describe('parseRemovalIssue()', () => {
-  it('we can parse an issue including the right data', () => {
-    const issueTitle = 'Large Client Request DataCap Removal: f1sdzgaqmitbvgktkklpuaxohg6nuhce5eyvwxhbb'
-    const removalIssueContent = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/large_client_datacap_removal.test.md'),
-      { encoding: 'utf8' },
-    )
-    const parsedResult = parseIssue(removalIssueContent, issueTitle)
-
-    expect(parsedResult.correct).toBe(true)
-    expect(parsedResult.datacapRemoval).toBe(true)
-    expect(parsedResult.address).toBe('f1sdzgaqmitbvgktkklpuaxohg6nuhce5eyvwxhbb')
-    expect(parsedResult.datacapRequested).toBe('0B')
-  })
-})
+//     expect(parsedResult.correct).toBe(true)
+//     expect(parsedResult.datacapRemoval).toBe(true)
+//     expect(parsedResult.address).toBe('f1sdzgaqmitbvgktkklpuaxohg6nuhce5eyvwxhbb')
+//     expect(parsedResult.datacapRequested).toBe('0B')
+//   })
+// })
 
 describe('parseNotaryConfirmation()', () => {
   const commentContent = fs.readFileSync(
@@ -99,16 +71,4 @@ describe('parseWeeklyDataCapAllocationUpdateRequest()', () => {
   })
 })
 
-describe('parseMultisigReconnectComment()', () => {
-  it('we can parse reconnection request', () => {
-    const commentContent = fs.readFileSync(
-      path.resolve(__dirname, '../samples/utils/issue_reconnection_requested.test.md'),
-      { encoding: 'utf8' },
-    )
 
-    const parsedResult = parseMultisigReconnectComment(commentContent)
-    expect(parsedResult.correct).toBe(true)
-    expect(parsedResult.msigAddress).toBe('f01105812')
-    expect(parsedResult.issueURI).toBe('https://github.com/keyko-io/filecoin-notaries-onboarding/issues/370')
-  })
-})

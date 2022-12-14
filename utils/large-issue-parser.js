@@ -1,43 +1,11 @@
 const {
   matchGroupLargeNotary,
-  matchAll,
 } = require('./common-utils')
 const { parseApprovedRequestWithSignerAddress } = require('./ldn-parser-functions/parseApprovedRequestWithSignerAddress')
 const { ldnv3TriggerCommentParser } = require('./ldn-parser-functions/ldnv3TriggerCommentParser')
 const { parseIssue } = require('./ldn-parser-functions/parseIssue')
 const { parseMultisigNotaryRequest } = require('./ldn-parser-functions/parseMultisigNotaryRequest')
-
-function parseMultisigReconnectComment(commentContent) {
-  const regexRequest = /##\s*Multisig\s*Notary\s*Reconnection\s*Request/m
-  const regexMsigAddress = /####\s*Multisig\s*Notary\s*Address\s*(.*)\n>\s*(.*)/g
-  const regexClientAddress = /####\s*Client\s*Address\s*(.*)\n>\s*(.*)/g
-  const regexIssue = /####\s*Notary\s*Governance\s*Issue\s*(.*)\n>\s*(.*)/g
-
-  const requestType = matchGroupLargeNotary(regexRequest, commentContent)
-  const msigAddress = matchAll(regexMsigAddress, commentContent)[0]
-  const clientAddress = matchAll(regexClientAddress, commentContent)[0]
-  const issueURI = matchAll(regexIssue, commentContent)[0]
-
-  if (requestType && msigAddress && issueURI) {
-    return {
-      correct: true,
-      msigAddress,
-      clientAddress,
-      issueURI,
-    }
-  }
-
-  let errorMessage = ''
-  if (msigAddress == null) { errorMessage += 'We could not find the **Multisig Notary Address** allocated in the information provided in the comment\n' }
-  if (clientAddress == null) { errorMessage += 'We could not find the **Client Address** allocated in the information provided in the comment\n' }
-  if (issueURI == null) { errorMessage += 'We could not find the **Notary Governance Issue** allocated in the information provided in the comment\n' }
-  return {
-    multisigMessage: true,
-    correct: false,
-    errorMessage: errorMessage,
-    errorDetails: 'Unable to find required attributes.',
-  }
-}
+const { parseMultisigReconnectComment } = require('./ldn-parser-functions/parseMultisigReconnectComment')
 
 function parseNotaryConfirmation(commentContent, title) {
   const regexConfirmation = /##\s*The\s*request\s*has\s*been\s*signed\s*by\s*a\s*new\s*Root\s*Key\s*Holder/m

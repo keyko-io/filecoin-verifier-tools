@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 const { parseNewLdn } = require('./parseNewLdn')
-const { parseOldLDN } = require('./parseOldLdn')
+const { parseOldLDN } = require('./parseOldLDN')
 
 // ldn template parser
 function parseIssue(issueContent) {
