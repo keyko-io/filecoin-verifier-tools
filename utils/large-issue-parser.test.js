@@ -3,7 +3,6 @@ var path = require('path')
 const {
   parseIssue,
   parseNotaryConfirmation,
-  parseMultisigNotaryRequest,
   parseReleaseRequest,
   parseWeeklyDataCapAllocationUpdateRequest,
   parseMultisigReconnectComment,
@@ -68,20 +67,6 @@ describe('parseNotaryConfirmation()', () => {
     const parsedResult = parseNotaryConfirmation(null, title)
     expect(parsedResult.confirmationMessage).toBe(false)
   })
-})
-
-describe('parseMultisigNotaryRequest()', () => {
-  const commentContent = fs.readFileSync(
-    path.resolve(__dirname, '../samples/utils/multising_notary_requested.test.md'),
-    { encoding: 'utf8' },
-  )
-  const parsedResult = parseMultisigNotaryRequest(commentContent)
-  // expect(parsedResult.addresses.length).toBe(7)
-  // expect(parsedResult.addresses[0]).toBe('f1qoxqy3npwcvoqy7gpstm65lejcy7pkd3hqqekna')
-  expect(parsedResult.multisigMessage).toBe(true)
-  expect(parsedResult.correct).toBe(true)
-  expect(parsedResult.totalDatacaps[0]).toBe('5PiB')
-  expect(parsedResult.weeklyDatacap[0]).toBe('500TiB')
 })
 
 describe('parseReleaseRequest()', () => {
