@@ -5,43 +5,7 @@ const {
 const { parseApprovedRequestWithSignerAddress } = require('./ldn-parser-functions/parseApprovedRequestWithSignerAddress')
 const { ldnv3TriggerCommentParser } = require('./ldn-parser-functions/ldnv3TriggerCommentParser')
 const { parseIssue } = require('./ldn-parser-functions/parseIssue')
-
-function parseMultisigNotaryRequest(commentContent) {
-  const regexMultisig = /##\s*Multisig\s*Notary\s*requested/m
-  const regexTotalDatacap = /####\s*Total\s*DataCap\s*requested\s*(.*)\n>\s*(.*)/g
-  const regexWeeklyDatacap = /####\s*Expected\s*weekly\s*DataCap\s*usage\s*rate\s*(.*)\n>\s*(.*)/g
-
-  const multisig = matchGroupLargeNotary(regexMultisig, commentContent)
-
-  if (multisig == null) {
-    return {
-      multisigMessage: false,
-    }
-  }
-
-  const totalDatacaps = matchAll(regexTotalDatacap, commentContent)
-  const weeklyDatacap = matchAll(regexWeeklyDatacap, commentContent)
-
-  if (totalDatacaps != null && weeklyDatacap) {
-    return {
-      multisigMessage: true,
-      correct: true,
-      totalDatacaps: totalDatacaps,
-      weeklyDatacap: weeklyDatacap,
-    }
-  }
-
-  let errorMessage = ''
-  // if (addresses == null || addresses.length === 0) { errorMessage += 'We could not find the **Filecoin addresses** in the information provided in the comment\n' }
-  if (totalDatacaps == null) { errorMessage += 'We could not find the **Total Datacap** allocated in the information provided in the comment\n' }
-  if (weeklyDatacap == null) { errorMessage += 'We could not find the **Weekly Datacap** allocated in the information provided in the comment\n' }
-  return {
-    multisigMessage: true,
-    correct: false,
-    errorMessage: errorMessage,
-    errorDetails: 'Unable to find required attributes.',
-  }
-}
+const { parseMultisigNotaryRequest } = require('./ldn-parser-functions/parseMultisigNotaryRequest')
 
 function parseMultisigReconnectComment(commentContent) {
   const regexRequest = /##\s*Multisig\s*Notary\s*Reconnection\s*Request/m
