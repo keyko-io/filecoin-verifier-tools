@@ -4,15 +4,13 @@ const path = require('path')
 const { parseOldLDN } = require('.')
 
 describe('parseOldLDN()', () => {
-  it.only('we can parse trigger comment correctly', () => {
+  it('we can parse trigger comment correctly', () => {
     const issueContent = fs.readFileSync(
       path.resolve(__dirname, '../../../samples/utils/large_client_application.test.md'),
       { encoding: 'utf8' },
     )
 
     const parsedResult = parseOldLDN(issueContent)
-
-    console.log(parsedResult, 'XX')
 
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.name).toBe('TVCC')
