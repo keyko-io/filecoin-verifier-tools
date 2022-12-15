@@ -6,6 +6,7 @@ function parseApprovedRequestWithSignerAddress(commentBody) {
         datacap: /#### Datacap Allocated\s*>\s*(.*)/,
         signerAddress: /#### Signer Address\s*>\s*(.*)/,
         message: /#### Message sent to Filecoin Network\s*>\s*(.*)/,
+        uuid: /#### Id\s*>\s*(.*)/,
     }
 
     let parsedData = {
