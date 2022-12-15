@@ -9,8 +9,7 @@
   "scripts": {
     "test": "npx jest",
     "lint": "eslint .",
-    "lint-fix": "eslint . --fix",
-    "start" : "node regex_refactor.js"
+    "lint-fix": "eslint . --fix"
   },
   "keywords": [],
   "author": "Keyko <root@keyko.io>",
