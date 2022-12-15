@@ -19,6 +19,7 @@ describe('parseApprovedRequestWithSignerAddress()', () => {
         expect(parsedResultProposed.datacap).toBe('50TiB')
         expect(parsedResultProposed.signerAddress).toBe('t1gechnbsldgbqan4q2dwjsicbh25n5xvvdzhqd3y')
         expect(parsedResultProposed.message).toBe('bafy2bzacec7gf6xycdqw3fzgs76ppn3mgtojntd5tvqrrmedvcqciw5tghjps')
+        expect(parsedResultProposed.uuid).toBe('ffbab51c-2c7c-4a0e-b0b7-e2d4e7f86875')
     })
     it('we can parse an approve comment including the right data', () => {
         const approveComment = fs.readFileSync(
@@ -34,5 +35,6 @@ describe('parseApprovedRequestWithSignerAddress()', () => {
         expect(parsedResultApprove.datacap).toBe('50TiB')
         expect(parsedResultApprove.signerAddress).toBe('t1gechnbsldgbqan4q2dwjsicbh25n5xvvdzhqd3y')
         expect(parsedResultApprove.message).toBe('bafy2bzacec7gf6xycdqw3fzgs76ppn3mgtojntd5tvqrrmedvcqciw5tghjps')
+        expect(parsedResultApprove.uuid).toBe('ffbab51c-2c7c-4a0e-b0b7-e2d4e7f86875')
     })
 })
