@@ -23,10 +23,6 @@ function parseOldLDN(issueContent) {
 
     const match = issueContent.match(regex)
 
-    if (key === 'identifier') {
-      console.log(match)
-    }
-
     if (!match) continue
 
     if (match[1].trim() === '') {
