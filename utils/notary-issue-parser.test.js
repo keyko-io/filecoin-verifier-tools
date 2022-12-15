@@ -15,7 +15,6 @@ describe('parseIssue()', () => {
       { encoding: 'utf8' },
     )
     const parsedResult = parseIssue(issueContent)
-    console.log('parsedResult', parsedResult)
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.name).toBe('JLow Cen')
     expect(parsedResult.organization).toBe('XXX Technologies Limited')
