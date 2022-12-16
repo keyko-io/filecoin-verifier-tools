@@ -1,29 +1,22 @@
-
+/* eslint-disable no-useless-escape */
 /**
- * 
- * @param {*} issueContent 
- * @returns 
+ *
+ * @param {*} issueContent
+ * @returns
  * @link to regex https://regex101.com/r/dJ69Sk/1
  */
 function parseOldLDN(issueContent) {
-//   - Organization Name: TVCC
-// - Website / Social Media: www.wow.com
-// - Region: Asia excl. Japan
-// - Total amount of DataCap being requested (between 500 TiB and 5 PiB): 1PiB
-// - Weekly allocation of DataCap requested (usually between 1-100TiB): 10TiB
-// - On-chain address for first allocation: f3tbfu6dptaui5uwdt7tlhzmovocz47z2fv34dewwhvkf6heel63zqv6ro7we5fvfzndmofel64dggk5vdr5rq
-// - Type: Custom Notary
-// - Identifier: E-fil
   const data = {
-    name: "Organization Name",
-    region: "Website / Social Media",
-    website: "Media",
-    datacapRequested: "Total amount of DataCap being requested \(between 500 TiB and 5 PiB\)",
-    dataCapWeeklyAllocation: "Weekly allocation of DataCap requested (usually between 1-100TiB)",
-    address: "On-chain address for first allocation",
-    isCustomNotary: "Custom Notary",
-    identifier: "Identifier",
+    name: 'Organization Name',
+    region: 'Region',
+    website: 'Website \\/ Social Media',
+    datacapRequested: 'Total amount of DataCap being requested \\(between 500 TiB and 5 PiB\\)',
+    dataCapWeeklyAllocation: 'Weekly allocation of DataCap requested \\(usually between 1-100TiB\\)',
+    address: 'On-chain address for first allocation',
+    isCustomNotary: 'Type',
+    identifier: /Identifier: (.*)/,
   }
+
   const regexForAdress = /^(f1|f3)/
 
   const parsedData = {
@@ -33,12 +26,37 @@ function parseOldLDN(issueContent) {
   }
 
   const trimmed = issueContent.replace(/(\n)|(\r)/gm, '')
-  console.log("trimmed",trimmed)
 
   for (const [key, value] of Object.entries(data)) {
-    const rg = new RegExp(`(?<=${v}:)(.*?)(?=-)$`)
-    //TODO improve regex or make a conditional for Identifier field
-   
+    const rg = new RegExp(`(?<=${value}:)(.*?)(?=-)`)
+
+    let result
+    if (key === 'identifier') {
+      result = issueContent.match(value)[1].trim()
+    } else {
+      result = trimmed?.match(rg)[0].trim() || null
+    }
+
+    const resultIsNull = !result || !result.length
+
+    if (resultIsNull) {
+      if (key === 'identifier' || key === 'isCustomNotary') continue
+      parsedData.correct = false
+      parsedData.errorMessage += `We could not find **${value}** field in the information provided\n`
+      if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
+      continue
+    }
+
+    if (key === 'isCustomNotary') {
+      parsedData[key] = result === 'Custom Notary'
+      continue
+    }
+
+    parsedData[key] = result || null
+
+    if (key === 'address') {
+      parsedData["isAddressFormatted"] = regexForAdress.test(parsedData[key]) //eslint-disable-line
+    }
   }
 
   return parsedData
