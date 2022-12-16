@@ -1,9 +1,12 @@
 /* eslint-disable indent */
 function ldnv3TriggerCommentParser(commentBody) {
+
+    const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '')
     const data = {
-        regexTrigger: /##\s*datacap\s*request\s*trigger/mi,
-        totalDatacap: /Total DataCap requested[\S\s]*?>(.*?)\n/,
-        weeklyDatacap: /Expected weekly DataCap usage rate[\S\s]*?>(.*?)\n/,
+        // isTriggerComment: "Datacap Request Trigger",
+        totalDatacap: "Total DataCap requested",
+        weeklyDatacap: "Expected weekly DataCap usage rate",
+        clientAddress: "Client address",
     }
 
     const parsedData = {
@@ -11,34 +14,27 @@ function ldnv3TriggerCommentParser(commentBody) {
         errorMessage: '',
     }
 
-    for (const [key, value] of Object.entries(data)) {
-        const regex = value
-
-        if (key === 'regexTrigger') {
-            const triggerMessageMatch = regex.test(commentBody)
-            if (!triggerMessageMatch) {
-                return {
-                    triggerMessage: false,
-                }
-            }
-        } else {
-            const match = commentBody.match(regex)
-
-            if (match[1]?.trim() === '') {
-                parsedData.correct = false
-                parsedData.errorMessage += `We could not find **${key}** field in the information provided\n`
-            } else if (!match[1]?.trim().endsWith('iB')) {
-                parsedData.correct = false
-                parsedData.errorMessage += `DataCap info should ends with TiB or PiB : **${key}**\n`
-            }
-
-            if (match) {
-                parsedData[key] = match[1].trim()
-            }
+    for (const [k, v] of Object.entries(data)) {
+        if (k === "isTriggerComment ") {
+            parsedData.isTriggerComment = trimmed.includes(v)
+            continue
         }
-    }
+        // const reg = new RegExp(`(?<=${v})(.*?)(?=#)`)
+        const rg = new RegExp(`(?<=${v})(.*?)?(?=#)(?=#)|(?<=${v}).*$`)
+        const regexIsNull = !trimmed.match(rg) || !trimmed.match(rg).length || !trimmed.match(rg)[0]
 
+        if (regexIsNull) {
+            parsedData.correct = false
+            parsedData.errorMessage += `We could not find **${v}** field in the information provided\n`
+            if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
+            continue
+        }
+        parsedData[k] = trimmed.match(rg) ? trimmed.match(rg)[0].replace(/\s*/g,"") : null
+    }
     return parsedData
+
+
+
 }
 
 exports.ldnv3TriggerCommentParser = ldnv3TriggerCommentParser
