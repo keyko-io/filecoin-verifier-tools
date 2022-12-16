@@ -1,40 +1,48 @@
 /* eslint-disable indent */
-function parseApprovedRequestWithSignerAddress(commentBody) {
+/* eslint-disable no-useless-escape */
+function parseApprovedRequestWithSignerAddress(issueContent) {
     const data = {
-        method: /##\s*Request\s*((Approved)|(Proposed))/m,
-        address: /#### Address\s*>\s*(.*)/,
-        datacap: /#### Datacap Allocated\s*>\s*(.*)/,
-        signerAddress: /#### Signer Address\s*>\s*(.*)/,
-        message: /#### Message sent to Filecoin Network\s*>\s*(.*)/,
-        uuid: /#### Id\s*>\s*(.*)/,
+        method: 'Request',
+        address: 'Address',
+        datacap: 'Datacap Allocated',
+        signerAddress: 'Signer Address',
+        message: 'Message sent to Filecoin Network',
+        uuid: 'Id',
+    }
+    const parsedData = {
+        correct: true,
+        errorMessage: '',
+        errorDetails: '',
     }
 
-    let parsedData = {
-        correct: true,
-        approvedMessage: true,
-        errorMessage: '',
-    }
+    const trimmed = issueContent.replace(/(\n)|(\r)/gm, '')
 
     for (const [key, value] of Object.entries(data)) {
-        const regex = value
+        let rg = new RegExp(`(?<=${value}>)(.*?)(?=#)`)
 
-        const match = commentBody.match(regex)
+        if (key === 'address') {
+            // here some space problem which is always giving the => signer address thats why i create another rg with space
+            rg = new RegExp(`(?<=${value} >)(.*?)(?=#)`)
+        }
 
-        if (!match) {
-            if (key === 'method') {
-                parsedData = {
-                    approvedMessage: false,
-                }
-                break
-            }
+        if (key === 'method') {
+            parsedData.approvedMessage = trimmed.includes(value)
+            continue
+        }
+
+        const result = trimmed?.match(rg)[0].trim() || null
+        const resultIsNull = !result || !result.length
+
+        if (resultIsNull) {
             parsedData.correct = false
-            parsedData.errorMessage += `We could not find **${key}** field in the information provided\n`
+            parsedData.errorMessage += `We could not find **${value}** field in the information provided\n`
+            if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
+            continue
         }
-
-        if (match) {
-            parsedData[key] = match[1].trim()
-        }
+        parsedData[key] = result || null
     }
+
+    console.log(parsedData)
 
     return parsedData
 }
