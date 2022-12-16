@@ -6,6 +6,7 @@
  * @data is the data field we want to get
  * @rg is the regex we dynamically create in the for loop
  * @result is the result of the regex
+ * @link to regex --> https://regex101.com/r/31sf7d/1
  */
 function ldnv3TriggerCommentParser(commentBody) {
     const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '')
