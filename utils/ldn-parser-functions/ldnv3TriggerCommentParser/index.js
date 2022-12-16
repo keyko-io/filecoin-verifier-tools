@@ -1,7 +1,6 @@
 /* eslint-disable indent */
 /**
- * 
- * @param commentBody 
+ * @param commentBody
  * @returns parsedData, the data parsed out of the comment
  * @trimmed we need to trim the body, removing newlines and other characters, to ease the parsing
  * @data is the data field we want to get
@@ -9,14 +8,12 @@
  * @result is the result of the regex
  */
 function ldnv3TriggerCommentParser(commentBody) {
-
-
     const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '')
     const data = {
-        isTriggerComment: "Datacap Request Trigger",
-        totalDatacap: "Total DataCap requested",
-        weeklyDatacap: "Expected weekly DataCap usage rate",
-        clientAddress: "Client address",
+        isTriggerComment: 'Datacap Request Trigger',
+        totalDatacap: 'Total DataCap requested',
+        weeklyDatacap: 'Expected weekly DataCap usage rate',
+        clientAddress: 'Client address',
     }
 
     const parsedData = {
@@ -25,8 +22,8 @@ function ldnv3TriggerCommentParser(commentBody) {
     }
 
     for (const [k, v] of Object.entries(data)) {
-        if (k == "isTriggerComment") {
-            parsedData["isTriggerComment"] = trimmed.includes(v)
+        if (k === 'isTriggerComment') {
+            parsedData.isTriggerComment = trimmed.includes(v)
             continue
         }
         const rg = new RegExp(`(?<=${v})(.*?)?(?=#)(?=#)|(?<=${v}).*$`)
@@ -39,12 +36,9 @@ function ldnv3TriggerCommentParser(commentBody) {
             if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
             continue
         }
-        parsedData[k] = result ? result : null
+        parsedData[k] = result || null
     }
     return parsedData
-
-
-
 }
 
 exports.ldnv3TriggerCommentParser = ldnv3TriggerCommentParser
