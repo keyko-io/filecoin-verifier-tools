@@ -1,14 +1,23 @@
 function parseOldLDN(issueContent) {
+//   - Organization Name: TVCC
+// - Website / Social Media: www.wow.com
+// - Region: Asia excl. Japan
+// - Total amount of DataCap being requested (between 500 TiB and 5 PiB): 1PiB
+// - Weekly allocation of DataCap requested (usually between 1-100TiB): 10TiB
+// - On-chain address for first allocation: f3tbfu6dptaui5uwdt7tlhzmovocz47z2fv34dewwhvkf6heel63zqv6ro7we5fvfzndmofel64dggk5vdr5rq
+// - Type: Custom Notary
+// - Identifier: E-fil
   const data = {
-    name: /Name: (.*)/,
-    region: /Region: (.*)/,
-    website: /Media: (.*)/,
-    datacapRequested: /PiB\): (.*)/,
-    dataCapWeeklyAllocation: /100TiB\): (.*)/,
-    address: /allocation: (.*)/,
-    isCustomNotary: /Type: (.*)/,
-    identifier: /Identifier: (.*)/,
+    name: "Organization Name",
+    region: "Website / Social Media",
+    website: "Media",
+    datacapRequested: "Total amount of DataCap being requested \(between 500 TiB and 5 PiB\)",
+    dataCapWeeklyAllocation: "Weekly allocation of DataCap requested (usually between 1-100TiB)",
+    address: "On-chain address for first allocation",
+    isCustomNotary: "Custom Notary",
+    identifier: "Identifier",
   }
+  const regexForAdress = /^(f1|f3)/
 
   const parsedData = {
     correct: true,
@@ -16,34 +25,13 @@ function parseOldLDN(issueContent) {
     errorDetails: '',
   }
 
-  const regexForAdress = /^(f1|f3)/
+  const trimmed = issueContent.replace(/(\n)|(\r)/gm, '')
+  console.log("trimmed",trimmed)
 
   for (const [key, value] of Object.entries(data)) {
-    const regex = value
-
-    const match = issueContent.match(regex)
-
-    if (!match) continue
-
-    if (match[1].trim() === '') {
-      if (key === 'isCustomNotary' || key === 'identifier') continue
-      parsedData.correct = false
-      parsedData.errorMessage += `We could not find **${key}** field in the information provided\n`
-      continue
-    }
-
-    if (key === 'isCustomNotary') {
-      parsedData[key] = match[1].trim() === 'Custom Notary'
-      continue
-    }
-
-    if (match && match.length > 1) {
-      parsedData[key] = match[1].trim()
-    }
-
-    if (key === 'address') {
-      parsedData["isAddressFormatted"] = regexForAdress.test(parsedData[key]) //eslint-disable-line
-    }
+    const rg = new RegExp(`(?<=${v}:)(.*?)(?=-)$`)
+    //TODO improve regex or make a conditional for Identifier field
+   
   }
 
   return parsedData
