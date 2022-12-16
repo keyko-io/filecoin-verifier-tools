@@ -1,3 +1,10 @@
+
+/**
+ * 
+ * @param {*} issueContent 
+ * @returns 
+ * @link to regex https://regex101.com/r/dJ69Sk/1
+ */
 function parseOldLDN(issueContent) {
 //   - Organization Name: TVCC
 // - Website / Social Media: www.wow.com
