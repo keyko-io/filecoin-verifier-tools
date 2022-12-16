@@ -1,5 +1,15 @@
 /* eslint-disable indent */
+/**
+ * 
+ * @param commentBody 
+ * @returns parsedData, the data parsed out of the comment
+ * @trimmed we need to trim the body, removing newlines and other characters, to ease the parsing
+ * @data is the data field we want to get
+ * @rg is the regex we dynamically create in the for loop
+ * @result is the result of the regex
+ */
 function ldnv3TriggerCommentParser(commentBody) {
+
 
     const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '')
     const data = {
