@@ -1,12 +1,7 @@
-### Datacap Request Trigger
-**Total DataCap requested**
-
+## Datacap Request Trigger
+#### Total DataCap requested 
 > 
-
-**Expected weekly DataCap usage rate**
-
+#### Expected weekly DataCap usage rate 
+>  
+#### Client address
 > 
-
-**Client address**
-
-> f1o7z3hrmxthl2yohnoabk2bmmveg6aoomatv52hq
