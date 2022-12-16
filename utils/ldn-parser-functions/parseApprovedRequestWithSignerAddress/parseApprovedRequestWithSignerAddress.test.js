@@ -12,7 +12,6 @@ describe('parseApprovedRequestWithSignerAddress()', () => {
 
         const parsedResultProposed = parseApprovedRequestWithSignerAddress(proposeComment)
 
-        expect(parsedResultProposed.method).toBe('Proposed')
         expect(parsedResultProposed.correct).toBe(true)
         expect(parsedResultProposed.approvedMessage).toBe(true)
         expect(parsedResultProposed.address).toBe('t1rbfyvybljzd5xcouqjx22juucdj3xbwtro2crwq')
@@ -28,7 +27,6 @@ describe('parseApprovedRequestWithSignerAddress()', () => {
         )
         const parsedResultApprove = parseApprovedRequestWithSignerAddress(approveComment)
 
-        expect(parsedResultApprove.method).toBe('Approved')
         expect(parsedResultApprove.correct).toBe(true)
         expect(parsedResultApprove.approvedMessage).toBe(true)
         expect(parsedResultApprove.address).toBe('t1rbfyvybljzd5xcouqjx22juucdj3xbwtro2crwq')
