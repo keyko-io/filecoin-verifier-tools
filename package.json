@@ -2,6 +2,7 @@
   "name": "@keyko-io/filecoin-verifier-tools",
   "version": "1.5.0",
   "description": "Javascript implementation of a HAMT using ipld",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/keyko-io/filecoin-verifier-tools.git"
@@ -21,7 +22,7 @@
   "dependencies": {
     "@filecoin-shipyard/lotus-client-provider-nodejs": "0.0.5",
     "@filecoin-shipyard/lotus-client-rpc": "0.0.14",
-    "@filecoin-shipyard/lotus-client-schema": "2.0.0",
+    "@filecoin-shipyard/lotus-client-schema": "4.2.0",
     "@glif/filecoin-address": "^1.1.0",
     "@zondax/filecoin-signing-tools": "^0.7.1",
     "axios": "^0.21.4",
@@ -31,6 +32,7 @@
     "bip39": "^3.0.2",
     "blakejs": "^1.1.0",
     "cbor": "^5.0.2",
+    "check-node-version": "^4.2.1",
     "cids": "^1.0.0",
     "express": "^4.17.1",
     "googleapis": "^95.0.0",
