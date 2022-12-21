@@ -1,9 +1,10 @@
-const { mainnet } = require('@filecoin-shipyard/lotus-client-schema')
-const methods = require('../filecoin/methods')
-const { BrowserProvider } = require('@filecoin-shipyard/lotus-client-provider-browser')
-const { NodejsProvider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
-const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
-const cbor = require('cbor')
+import { mainnet } from '@filecoin-shipyard/lotus-client-schema'
+import { methods } from '../filecoin/methods'
+import { BrowserProvider } from '@filecoin-shipyard/lotus-client-provider-browser'
+import { NodejsProvider } from '@filecoin-shipyard/lotus-client-provider-nodejs'
+import { LotusRPC } from '@filecoin-shipyard/lotus-client-rpc'
+import { decode } from 'cbor'
+
 
 const cacheAddress = {}
 const cacheKey = {}
@@ -278,7 +279,7 @@ class VerifyAPI {
     const tx = this.methods.init.exec(this.methods.multisigCID, this.methods.encode(this.methods.msig_constructor, [signers, threshold, cap, 1000]))
     const txid = await this.send({ ...tx, value: cap }, from, wallet)
     const receipt = await this.getReceipt(txid)
-    const [addr] = this.methods.decode(['list', 'address'], cbor.decode(Buffer.from(receipt.Return, 'base64')))
+    const [addr] = this.methods.decode(['list', 'address'], decode(Buffer.from(receipt.Return, 'base64')))
     return addr
   }
 
@@ -366,4 +367,4 @@ class VerifyAPI {
   }
 }
 
-module.exports = VerifyAPI
+export default VerifyAPI
