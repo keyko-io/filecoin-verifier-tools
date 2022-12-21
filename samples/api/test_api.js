@@ -1,9 +1,9 @@
-const VerifyAPI = require('../../api/api.js')
-const MockWallet = require('../mockWallet')
-const constants = require('../constants')
+import VerifyAPI, { standAloneProvider } from '../../api/api.js'
+import MockWallet from '../mockWallet'
+import { verifier_mnemonic, path } from '../constants'
 async function run() {
-  const mockWallet = new MockWallet(constants.verifier_mnemonic, constants.path)
-  const api = new VerifyAPI(VerifyAPI.standAloneProvider('https://node.glif.io/space06/lotus/rpc/v0'
+  const mockWallet = new MockWallet(verifier_mnemonic, path)
+  const api = new VerifyAPI(standAloneProvider('https://node.glif.io/space06/lotus/rpc/v0'
     , {
       token: async () => {
         return ''
