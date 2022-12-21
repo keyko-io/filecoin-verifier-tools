@@ -23,7 +23,6 @@ function make(testnet) {
 
   function addressAsBytes(str) {
     const nfs = address.newFromString(str)
-    console.log(nfs)
     const res = Buffer.from(nfs.str, 'binary')
     return res
   }

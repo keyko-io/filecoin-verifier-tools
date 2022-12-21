@@ -1,14 +1,17 @@
 import VerifyAPI from "./api"
 import MockWallet from "../samples/mockWallet"
-import {verifier_mnemonic, path} from "../samples/constants"
+import { verifier_mnemonic, rootkey_mnemonic, path } from "../samples/constants"
+
+import { methods } from "../filecoin/methods"
 
 let mockWallet
 let api
+const verifreg = methods.testnet.verifreg
 
 describe("should test the api", () => {
   it("initialize api", async () => {
-     mockWallet = new MockWallet(verifier_mnemonic, path)
-     api = new VerifyAPI( // eslint-disable-line
+    mockWallet = new MockWallet(rootkey_mnemonic, path)
+    api = new VerifyAPI( // eslint-disable-line
       VerifyAPI.standAloneProvider('https://lotus.filecoin.nevermined.rocks/rpc/v0'
         , {
           token: async () => {
@@ -22,113 +25,108 @@ describe("should test the api", () => {
     expect(verifiers).toBeTruthy()
   })
 
-  // it("test load", async ()=> {
-
-  // })
-  // it("test getPath", async ()=> {
-
-  // })
-  it("test checkWallet", async ()=> {
-      const w = await api.checkWallet(mockWallet)
-      expect(w).toBeTruthy()
+  it("test checkWallet", async () => {
+    const w = await api.checkWallet(mockWallet)
+    expect(w).toBeTruthy()
   })
-//   it("test proposeVerifier", async ()=> {
+  it("test proposeVerifier & approveVerifier", async () => {
 
-//   })
-//   it("test proposeRemoveVerifier", async ()=> {
+    const propose = await api.proposeVerifier("t01015", 100000000000000000000000000000000000000000n, 2)
+    expect(propose).toBeTruthy()
+    //TODO test approveVerifier
+  })
+  //   it("test proposeRemoveVerifier", async ()=> {
 
-//   })
-//   it("test send", async ()=> {
+  //   })
+  //   it("test send", async ()=> {
+  //No need
+  //   })
+  //   it("test getReceipt", async ()=> {
 
-//   })
-//   it("test getReceipt", async ()=> {
+  //   })
+  //   it("test getMessage", async ()=> {
 
-//   })
-//   it("test getMessage", async ()=> {
+  //   })
+  //   it("test stateWaitMessage", async ()=> {
 
-//   })
-//   it("test stateWaitMessage", async ()=> {
+  //   })
 
-//   })
-//   it("test approveVerifier", async ()=> {
+  //   it("test removeVerifier", async ()=> {
 
-//   })
-//   it("test removeVerifier", async ()=> {
+  //   })
+  //   it("test cancelVerifier", async ()=> {
 
-//   })
-//   it("test cancelVerifier", async ()=> {
+  //   })
+  //   it("test listVerifiedClients", async ()=> {
 
-//   })
-//   it("test listVerifiedClients", async ()=> {
+  //   })
+  //   it("test listRootkeys", async ()=> {
 
-//   })
-//   it("test listRootkeys", async ()=> {
+  //   })
+  //   it("test listSigners", async ()=> {
 
-//   })
-//   it("test listSigners", async ()=> {
+  //   })
+  //   it("test actorType", async ()=> {
 
-//   })
-//   it("test actorType", async ()=> {
+  //   })
+  //   it("test cachedActorAddress", async ()=> {
 
-//   })
-//   it("test cachedActorAddress", async ()=> {
+  //   })
+  //   it("test actorAddress", async ()=> {
 
-//   })
-//   it("test actorAddress", async ()=> {
+  //   })
+  //   it("test cachedActorKey", async ()=> {
 
-//   })
-//   it("test cachedActorKey", async ()=> {
+  //   })
+  //   it("test actorKey", async ()=> {
 
-//   })
-//   it("test actorKey", async ()=> {
+  //   })
+  //   it("test checkClient", async ()=> {
 
-//   })
-//   it("test checkClient", async ()=> {
+  //   })
+  //   it("test checkVerifier", async ()=> {
 
-//   })
-//   it("test checkVerifier", async ()=> {
+  //   })
+  //   it("test verifyClient", async ()=> {
 
-//   })
-//   it("test verifyClient", async ()=> {
+  //   })
+  //   it("test multisigVerifyClient", async ()=> {
 
-//   })
-//   it("test multisigVerifyClient", async ()=> {
+  //   })
+  //   it("test approvePending", async ()=> {
 
-//   })
-//   it("test approvePending", async ()=> {
+  //   })
+  //   it("test cancelPending", async ()=> {
 
-//   })
-//   it("test cancelPending", async ()=> {
+  //   })
+  //   it("test getTxFromMsgCid", async ()=> {
 
-//   })
-//   it("test getTxFromMsgCid", async ()=> {
+  //   })
+  //   it("test multisigProposeClient", async ()=> {
 
-//   })
-//   it("test multisigProposeClient", async ()=> {
+  //   })
+  //   it("test newMultisig", async ()=> {
 
-//   })
-//   it("test newMultisig", async ()=> {
+  //   })
+  //   it("test multisigAdd", async ()=> {
 
-//   })
-//   it("test multisigAdd", async ()=> {
+  //   })
+  //   it("test pendingRootTransactions", async ()=> {
 
-//   })
-//   it("test pendingRootTransactions", async ()=> {
+  //   })
+  //   it("test multisigInfo", async ()=> {
 
-//   })
-//   it("test multisigInfo", async ()=> {
+  //   })
+  //   it("test pendingTransactions", async ()=> {
 
-//   })
-//   it("test pendingTransactions", async ()=> {
+  //   })
+  //   it("test signAndPushCustomTransaction", async ()=> {
 
-//   })
-//   it("test signAndPushCustomTransaction", async ()=> {
+  //   })
+  //   it("test listMessagesFromToAddress", async ()=> {
 
-//   })
-//   it("test listMessagesFromToAddress", async ()=> {
+  //   })
+  //   it("test mpoolPush", async ()=> {
 
-//   })
-//   it("test mpoolPush", async ()=> {
-
-//   })
+  //   })
 })
