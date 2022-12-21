@@ -1,11 +1,13 @@
 
-const signer = require('@zondax/filecoin-signing-tools/js')
-const cbor = require('cbor')
-const hamt = require('../hamt/hamt')
-const blake = require('blakejs')
-const address = require('@glif/filecoin-address')
-const CID = require('cids')
-const multihashes = require('multihashes')
+
+import * as signer  from '@zondax/filecoin-signing-tools/js'
+import cbor  from 'cbor'
+import * as  hamt  from '../hamt/hamt-2.js'
+import  blake  from 'blakejs'
+import * as address  from '@glif/filecoin-address'
+// const CID = require('multiformats/cid')
+import { CID } from 'multiformats/cid'
+import  multihashes from 'multihashes'
 
 function cborEncode(...obj) {
   const enc = new cbor.Encoder()
@@ -20,7 +22,10 @@ function make(testnet) {
   }
 
   function addressAsBytes(str) {
-    return Buffer.from((address.newFromString(str)).str, 'binary')
+    const nfs = address.newFromString(str)
+    console.log(nfs)
+    const res = Buffer.from(nfs.str, 'binary')
+    return res
   }
 
   /*
@@ -694,7 +699,7 @@ function make(testnet) {
   }
 }
 
-module.exports = {
+export const methods =  {
   mainnet: make(false),
   testnet: make(true),
 }

@@ -1,6 +1,21 @@
 
-const { encodeAddVerifier, encodeAddVerifiedClient, verifreg, decode, encodePropose, rootkey, multisig, encodeApprove } = require('./methods').testnet
-const methods = require('./methods').testnet
+import { methods as m } from './methods.js'
+const methods = m.testnet
+const {
+  encodeAddVerifier,
+  encodeAddVerifiedClient,
+  verifreg,
+  decode,
+  encodePropose,
+  rootkey,
+  multisig,
+  encodeApprove
+} = methods
+
+
+
+
+
 
 const precommitData = [
   'Ag==',
@@ -130,12 +145,15 @@ describe('encoding and decoding', () => {
     const res = encodeAddVerifier('t0109', 123456789n)
     const res2 = verifreg.addVerifier('t0109', 123456789n)
     expect(res).toStrictEqual(res2)
+    console.log(res)
     expect(decode(['cbor', ['address', 'bigint']], res.params)).toStrictEqual(['t0109', 123456789n])
   })
 
   it('add verified client', () => {
     const res = encodeAddVerifiedClient('t0102', 1234567n)
+    console.log(res)
     const res2 = verifreg.addVerifiedClient('t0102', 1234567n)
+    console.log(res2)
     expect(res).toStrictEqual(res2)
     expect(decode(['cbor', ['address', 'bigint']], res.params)).toStrictEqual(['t0102', 1234567n])
   })
