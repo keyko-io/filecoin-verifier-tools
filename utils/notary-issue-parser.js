@@ -46,7 +46,6 @@ function parseIssue(issueContent, issueTitle = '') {
 
   const datacapRequested = matchGroupLargeNotary(regexDatacapRequested, issueContent)
   const datacapRequested2 = matchGroupLargeNotary(regexDatacapRequested2, issueContent)
-  console.log('datacapRequested,datacapRequested2', datacapRequested, datacapRequested2)
   const region = matchGroupLargeNotary(regexRegion, issueContent)
   const country = matchGroupLargeNotary(regexCountry, issueContent)
 
@@ -56,13 +55,13 @@ function parseIssue(issueContent, issueTitle = '') {
 
   if (
     name != null &&
-  (address || alternativeAddress) &&
-  (datacapRequested || datacapRequested2) &&
-  region != null &&
-  useCases != null &&
-  behalf != null &&
-  organization != null &&
-  country != null
+    (address || alternativeAddress) &&
+    (datacapRequested || datacapRequested2) &&
+    region != null &&
+    useCases != null &&
+    behalf != null &&
+    organization != null &&
+    country != null
   ) {
     return {
       correct: true,
