@@ -1,8 +1,8 @@
 /* eslint-disable indent */
 function parseWeeklyDataCapAllocationUpdateRequest(commentBody) {
     const data = {
-        regexRequest: /##\s*Weekly\s*DataCap\s*Allocation\s*Update\s*requested/m,
-        allocationDatacap: /Update to expected weekly DataCap usage rate\s*>\s*(\S+)/,
+        regexRequest: 'Weekly DataCap Allocation Update requested',
+        allocationDatacap: 'Update to expected weekly DataCap usage rate',
     }
 
     const parsedData = {
@@ -11,35 +11,29 @@ function parseWeeklyDataCapAllocationUpdateRequest(commentBody) {
         errorMessage: '',
     }
 
-    for (const [key, value] of Object.entries(data)) {
-        const regex = value
+const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '')
 
-        if (key === 'regexRequest') {
-            const multisigMessage = regex.test(commentBody)
+for (const [key, value] of Object.entries(data)) {
+    const rg = new RegExp(`(?<=${value})(.*?)?(?=#)(?=#)|(?<=${value}).*$`)
 
-            if (!multisigMessage) {
-                return {
-                    multisigMessage: false,
-                }
-            }
-        } else {
-            const match = commentBody.match(regex)
-
-            if (match[1]?.trim() === '') {
-                parsedData.correct = false
-                parsedData.errorMessage += `We could not find **${key}** field in the information provided\n`
-            } else if (!match[1]?.trim().endsWith('iB')) {
-                parsedData.correct = false
-                parsedData.errorMessage += `DataCap info should ends with TiB or PiB : **${key}**\n`
-            }
-
-            if (match) {
-                parsedData[key] = match[1].trim()
-            }
-        }
+    if (key === 'regexRequest') {
+        parsedData.multisigMessage = trimmed.includes(value)
+        continue
     }
 
-    return parsedData
+    const result = trimmed?.match(rg)[0].trim() || null
+    const resultIsNull = !result || !result.length
+
+    if (resultIsNull) {
+        parsedData.correct = false
+        parsedData.errorMessage += `We could not find **${value}** field in the information provided\n`
+        if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
+        continue
+    }
+    parsedData[key] = result || null
+}
+
+return parsedData
 }
 
 exports.parseWeeklyDataCapAllocationUpdateRequest = parseWeeklyDataCapAllocationUpdateRequest
