@@ -34,8 +34,6 @@ for (const [key, value] of Object.entries(data)) {
     parsedData[key] = result || null
 }
 
-console.log(parsedData)
-
 return parsedData
 }
 
