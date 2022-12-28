@@ -13,6 +13,6 @@ describe('parseApproved()', () => {
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.approvedMessage).toBe(true)
     expect(parsedResult.address).toBe('f1111222333')
-    expect(parsedResult.datacap).toBe('5TiB')
+    expect(parsedResult.datacap).toBe('5PiB')
   })
 })
