@@ -1,41 +1,36 @@
-const { matchGroupLargeNotary } = require('../../common-utils')
+function parseApproveComment(commentBody) {
+  const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '')
 
-function parseApproveComment(commentContent) {
-  const regexApproved = /##\s*Request\s*Approved/m
-  const regexAddress = /####\s*Address\W*^>\s*(.*)/m
-  const regexDatacap = /####\s*Datacap\s*Allocated\W*^>\s*(.*)/m
-
-  const approved = matchGroupLargeNotary(regexApproved, commentContent)
-
-  if (approved == null) {
-    return {
-      approvedMessage: false,
-    }
+  const data = {
+    approved: 'Request Approved',
+    address: 'Address',
+    datacap: 'Datacap Allocated',
   }
 
-  const address = matchGroupLargeNotary(regexAddress, commentContent)
-  const datacap = matchGroupLargeNotary(regexDatacap, commentContent)
-
-  if (address != null && datacap != null) {
-    return {
-      approvedMessage: true,
-      correct: true,
-      address: address,
-      datacap: datacap,
-    }
-  }
-
-  let errorMessage = ''
-  if (address == null) { errorMessage += 'We could not find the **Filecoin address** in the information provided in the comment\n' }
-  if (datacap == null) { errorMessage += 'We could not find the **Datacap** allocated in the information provided in the comment\n' }
-  return {
+  const parsedData = {
+    correct: true,
+    errorMessage: '',
     approvedMessage: true,
-    correct: false,
-    errorMessage: errorMessage,
-    errorDetails: `Unable to find required attributes.
-            The address= ${address},
-            datacapAllocated= ${datacap}`,
   }
+
+  for (const [k, v] of Object.entries(data)) {
+    if (k === 'approved') {
+      parsedData.isTriggerComment = trimmed.includes(v)
+      continue
+    }
+    const rg = new RegExp(`(?<=${v})(.*?)?(?=#)(?=#)|(?<=${v}).*$`)
+    const result = trimmed?.match(rg)[0].trim() || null
+    const resultIsNull = !result || !result.length
+
+    if (resultIsNull) {
+      parsedData.correct = false
+      parsedData.errorMessage += `We could not find **${v}** field in the information provided\n`
+      if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
+      continue
+    }
+    parsedData[k] = result || null
+  }
+  return parsedData
 }
 
 exports.parseApproveComment = parseApproveComment

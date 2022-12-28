@@ -3,7 +3,7 @@ const path = require('path')
 const { parseApproveComment } = require('.')
 
 describe('parseApproved()', () => {
-  it('we can parse an approve comment including the right data', () => {
+  it.only('we can parse an approve comment including the right data', () => {
     const commentContent = fs.readFileSync(
       path.resolve(__dirname, '../../../samples/utils/notary_approved_comment.test.md'),
       { encoding: 'utf8' },
@@ -12,7 +12,7 @@ describe('parseApproved()', () => {
 
     expect(parsedResult.correct).toBe(true)
     expect(parsedResult.approvedMessage).toBe(true)
-    expect(parsedResult.address).toBe('f1111222333')
     expect(parsedResult.datacap).toBe('5PiB')
+    expect(parsedResult.address).toBe('f1111222333')
   })
 })
