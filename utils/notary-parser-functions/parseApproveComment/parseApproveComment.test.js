@@ -3,7 +3,7 @@ const path = require('path')
 const { parseApproveComment } = require('.')
 
 describe('parseApproved()', () => {
-  it.only('we can parse an approve comment including the right data', () => {
+  it('we can parse an approve comment including the right data', () => {
     const commentContent = fs.readFileSync(
       path.resolve(__dirname, '../../../samples/utils/notary_approved_comment.test.md'),
       { encoding: 'utf8' },
