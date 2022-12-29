@@ -13,11 +13,20 @@ describe('parseNotaryConfirmation()', () => {
 
     it('we can parse notary confirmation message and number of title', () => {
         const parsedResult = parseNotaryConfirmation(commentContent, title)
+
         expect(parsedResult.confirmationMessage).toBe(true)
         expect(parsedResult.number).toBe(12345)
     })
-    it('we cannnot parse a null confirmation', () => {
-        const parsedResult = parseNotaryConfirmation(null, title)
+})
+
+describe('parseNotaryConfirmation()', () => {
+    const commentContent = ''
+    const title = ''
+
+    it('we should get error and false confirmation message info', () => {
+        const parsedResult = parseNotaryConfirmation(commentContent, title)
+
         expect(parsedResult.confirmationMessage).toBe(false)
+        expect(parsedResult.errorMessage).not.toBe('')
     })
 })
