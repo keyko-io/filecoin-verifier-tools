@@ -1,9 +1,9 @@
-const { parseNotaryAddress } = require('./notary-parser-functions/parseNotaryAddress')
-const { parseNotaryLedgerVerifiedComment } = require('./notary-parser-functions/parseNotaryLedgerVerifiedComment')
-const { parseApproveComment } = require('./notary-parser-functions/parseApproveComment')
-const { parseIssue } = require('./notary-parser-functions/parseIssue')
+import { parseNotaryAddress } from './notary-parser-functions/parseNotaryAddress'
+import { parseNotaryLedgerVerifiedComment } from './notary-parser-functions/parseNotaryLedgerVerifiedComment'
+import { parseApproveComment } from './notary-parser-functions/parseApproveComment'
+import { parseIssue } from './notary-parser-functions/parseIssue'
 
-module.exports = {
+export default {
   parseIssue,
   parseApproveComment,
   parseNotaryLedgerVerifiedComment,

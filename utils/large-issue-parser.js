@@ -1,13 +1,13 @@
-const { parseApprovedRequestWithSignerAddress } = require('./ldn-parser-functions/parseApprovedRequestWithSignerAddress')
-const { ldnv3TriggerCommentParser } = require('./ldn-parser-functions/ldnv3TriggerCommentParser')
-const { parseIssue } = require('./ldn-parser-functions/parseIssue')
-const { parseMultisigNotaryRequest } = require('./ldn-parser-functions/parseMultisigNotaryRequest')
-const { parseMultisigReconnectComment } = require('./ldn-parser-functions/parseMultisigReconnectComment')
-const { parseNotaryConfirmation } = require('./ldn-parser-functions/parseNotaryConfirmation')
-const { parseWeeklyDataCapAllocationUpdateRequest } = require('./ldn-parser-functions/parseWeeklyDataCapAllocationUpdateRequest/index')
-const { parseReleaseRequest } = require('./ldn-parser-functions/parseReleaseRequest')
+import { parseApprovedRequestWithSignerAddress } from './ldn-parser-functions/parseApprovedRequestWithSignerAddress'
+import { ldnv3TriggerCommentParser } from './ldn-parser-functions/ldnv3TriggerCommentParser'
+import { parseIssue } from './ldn-parser-functions/parseIssue'
+import { parseMultisigNotaryRequest } from './ldn-parser-functions/parseMultisigNotaryRequest'
+import { parseMultisigReconnectComment } from './ldn-parser-functions/parseMultisigReconnectComment'
+import { parseNotaryConfirmation } from './ldn-parser-functions/parseNotaryConfirmation'
+import { parseWeeklyDataCapAllocationUpdateRequest } from './ldn-parser-functions/parseWeeklyDataCapAllocationUpdateRequest/index'
+import { parseReleaseRequest } from './ldn-parser-functions/parseReleaseRequest'
 
-module.exports = {
+export default {
   parseIssue,
   parseMultisigNotaryRequest,
   parseNotaryConfirmation,
