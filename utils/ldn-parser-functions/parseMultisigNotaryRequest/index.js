@@ -1,45 +1,40 @@
 /* eslint-disable indent */
 function parseMultisigNotaryRequest(commentBody) {
     const data = {
-        regexMultisig: /##\s*Multisig\s*Notary\s*requested/m,
-        totalDatacaps: /Total DataCap requested[\S\s]*?>(.*?)\n/,
-        weeklyDatacap: /Expected weekly DataCap usage rate[\S\s]*?>(.*?)\n/,
+        regexMultisig: 'Multisig Notary requested',
+        totalDatacaps: 'Total DataCap requested',
+        weeklyDatacap: 'Expected weekly DataCap usage rate',
+}
+
+const parsedData = {
+    correct: true,
+    multisigMessage: true,
+    errorMessage: '',
+}
+
+const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '')
+
+for (const [key, value] of Object.entries(data)) {
+    const rg = new RegExp(`(?<=${value})(.*?)?(?=#)(?=#)|(?<=${value}).*$`)
+
+    if (key === 'regexMultisig') {
+        parsedData.multisigMessage = trimmed.includes(value)
+        continue
     }
 
-    const parsedData = {
-        correct: true,
-        multisigMessage: true,
-        errorMessage: '',
+    const result = trimmed?.match(rg)[0].trim() || null
+    const resultIsNull = !result || !result.length
+
+    if (resultIsNull) {
+        parsedData.correct = false
+        parsedData.errorMessage += `We could not find **${value}** field in the information provided\n`
+        if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
+        continue
     }
+    parsedData[key] = result || null
+}
 
-    for (const [key, value] of Object.entries(data)) {
-        const regex = value
-
-        if (key === 'regexMultisig') {
-            const triggerMessageMatch = regex.test(commentBody)
-            if (!triggerMessageMatch) {
-                return {
-                    multisigMessage: false,
-                }
-            }
-        } else {
-            const match = commentBody.match(regex)
-
-            if (match[1]?.trim() === '') {
-                parsedData.correct = false
-                parsedData.errorMessage += `We could not find **${key}** field in the information provided\n`
-            } else if (!match[1]?.trim().endsWith('iB')) {
-                parsedData.correct = false
-                parsedData.errorMessage += `DataCap info should ends with TiB or PiB : **${key}**\n`
-            }
-
-            if (match) {
-                parsedData[key] = match[1].trim()
-            }
-        }
-    }
-
-    return parsedData
+return parsedData
 }
 
 exports.parseMultisigNotaryRequest = parseMultisigNotaryRequest

@@ -1,43 +1,40 @@
 /* eslint-disable indent */
 function parseMultisigReconnectComment(commentBody) {
-    const data = {
-        regexRequest: /##\s*Multisig\s*Notary\s*Reconnection\s*Request/m,
-        msigAddress: /Multisig Notary Address[\S\s]*?>(.*?)\n/,
-        clientAddress: /Client Address[\S\s]*?>(.*?)\n/,
-        issueURI: /Notary Governance Issue\n> (.*)/,
+const data = {
+    regexRequest: 'Multisig Notary Reconnection Request',
+    msigAddress: 'Multisig Notary Address',
+    clientAddress: 'Client Address',
+    issueURI: 'Notary Governance Issue',
+}
+
+const parsedData = {
+    correct: true,
+    multisigMessage: true,
+    errorMessage: '',
+}
+const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '')
+
+for (const [key, value] of Object.entries(data)) {
+    const rg = new RegExp(`(?<=${value})(.*?)?(?=#)(?=#)|(?<=${value}).*$`)
+
+    if (key === 'regexRequest') {
+        parsedData.multisigMessage = trimmed.includes(value)
+        continue
     }
 
-    const parsedData = {
-        correct: true,
-        errorMessage: '',
+    const result = trimmed?.match(rg)[0].trim() || null
+    const resultIsNull = !result || !result.length
+
+    if (resultIsNull) {
+        parsedData.correct = false
+        parsedData.errorMessage += `We could not find **${value}** field in the information provided\n`
+        if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
+        continue
     }
+    parsedData[key] = result || null
+}
 
-    for (const [key, value] of Object.entries(data)) {
-        const regex = value
-
-        if (key === 'regexRequest') {
-            const multisigMessage = regex.test(commentBody)
-            if (!multisigMessage) {
-                return {
-                    multisigMessage: false,
-                }
-            }
-        } else {
-            const match = commentBody.match(regex)
-
-            if (!match) continue
-
-            if (match[1]?.trim() === '') {
-                parsedData.correct = false
-                parsedData.errorMessage += `We could not find **${key}** field in the information provided\n`
-            }
-
-            if (match) {
-                parsedData[key] = match[1].trim()
-            }
-        }
-    }
-    return parsedData
-};
+return parsedData
+}
 
 exports.parseMultisigReconnectComment = parseMultisigReconnectComment

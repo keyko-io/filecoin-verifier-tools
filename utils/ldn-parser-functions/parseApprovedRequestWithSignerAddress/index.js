@@ -42,8 +42,6 @@ function parseApprovedRequestWithSignerAddress(issueContent) {
         parsedData[key] = result || null
     }
 
-    console.log(parsedData)
-
     return parsedData
 }
 
