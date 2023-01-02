@@ -5,7 +5,6 @@ import { NodejsProvider } from '@filecoin-shipyard/lotus-client-provider-nodejs'
 import { LotusRPC } from '@filecoin-shipyard/lotus-client-rpc'
 import { decode } from 'cbor'
 
-
 const cacheAddress = {}
 const cacheKey = {}
 
@@ -17,12 +16,12 @@ class VerifyAPI {
   }
 
   static standAloneProvider(lotusEndpoint, token) {
-    var provider = new NodejsProvider(lotusEndpoint, token)
+    const provider = new NodejsProvider(lotusEndpoint, token)
     return new LotusRPC(provider, { schema: mainnet.fullNode })
   }
 
   static browserProvider(lotusEndpoint, token) {
-    var provider = new BrowserProvider(lotusEndpoint, token)
+    const provider = new BrowserProvider(lotusEndpoint, token)
     return new LotusRPC(provider, { schema: mainnet.fullNode })
   }
 

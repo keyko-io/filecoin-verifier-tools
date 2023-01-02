@@ -10,8 +10,8 @@ async function run() {
       },
     }), mockWallet)
   while (true) {
-    var verifiers = await api.listVerifiers()
-    var clients = await api.listVerifiedClients()
+    const verifiers = await api.listVerifiers()
+    const clients = await api.listVerifiedClients()
     console.log(verifiers, clients)
     // console.log('actor', await api.actorAddress('t1cncuf2kvfzsmsij3opaypup527ounnpwhiicdci'))
     // console.log('actor', await api.actorKey('t0102'))

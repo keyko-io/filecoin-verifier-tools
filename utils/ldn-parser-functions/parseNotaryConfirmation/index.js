@@ -15,7 +15,7 @@ function parseNotaryConfirmation(commentContent, title) {
     } else {
         return {
             confirmationMessage: true,
-            number: number,
+            number,
         }
     }
 }

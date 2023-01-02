@@ -22,12 +22,12 @@ function parseIssue(issueContent) {
       correct: true,
       errorMessage: '',
       errorDetails: '',
-      name: name,
-      address: address,
-      datacap: datacap,
-      website: website,
-      notary: notary,
-      region: region,
+      name,
+      address,
+      datacap,
+      website,
+      notary,
+      region,
     }
   }
 
@@ -39,7 +39,7 @@ function parseIssue(issueContent) {
 
   return {
     correct: false,
-    errorMessage: errorMessage,
+    errorMessage,
     errorDetails: `Unable to find required attributes.
       The name= ${name},
       address= ${address},

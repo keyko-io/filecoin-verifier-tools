@@ -111,7 +111,7 @@ function parseIssue(issueContent, issueTitle = '') {
 
   return {
     correct: false,
-    errorMessage: errorMessage,
+    errorMessage,
     errorDetails: `Unable to find required attributes.
         The name= ${name},
         address= ${address},
@@ -152,8 +152,8 @@ function parseApproveComment(commentContent) {
     return {
       approvedMessage: true,
       correct: true,
-      address: address,
-      datacap: datacap,
+      address,
+      datacap,
     }
   }
 
@@ -163,7 +163,7 @@ function parseApproveComment(commentContent) {
   return {
     approvedMessage: true,
     correct: false,
-    errorMessage: errorMessage,
+    errorMessage,
     errorDetails: `Unable to find required attributes.
           The address= ${address},
           datacapAllocated= ${datacap}`,
@@ -198,8 +198,8 @@ function parseMultipleApproveComment(commentContent) {
     return {
       approvedMessage: true,
       correct: true,
-      addresses: addresses,
-      datacaps: datacaps,
+      addresses,
+      datacaps,
     }
   }
 
@@ -209,7 +209,7 @@ function parseMultipleApproveComment(commentContent) {
   return {
     approvedMessage: true,
     correct: false,
-    errorMessage: errorMessage,
+    errorMessage,
     errorDetails: 'Unable to find required attributes.',
   }
 }
@@ -234,7 +234,7 @@ function parseNotaryLedgerVerifiedComment(commentContent) {
   // if (!messageCid) { errorMessage += 'Message CID not found in the comment\n' }
   return {
     correct: false,
-    errorMessage: errorMessage,
+    errorMessage,
     errorDetails: 'Unable to find required attributes.',
   }
 }

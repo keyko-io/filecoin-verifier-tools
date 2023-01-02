@@ -1,14 +1,12 @@
-import VerifyAPI from "./api"
-import MockWallet from "../samples/mockWallet"
-import { rootkey_mnemonic, path } from "../samples/constants"
-
+import VerifyAPI from './api'
+import MockWallet from '../samples/mockWallet'
+import { rootkey_mnemonic, path } from '../samples/constants'
 
 let rkhWallet
-let verifierWallet
 let rkhApi
 
-describe("should test the api", () => {
-  it("initialize api", async () => {
+describe('should test the api', () => {
+  it('initialize api', async () => {
     rkhWallet = new MockWallet(rootkey_mnemonic, path)
     rkhApi = new VerifyAPI( // eslint-disable-line
       VerifyAPI.standAloneProvider('https://lotus.filecoin.nevermined.rocks/rpc/v0'
@@ -17,28 +15,27 @@ describe("should test the api", () => {
             return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.wpOIystriKCXuvbxQnMnYP8tNxgi3Uwn3yeBpeiZJtw'
           },
         })
-      , rkhWallet
+      , rkhWallet,
     )
 
     const verifiers = await rkhApi.listVerifiers()
     expect(verifiers).toBeTruthy()
   })
 
-  it("test checkWallet", async () => {
+  it('test checkWallet', async () => {
     const w = await rkhApi.checkWallet(rkhWallet)
     expect(w).toBeTruthy()
   })
-  it("test proposeVerifier & approveVerifier", async () => {
-
-    const propose = await rkhApi.proposeVerifier("t01015", 100000000000000000000000000000000000000000n, 2)
+  it('test proposeVerifier & approveVerifier', async () => {
+    const propose = await rkhApi.proposeVerifier('t01015', 100000000000000000000000000000000000000000n, 2)
     expect(propose).toBeTruthy()
-    //TODO test approveVerifier
+    // TODO test approveVerifier
   })
   //   it("test proposeRemoveVerifier", async ()=> {
 
   //   })
   //   it("test send", async ()=> {
-  //No need
+  // No need
   //   })
   //   it("test getReceipt", async ()=> {
 

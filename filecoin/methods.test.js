@@ -9,13 +9,8 @@ const {
   encodePropose,
   rootkey,
   multisig,
-  encodeApprove
+  encodeApprove,
 } = methods
-
-
-
-
-
 
 const precommitData = [
   'Ag==',

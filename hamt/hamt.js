@@ -108,7 +108,7 @@ exports.forEach = async function (data, load, cb) {
 }
 
 exports.buildArrayData = async function (data, load) {
-  var dataArray = []
+  const dataArray = []
   await forEach({ bitWidth: 5, data: parseNode(data) }, load,
     (k, v) => {
       dataArray.push([address.encode('t', new address.Address(k)), bytesToBig(makeBuffers(v))])

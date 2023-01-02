@@ -6,4 +6,3 @@ export const verifier_mnemonic = process.env.VERIFIER_MNEMONIC || 'exit mystery 
 export const rootkey_mnemonic = process.env.ROOTKEY_MNEMONIC || 'robot matrix ribbon husband feature attitude noise imitate matrix shaft resist cliff lab now gold menu grocery truth deliver camp about stand consider number'
 
 export const path = "m/44'/1'/0/0"
-

@@ -1,5 +1,5 @@
-var fs = require('fs')
-var path = require('path')
+const fs = require('fs')
+const path = require('path')
 const { parseIssue } = require('./issue-parser')
 
 describe('parseIssue()', () => {

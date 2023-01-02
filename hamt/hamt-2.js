@@ -22,7 +22,6 @@ export function indexForBitPos(bp, bitfield) {
   return idx
 }
 
-
 function getBit(b, n) {
   return Number((b >> n) & 0x1n)
 }
@@ -61,7 +60,6 @@ export function makeBuffers(obj) {
   return obj
 }
 
-
 async function forEachPrivate(n, load, cb) {
   for (const c of n.data.pointers) {
     if (c instanceof Array) {
@@ -84,14 +82,12 @@ export function bytesToBig(p) {
   return acc
 }
 
-
 export function parseNode(data) {
   return {
     pointers: data[1],
     bitfield: bytesToBig(Buffer.from(data[0]['/'] ? data[0]['/'].bytes : data[0], 'base64')),
   }
 }
-
 
 export const find = async function (data, load, key) {
   const hash = bytesToBig(Buffer.from(sha256(key), 'hex'))
@@ -103,7 +99,7 @@ export const forEach = async function (data, load, cb) {
 }
 
 export const buildArrayData = async function (data, load) {
-  var dataArray = []
+  const dataArray = []
   await forEachPrivate({ bitWidth: 5, data: parseNode(data) }, load,
     (k, v) => {
       dataArray.push([address.encode('t', new address.Address(k)), bytesToBig(makeBuffers(v))])

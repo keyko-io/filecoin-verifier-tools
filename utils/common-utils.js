@@ -18,7 +18,7 @@ function matchGroup(regex, content) {
 }
 
 function matchAll(regex, content) {
-  var matches = [...content.matchAll(regex)]
+  const matches = [...content.matchAll(regex)]
   if (matches !== null) {
     // each entry in the array has this form: Array ["#### Address > f1111222333", "", "f1111222333"]
     return matches.map(elem => elem[2])
