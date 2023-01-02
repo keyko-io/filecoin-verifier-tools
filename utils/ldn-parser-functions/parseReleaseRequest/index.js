@@ -6,6 +6,7 @@ function parseReleaseRequest(commentBody) {
         notaryAddress: 'Multisig Notary address',
         clientAddress: 'Client address',
         allocationDatacap: 'DataCap allocation requested',
+        uuid: 'Id',
     }
 
     const parsedData = {
