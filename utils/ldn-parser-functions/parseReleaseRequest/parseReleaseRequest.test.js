@@ -1,12 +1,13 @@
 /* eslint-disable indent */
-const fs = require('fs')
-const path = require('path')
-const { parseReleaseRequest } = require('.')
+import { readFileSync } from 'fs'
+import path, { resolve } from 'path'
+import { parseReleaseRequest } from '.'
+const __dirname = path.resolve();
 
 describe('parseReleaseRequest()', () => {
     it('we can parse dataCap allocation requests', () => {
-        const commentContent = fs.readFileSync(
-            path.resolve(__dirname, '../../../samples/utils/datacap_allocation_requested.test.md'),
+        const commentContent = readFileSync(
+            resolve(__dirname, 'samples/utils/datacap_allocation_requested.test.md'),
             { encoding: 'utf8' },
         )
         const parsedResult = parseReleaseRequest(commentContent)

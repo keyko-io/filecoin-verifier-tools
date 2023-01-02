@@ -1,11 +1,12 @@
-const fs = require('fs')
-const path = require('path')
-const { parseNotaryAddress } = require('.')
+import { readFileSync } from 'fs'
+import path, { resolve } from 'path'
+import { parseNotaryAddress } from '.'
+const __dirname = path.resolve();
 
 describe('parseNotaryAddress()', () => {
   it('we can parse the Notary address', () => {
-    const commentContent = fs.readFileSync(
-      path.resolve(__dirname, '../../../samples/utils/notary_application.address.test.md'),
+    const commentContent = readFileSync(
+      resolve(__dirname, 'samples/utils/notary_application.address.test.md'),
       { encoding: 'utf8' },
     )
     const parsedResult = parseNotaryAddress(commentContent)

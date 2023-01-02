@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-function parseReleaseRequest(commentBody) {
+export function parseReleaseRequest(commentBody) {
     const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '')
     const data = {
         regexMultisig: 'DataCap Allocation requested',
@@ -38,5 +38,3 @@ function parseReleaseRequest(commentBody) {
     }
     return parsedData
 }
-
-exports.parseReleaseRequest = parseReleaseRequest

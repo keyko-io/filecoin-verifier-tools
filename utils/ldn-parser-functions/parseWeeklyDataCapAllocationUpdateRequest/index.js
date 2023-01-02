@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-function parseWeeklyDataCapAllocationUpdateRequest(commentBody) {
+export function parseWeeklyDataCapAllocationUpdateRequest(commentBody) {
     const data = {
         regexRequest: 'Weekly DataCap Allocation Update requested',
         allocationDatacap: 'Update to expected weekly DataCap usage rate',
@@ -35,5 +35,3 @@ for (const [key, value] of Object.entries(data)) {
 
 return parsedData
 }
-
-exports.parseWeeklyDataCapAllocationUpdateRequest = parseWeeklyDataCapAllocationUpdateRequest

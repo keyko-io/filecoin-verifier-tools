@@ -1,4 +1,4 @@
-function parseApproveComment(commentBody) {
+export function parseApproveComment(commentBody) {
   const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '')
 
   const data = {
@@ -32,5 +32,3 @@ function parseApproveComment(commentBody) {
   }
   return parsedData
 }
-
-exports.parseApproveComment = parseApproveComment

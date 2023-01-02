@@ -5,7 +5,7 @@
  * @returns
  * @link to regex https://regex101.com/r/dJ69Sk/1
  */
-function parseOldLDN(issueContent) {
+export function parseOldLDN(issueContent) {
   const data = {
     name: 'Organization Name',
     region: 'Region',
@@ -61,5 +61,3 @@ function parseOldLDN(issueContent) {
 
   return parsedData
 }
-
-exports.parseOldLDN = parseOldLDN

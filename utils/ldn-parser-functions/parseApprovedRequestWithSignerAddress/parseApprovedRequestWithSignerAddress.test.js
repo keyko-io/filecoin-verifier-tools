@@ -1,12 +1,12 @@
 /* eslint-disable indent */
-const fs = require('fs')
-const path = require('path')
-const { parseApprovedRequestWithSignerAddress } = require('.')
-
+import { readFileSync } from 'fs'
+import path, { resolve } from 'path'
+import { parseApprovedRequestWithSignerAddress } from '.'
+const __dirname = path.resolve();
 describe('parseApprovedRequestWithSignerAddress()', () => {
     it('we can parse an approve comment including the right data', () => {
-        const proposeComment = fs.readFileSync(
-            path.resolve(__dirname, '../../../samples/utils/ldn_propose_dc_request_comment.test.md'),
+        const proposeComment = readFileSync(
+            resolve(__dirname, 'samples/utils/ldn_propose_dc_request_comment.test.md'),
             { encoding: 'utf8' },
         )
 
@@ -21,8 +21,8 @@ describe('parseApprovedRequestWithSignerAddress()', () => {
         expect(parsedResultProposed.uuid).toBe('ffbab51c-2c7c-4a0e-b0b7-e2d4e7f86875')
     })
     it('we can parse an approve comment including the right data', () => {
-        const approveComment = fs.readFileSync(
-            path.resolve(__dirname, '../../../samples/utils/ldn_approve_dc_request_comment.test.md'),
+        const approveComment = readFileSync(
+            resolve(__dirname, 'samples/utils/ldn_approve_dc_request_comment.test.md'),
             { encoding: 'utf8' },
         )
         const parsedResultApprove = parseApprovedRequestWithSignerAddress(approveComment)

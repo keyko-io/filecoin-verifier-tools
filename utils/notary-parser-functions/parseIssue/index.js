@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-escape */
-function parseIssue(issueContent) {
+export function parseIssue(issueContent) {
   const data = {
     name: 'Name',
     organization: 'Affiliated organization',
@@ -41,5 +41,3 @@ function parseIssue(issueContent) {
 
   return parsedData
 }
-
-exports.parseIssue = parseIssue

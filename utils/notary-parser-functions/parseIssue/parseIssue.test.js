@@ -1,11 +1,12 @@
-var fs = require('fs')
-var path = require('path')
-const { parseIssue } = require('.')
+import { readFileSync } from 'fs'
+import path, { resolve } from 'path'
+import { parseIssue } from '.'
+const __dirname = path.resolve();
 
 describe('parseIssue()', () => {
   it('we can parse an issue including the right data', () => {
-    const issueContent = fs.readFileSync(
-      path.resolve(__dirname, '../../../samples/utils/notary_application_new_temp.test.md'),
+    const issueContent = readFileSync(
+      resolve(__dirname, 'samples/utils/notary_application_new_temp.test.md'),
       { encoding: 'utf8' },
     )
     const parsedResult = parseIssue(issueContent)
@@ -24,8 +25,8 @@ describe('parseIssue()', () => {
 
 describe('parseIssue()', () => {
   it('should parse the amount of datacap request correctly', () => {
-    const issueContent = fs.readFileSync(
-      path.resolve(__dirname, '../../../samples/utils/notary_application_new_temp.test.md'),
+    const issueContent = readFileSync(
+      resolve(__dirname, 'samples/utils/notary_application_new_temp.test.md'),
       { encoding: 'utf8' },
     )
     const parsedResult = parseIssue(issueContent)

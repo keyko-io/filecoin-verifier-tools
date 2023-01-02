@@ -1,12 +1,13 @@
 /* eslint-disable indent */
-const fs = require('fs')
-const path = require('path')
-const { parseWeeklyDataCapAllocationUpdateRequest } = require('.')
+import { readFileSync } from 'fs'
+import path, { resolve } from 'path'
+import { parseWeeklyDataCapAllocationUpdateRequest } from '.'
+const __dirname = path.resolve();
 
 describe('parseWeeklyDataCapAllocationUpdateRequest()', () => {
     it('we can parse dataCap allocation updates requests', () => {
-        const commentContent = fs.readFileSync(
-            path.resolve(__dirname, '../../../samples/utils/weekly_datacap_update_request.test.md'),
+        const commentContent = readFileSync(
+            resolve(__dirname, 'samples/utils/weekly_datacap_update_request.test.md'),
             { encoding: 'utf8' },
         )
 

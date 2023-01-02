@@ -1,11 +1,12 @@
-const fs = require('fs')
-const path = require('path')
-const { parseNotaryLedgerVerifiedComment } = require('.')
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+import { parseNotaryLedgerVerifiedComment } from '.';
+const __dirname = resolve();
 
 describe('parseNotaryLedgerVerifiedComment()', () => {
   it('we can parse the Notary Ledger Verified comment', () => {
-    const commentContent = fs.readFileSync(
-      path.resolve(__dirname, '../../../samples/utils/notary_ledger_verified_comment.test.md'),
+    const commentContent = readFileSync(
+      resolve(__dirname, 'samples/utils/notary_ledger_verified_comment.test.md'),
       { encoding: 'utf8' },
     )
     const parsedResult = parseNotaryLedgerVerifiedComment(commentContent)

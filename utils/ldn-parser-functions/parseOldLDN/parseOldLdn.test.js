@@ -1,12 +1,13 @@
 /* eslint-disable indent */
-const fs = require('fs')
-const path = require('path')
-const { parseOldLDN } = require('.')
+import { readFileSync } from 'fs'
+import path, { resolve } from 'path'
+import { parseOldLDN } from '.'
+const __dirname = path.resolve();
 
 describe('parseOldLDN()', () => {
   it('we can parse trigger comment correctly', () => {
-    const issueContent = fs.readFileSync(
-      path.resolve(__dirname, '../../../samples/utils/large_client_application.test.md'),
+    const issueContent = readFileSync(
+      resolve(__dirname, 'samples/utils/large_client_application.test.md'),
       { encoding: 'utf8' },
     )
 

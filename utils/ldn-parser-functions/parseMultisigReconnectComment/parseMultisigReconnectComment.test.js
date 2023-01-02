@@ -1,12 +1,13 @@
 /* eslint-disable indent */
-const fs = require('fs')
-const path = require('path')
-const { parseMultisigReconnectComment } = require('.')
+import { readFileSync } from 'fs'
+import path, { resolve } from 'path'
+import { parseMultisigReconnectComment } from '.'
+const __dirname = path.resolve();
 
 describe('parseMultisigReconnectComment()', () => {
     it('we can parse reconnection request', () => {
-        const commentContent = fs.readFileSync(
-            path.resolve(__dirname, '../../../samples/utils/issue_reconnection_requested.test.md'),
+        const commentContent = readFileSync(
+            resolve(__dirname, 'samples/utils/issue_reconnection_requested.test.md'),
             { encoding: 'utf8' },
         )
 
