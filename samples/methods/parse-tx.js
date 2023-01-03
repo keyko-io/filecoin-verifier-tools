@@ -1,8 +1,6 @@
 import { methods as m } from '../../filecoin/methods.js'
 const methods = m.testnet
 
-
-
 function main() {
   console.log(process.argv[2])
   const arg = JSON.parse(process.argv[2])

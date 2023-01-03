@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs'
 import path, { resolve } from 'path'
 import { parseIssue } from '.'
-const __dirname = path.resolve();
+const __dirname = path.resolve()
 
 describe('parseIssue()', () => {
   it('we can parse an issue including the right data', () => {

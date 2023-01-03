@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs'
 import path, { resolve } from 'path'
 import { parseNotaryAddress } from '.'
-const __dirname = path.resolve();
+const __dirname = path.resolve()
 
 describe('parseNotaryAddress()', () => {
   it('we can parse the Notary address', () => {

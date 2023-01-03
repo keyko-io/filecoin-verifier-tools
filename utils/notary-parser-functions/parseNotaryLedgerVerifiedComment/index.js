@@ -16,7 +16,7 @@ export function parseNotaryLedgerVerifiedComment(commentContent) {
 
   return {
     correct: false,
-    errorMessage: errorMessage,
+    errorMessage,
     errorDetails: 'Unable to find required attributes.',
   }
 }

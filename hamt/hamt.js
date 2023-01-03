@@ -103,7 +103,7 @@ function parseNode(data) {
 const _parseNode = parseNode
 export { _parseNode as parseNode }
 
-export async function find (data, load, key) {
+export async function find(data, load, key) {
   const hash = bytesToBig(Buffer.from(sha256(key), 'hex'))
   return getValue({ bitWidth: 5, data: parseNode(data) }, load, { num: hash, left: 256 }, key)
 }
@@ -113,7 +113,7 @@ const _forEach = async function (data, load, cb) {
 }
 export { _forEach as forEach }
 
-export async function buildArrayData (data, load) {
+export async function buildArrayData(data, load) {
   const dataArray = []
   await forEach({ bitWidth: 5, data: parseNode(data) }, load,
     (k, v) => {

@@ -8,19 +8,16 @@ const methods = m.testnet
 const endpointUrl = lotus_endpoint
 const tokenPath = token_path
 
-
-
 const mockWallet = new MockWallet(rootkey_mnemonic, path)
 
 const api = new VerifyAPI(
- VerifyAPI.standAloneProvider(endpointUrl, {
-   token: async () => {
-    return readFileSync(tokenPath)
+  VerifyAPI.standAloneProvider(endpointUrl, {
+    token: async () => {
+      return readFileSync(tokenPath)
+    },
   },
-  },
-), mockWallet
+  ), mockWallet,
 )
-
 
 async function main() {
   console.log('here', methods.encodeAddVerifier('t01003', 100000000000000000000000000000000000000000n).params.toString('hex'))

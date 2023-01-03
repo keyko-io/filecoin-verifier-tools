@@ -1,7 +1,7 @@
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
-import { parseNotaryLedgerVerifiedComment } from '.';
-const __dirname = resolve();
+import { readFileSync } from 'fs'
+import { resolve } from 'path'
+import { parseNotaryLedgerVerifiedComment } from '.'
+const __dirname = resolve()
 
 describe('parseNotaryLedgerVerifiedComment()', () => {
   it('we can parse the Notary Ledger Verified comment', () => {

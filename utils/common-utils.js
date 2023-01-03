@@ -24,4 +24,3 @@ export function matchAll(regex, content) {
     return matches.map(elem => elem[2])
   }
 }
-

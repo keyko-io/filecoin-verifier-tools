@@ -1,7 +1,7 @@
 
 import { methods as m } from '../../filecoin/methods.js'
 import { make } from '../../filecoin/get-data.js'
-const testnet = m.testnet
+const methods = m.testnet
 /*
 const testdata = [
   'Ag==',

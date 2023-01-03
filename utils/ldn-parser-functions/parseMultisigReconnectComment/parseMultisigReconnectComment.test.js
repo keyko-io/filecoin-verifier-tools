@@ -2,7 +2,7 @@
 import { readFileSync } from 'fs'
 import path, { resolve } from 'path'
 import { parseMultisigReconnectComment } from '.'
-const __dirname = path.resolve();
+const __dirname = path.resolve()
 
 describe('parseMultisigReconnectComment()', () => {
     it('we can parse reconnection request', () => {

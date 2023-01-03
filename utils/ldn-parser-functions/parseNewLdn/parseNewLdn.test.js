@@ -2,7 +2,7 @@
 import { readFileSync } from 'fs'
 import path, { resolve } from 'path'
 import { parseNewLdn } from '.'
-const __dirname = path.resolve();
+const __dirname = path.resolve()
 
 describe('parseOldLDN()', () => {
     it('we can parse new template correctly', () => {

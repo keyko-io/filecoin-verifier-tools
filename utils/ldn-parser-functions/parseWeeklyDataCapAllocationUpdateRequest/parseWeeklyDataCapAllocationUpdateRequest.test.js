@@ -2,7 +2,7 @@
 import { readFileSync } from 'fs'
 import path, { resolve } from 'path'
 import { parseWeeklyDataCapAllocationUpdateRequest } from '.'
-const __dirname = path.resolve();
+const __dirname = path.resolve()
 
 describe('parseWeeklyDataCapAllocationUpdateRequest()', () => {
     it('we can parse dataCap allocation updates requests', () => {

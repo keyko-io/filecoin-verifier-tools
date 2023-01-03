@@ -7,14 +7,13 @@ const tokenPath = token_path
 
 const mockWallet = new MockWallet(rootkey_mnemonic, path)
 
-
 const api = new VerifyAPI(
- VerifyAPI.standAloneProvider(endpointUrl, {
-   token: async () => {
-    return readFileSync(tokenPath)
+  VerifyAPI.standAloneProvider(endpointUrl, {
+    token: async () => {
+      return readFileSync(tokenPath)
+    },
   },
-  },
-), mockWallet
+  ), mockWallet,
 )
 
 async function main() {

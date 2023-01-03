@@ -2,7 +2,7 @@
 import { readFileSync } from 'fs'
 import path, { resolve } from 'path'
 import { parseMultisigNotaryRequest } from '.'
-const __dirname = path.resolve();
+const __dirname = path.resolve()
 
 describe('parseMultisigNotaryRequest()', () => {
     it('we can parse dataCap allocation requests', () => {

@@ -2,7 +2,7 @@
 import { readFileSync } from 'fs'
 import path, { resolve } from 'path'
 import { parseNotaryConfirmation } from '.'
-const __dirname = path.resolve();
+const __dirname = path.resolve()
 
 describe('parseNotaryConfirmation()', () => {
     const commentContent = readFileSync(
