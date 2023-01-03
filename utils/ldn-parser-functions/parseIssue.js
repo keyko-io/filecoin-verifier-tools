@@ -10,4 +10,3 @@ export function parseIssue(issueContent) {
 
     return parseOldLDN(issueContent)
 }
-

@@ -365,4 +365,3 @@ export class VerifyAPI {
     }
   }
 }
-
