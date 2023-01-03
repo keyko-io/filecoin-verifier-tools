@@ -1,18 +1,17 @@
+import { LotusRPC } from '@filecoin-shipyard/lotus-client-rpc'
+import { NodejsProvider as Provider } from '@filecoin-shipyard/lotus-client-provider-nodejs'
+import { mainnet } from '@filecoin-shipyard/lotus-client-schema'
+import { readFileSync } from 'fs'
+import { lotus_endpoint, token_path } from '../constants.js'
+import { methods as m } from '../../filecoin/methods.js'
 
-const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
-const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
-const { mainnet } = require('@filecoin-shipyard/lotus-client-schema')
-const hamt = require('../../hamt/hamt')
-const fs = require('fs')
-const constants = require('../constants')
-const methods = require('../../filecoin/methods').mainnet
-
-const endpointUrl = constants.lotus_endpoint
-const tokenPath = constants.token_path
+const methods = m.testnet
+const endpointUrl = lotus_endpoint
+const tokenPath = token_path
 
 const provider = new Provider(endpointUrl, {
   token: async () => {
-    return fs.readFileSync(tokenPath)
+    return readFileSync(tokenPath)
   },
 })
 
@@ -37,9 +36,9 @@ async function run() {
     const verifiers = (await client.chainGetNode(`${actor.Head['/']}/1`)).Obj
     // const verifiers = (await client.chainGetNode(`${state}/1/@Ha:t06/1/1`)).Obj
     console.log(JSON.stringify(verifiers, null, 2))
-    await hamt.forEach(verifiers, load, print)
+    await forEach(verifiers, load, print)
 
-    console.log(await hamt.buildArrayData(verifiers, load))
+    console.log(await buildArrayData(verifiers, load))
 
     await new Promise(resolve => { setTimeout(resolve, 1000) })
   }
