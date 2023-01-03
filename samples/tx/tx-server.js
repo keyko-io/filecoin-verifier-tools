@@ -12,19 +12,19 @@ Sample query:
 }
 */
 
-const express = require('express')
-const Sequelize = require('sequelize')
-const message = require('./message')
-const constants = require('../constants')
+import express, { json } from 'express'
+import Sequelize from 'sequelize'
+import { db } from './message'
+import { postgres_conn_url } from '../constants'
 
 const app = express()
 const port = 3000
-app.use(express.json())
+app.use(json())
 
-const postgresConnUrl = constants.postgres_conn_url
+const postgresConnUrl = postgres_conn_url
 const sequelize = new Sequelize(postgresConnUrl)
 
-const Transaction = sequelize.define('transaction', message.db)
+const Transaction = sequelize.define('transaction', db)
 
 async function run() {
   await sequelize.authenticate()
