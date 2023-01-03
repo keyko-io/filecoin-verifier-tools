@@ -3,7 +3,7 @@ import { parseNotaryLedgerVerifiedComment } from './notary-parser-functions/pars
 import { parseApproveComment } from './notary-parser-functions/parseApproveComment'
 import { parseIssue } from './notary-parser-functions/parseIssue'
 
-export default {
+export {
   parseIssue,
   parseApproveComment,
   parseNotaryLedgerVerifiedComment,

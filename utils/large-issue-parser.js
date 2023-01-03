@@ -7,7 +7,7 @@ import { parseNotaryConfirmation } from './ldn-parser-functions/parseNotaryConfi
 import { parseWeeklyDataCapAllocationUpdateRequest } from './ldn-parser-functions/parseWeeklyDataCapAllocationUpdateRequest/index'
 import { parseReleaseRequest } from './ldn-parser-functions/parseReleaseRequest'
 
-export default {
+export {
   parseIssue,
   parseMultisigNotaryRequest,
   parseNotaryConfirmation,

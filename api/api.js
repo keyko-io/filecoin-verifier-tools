@@ -8,7 +8,7 @@ import { decode } from 'cbor'
 const cacheAddress = {}
 const cacheKey = {}
 
-class VerifyAPI {
+export class VerifyAPI {
   constructor(lotusClient, walletContext, testnet = true) {
     this.methods = testnet ? methods.testnet : methods.mainnet
     this.client = lotusClient
@@ -366,4 +366,3 @@ class VerifyAPI {
   }
 }
 
-export default VerifyAPI
