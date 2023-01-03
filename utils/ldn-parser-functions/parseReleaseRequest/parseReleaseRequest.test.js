@@ -18,5 +18,6 @@ describe('parseReleaseRequest()', () => {
         expect(parsedResult.clientAddress).toBe('f3vnq2cmwig3qjisnx5hobxvsd4drn4f54xfxnv4tciw6vnjdsf5xipgafreprh5riwmgtcirpcdmi3urbg36a')
         expect(parsedResult.allocationDatacap).toBe('10TiB')
         expect(parsedResult.allocationDataCapAmount[0]).toBe('10TiB')
+        expect(parsedResult.uuid).toBe('6bbdae0f-c6fc-498f-a587-cb6a534d99a2')
     })
 })
