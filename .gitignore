@@ -1,3 +1,4 @@
 node_modules
 .env
 spreadsheet/createSpreadsheet.js
+lotus/token

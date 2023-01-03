@@ -1,22 +1,28 @@
-const VerifyAPI = require('../../api/api.js')
-const methods = require('../../filecoin/methods.js').mainnet
-const MockWallet = require('../mockWallet')
-const fs = require('fs')
-const constants = require('../constants')
+import VerifyAPI from '../../api/api.js'
+import MockWallet from '../mockWallet.js'
 
-const endpointUrl = constants.lotus_endpoint
-const tokenPath = constants.token_path
+import { methods as m } from '../../filecoin/methods.js'
+import { lotus_endpoint, token_path, rootkey_mnemonic, path } from '../constants.js'
+import { readFileSync } from 'fs'
 
-const mockWallet = new MockWallet(constants.rootkey_mnemonic, constants.path)
 
-const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
-  token: async () => {
-    return fs.readFileSync(tokenPath)
+const methods = m.testnet
+const endpointUrl = lotus_endpoint
+const tokenPath = token_path
+
+const mockWallet = new MockWallet(rootkey_mnemonic, path)
+
+const api = new VerifyAPI(
+ VerifyAPI.standAloneProvider(endpointUrl, {
+   token: async () => {
+    return readFileSync(tokenPath)
   },
-}), mockWallet)
+  },
+), mockWallet
+)
 
 async function main() {
-  const tx = methods.rootkey.addSigner(process.argv[2], true)
+  const tx = methods.rootkey.addSigner('t0120123', true)
   console.log(tx)
   const tx2 = methods.rootkey.propose(tx)
   console.log(tx2)

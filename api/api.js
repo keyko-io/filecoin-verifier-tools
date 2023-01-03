@@ -1,5 +1,5 @@
 import { mainnet } from '@filecoin-shipyard/lotus-client-schema'
-import { methods } from '../filecoin/methods'
+import { methods } from '../filecoin/methods.js'
 import { BrowserProvider } from '@filecoin-shipyard/lotus-client-provider-browser'
 import { NodejsProvider } from '@filecoin-shipyard/lotus-client-provider-nodejs'
 import { LotusRPC } from '@filecoin-shipyard/lotus-client-rpc'

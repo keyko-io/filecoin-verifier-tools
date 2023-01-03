@@ -1,25 +1,32 @@
-const VerifyAPI = require('../../api/api.js')
-const MockWallet = require('../mockWallet')
-const fs = require('fs')
-const methods = require('../../filecoin/methods').testnet
-const constants = require('../constants')
+import VerifyAPI from '../../api/api.js'
+import MockWallet from '../mockWallet.js'
+import { methods as m } from '../../filecoin/methods.js'
+import { readFileSync } from 'fs'
 
-const endpointUrl = constants.lotus_endpoint
-const tokenPath = constants.token_path
+import { lotus_endpoint, token_path, rootkey_mnemonic, path } from '../constants.js'
 
-const mockWallet = new MockWallet(constants.rootkey_mnemonic, constants.path)
+const methods = m.testnet
 
-const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
-  token: async () => {
-    return fs.readFileSync(tokenPath)
+
+const endpointUrl = lotus_endpoint
+const tokenPath = token_path
+
+const mockWallet = new MockWallet(rootkey_mnemonic, path)
+
+const api = new VerifyAPI(
+ VerifyAPI.standAloneProvider(endpointUrl, {
+   token: async () => {
+    return readFileSync(tokenPath)
   },
-}), mockWallet)
+  },
+), mockWallet
+)
 
 async function main() {
   const lst = await api.pendingRootTransactions()
   console.log(mockWallet.getAccounts())
   for (const { tx, id } of lst) {
-    await api.send(methods.rootkey.approve(id, tx), 2)
+    await api.send(methods.rootkey.approve(id, tx), 3)
   }
   process.exit(0)
 }
