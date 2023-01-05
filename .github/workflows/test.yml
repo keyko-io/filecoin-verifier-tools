@@ -18,4 +18,4 @@ jobs:
     - run: echo "NODE_OPTIONS=--experimental-vm-modules" >> $GITHUB_ENV
     - run: echo "NODE_OPTIONS=$NODE_OPTIONS"
     - run: npm ci
-    - run: npx run jest 
+    - run: npx jest 
