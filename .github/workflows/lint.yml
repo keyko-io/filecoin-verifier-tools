@@ -3,18 +3,14 @@ name: Lint
 on: [push, pull_request]
 
 jobs:
-  build:
-
+  lint:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-      with:
-        node-version: '14.x'
-    - name: Lint
-      run: |
-        npm install
-        npm ci
-        run npx eslint . --fix
-
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          version: 14.x
+      - name: Install dependencies
+        run: npm install
+      - name: Run lint
+        run: npx eslint .
