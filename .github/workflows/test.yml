@@ -17,5 +17,5 @@ jobs:
         echo "NODE_OPTIONS=--experimental-vm-modules" >> $GITHUB_ENV
         npm install
         npm ci
-        run test
+        npm test
 
