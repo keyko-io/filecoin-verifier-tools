@@ -1,5 +1,5 @@
 
-const { nextBits, indexForBitPos, readVarInt, find, bytesToBig, buildArrayData, makeBuffers } = require('./hamt')
+import { nextBits, indexForBitPos, readVarInt, find, bytesToBig, buildArrayData, makeBuffers } from './hamt'
 
 describe('nextBits()', () => {
   it('should work', () => {

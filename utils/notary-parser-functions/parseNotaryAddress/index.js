@@ -1,6 +1,6 @@
-const { matchGroupLargeNotary } = require('../../common-utils')
+import { matchGroupLargeNotary } from '../../common-utils'
 
-function parseNotaryAddress(issueContent) {
+export function parseNotaryAddress(issueContent) {
   const regexObj = {
     regexAddressZero: /-?\s*On-chain\s*Address\(es\)\s*to\s*be\s*Notarized:\s*(.*)/mi,
     regexAddressOne: /-?\s*On-chain\s*Address\s*to\s*be\s*Notarized:\s*(.*)/mi,
@@ -16,5 +16,3 @@ function parseNotaryAddress(issueContent) {
   }
   return false
 }
-
-exports.parseNotaryAddress = parseNotaryAddress

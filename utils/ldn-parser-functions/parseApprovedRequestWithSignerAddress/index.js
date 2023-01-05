@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 /* eslint-disable no-useless-escape */
-function parseApprovedRequestWithSignerAddress(issueContent) {
+export function parseApprovedRequestWithSignerAddress(issueContent) {
     const data = {
         method: 'Request',
         address: 'Address',
@@ -44,5 +44,3 @@ function parseApprovedRequestWithSignerAddress(issueContent) {
 
     return parsedData
 }
-
-exports.parseApprovedRequestWithSignerAddress = parseApprovedRequestWithSignerAddress

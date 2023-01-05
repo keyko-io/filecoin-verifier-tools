@@ -8,7 +8,7 @@
  * @result is the result of the regex
  * @link to regex --> https://regex101.com/r/31sf7d/1
  */
-function ldnv3TriggerCommentParser(commentBody) {
+export function ldnv3TriggerCommentParser(commentBody) {
     const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '')
     const data = {
         isTriggerComment: 'Datacap Request Trigger',
@@ -41,5 +41,3 @@ function ldnv3TriggerCommentParser(commentBody) {
     }
     return parsedData
 }
-
-exports.ldnv3TriggerCommentParser = ldnv3TriggerCommentParser

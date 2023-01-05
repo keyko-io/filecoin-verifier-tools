@@ -1,10 +1,11 @@
-const signer = require('@zondax/filecoin-signing-tools/js')
-const fetch = require('node-fetch')
-const methods = require('../../filecoin/methods').testnet
-const cbor = require('cbor')
+import { keyDerive } from '@zondax/filecoin-signing-tools/js'
+import fetch from 'node-fetch'
+import { methods as m } from '../../filecoin/methods.js'
+import { decode } from 'cbor'
 
+const methods = m.testnet
 const mnemonic = 'robot matrix ribbon husband feature attitude noise imitate matrix shaft resist cliff lab now gold menu grocery truth deliver camp about stand consider number'
-const key = signer.keyDerive(mnemonic, "m/44'/1'/1/0/2", '')
+const key = keyDerive(mnemonic, "m/44'/1'/1/0/2", '')
 console.log('address', key.address)
 
 const multisig = {
@@ -44,7 +45,7 @@ const reg = {
 function getMethod(to, method, params) {
   const actor = reg[to]
   const { name, input } = actor[method]
-  return { name, params: methods.decode(input, cbor.decode(params)) }
+  return { name, params: methods.decode(input, decode(params)) }
 }
 
 function handleTx(tx) {

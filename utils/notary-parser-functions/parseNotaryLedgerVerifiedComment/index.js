@@ -1,6 +1,6 @@
-const { matchGroupLargeNotary } = require('../../common-utils')
+import { matchGroupLargeNotary } from '../../common-utils'
 
-function parseNotaryLedgerVerifiedComment(commentContent) {
+export function parseNotaryLedgerVerifiedComment(commentContent) {
   const regexVerified = /##\s*Notary\s*Ledger\s*Verified/m
 
   const verified = matchGroupLargeNotary(regexVerified, commentContent)
@@ -16,9 +16,7 @@ function parseNotaryLedgerVerifiedComment(commentContent) {
 
   return {
     correct: false,
-    errorMessage: errorMessage,
+    errorMessage,
     errorDetails: 'Unable to find required attributes.',
   }
 }
-
-exports.parseNotaryLedgerVerifiedComment = parseNotaryLedgerVerifiedComment

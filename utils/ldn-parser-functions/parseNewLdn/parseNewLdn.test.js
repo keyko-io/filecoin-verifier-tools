@@ -1,12 +1,13 @@
 /* eslint-disable indent */
-const fs = require('fs')
-const path = require('path')
-const { parseNewLdn } = require('.')
+import { readFileSync } from 'fs'
+import path, { resolve } from 'path'
+import { parseNewLdn } from '.'
+const __dirname = path.resolve()
 
 describe('parseOldLDN()', () => {
     it('we can parse new template correctly', () => {
-        const issueContent = fs.readFileSync(
-            path.resolve(__dirname, '../../../samples/utils/new_ldn_template_yaml.md'),
+        const issueContent = readFileSync(
+            resolve(__dirname, 'samples/utils/new_ldn_template_yaml.md'),
             { encoding: 'utf8' },
         )
 

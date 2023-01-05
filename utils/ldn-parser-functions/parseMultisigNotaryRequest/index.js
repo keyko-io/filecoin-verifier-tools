@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-function parseMultisigNotaryRequest(commentBody) {
+export function parseMultisigNotaryRequest(commentBody) {
     const data = {
         regexMultisig: 'Multisig Notary requested',
         totalDatacaps: 'Total DataCap requested',
@@ -36,5 +36,3 @@ for (const [key, value] of Object.entries(data)) {
 
 return parsedData
 }
-
-exports.parseMultisigNotaryRequest = parseMultisigNotaryRequest

@@ -1,4 +1,4 @@
-function parseNotaryConfirmation(commentContent, title) {
+export function parseNotaryConfirmation(commentContent, title) {
   const result = title.match(/#(\d+)/)
 
   const confirmationText = '## The request has been signed by a new Root Key Holder'
@@ -17,5 +17,3 @@ function parseNotaryConfirmation(commentContent, title) {
     number: Number(result[1]),
   }
 }
-
-exports.parseNotaryConfirmation = parseNotaryConfirmation

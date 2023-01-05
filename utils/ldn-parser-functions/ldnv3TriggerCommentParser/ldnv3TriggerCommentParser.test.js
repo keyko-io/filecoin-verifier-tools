@@ -1,12 +1,12 @@
 /* eslint-disable indent */
-const fs = require('fs')
-const path = require('path')
-const { ldnv3TriggerCommentParser } = require('.')
-
+import { readFileSync } from 'fs'
+import path, { resolve } from 'path'
+import { ldnv3TriggerCommentParser } from '.'
+const __dirname = path.resolve()
 describe('v3 Datacap Request Trigger', () => {
     it('we can parse trigger comment correctly', () => {
-        const commentContent = fs.readFileSync(
-            path.resolve(__dirname, '../../../samples/utils/v3_trigger.test.md'),
+        const commentContent = readFileSync(
+            resolve(__dirname, 'samples/utils/v3_trigger.test.md'),
             { encoding: 'utf8' },
         )
 
@@ -21,8 +21,8 @@ describe('v3 Datacap Request Trigger', () => {
     })
 
     it('if the fields are empty , it should give us error and error message', () => {
-        const commentContent = fs.readFileSync(
-            path.resolve(__dirname, '../../../samples/utils/v3_trigger_wrong.test.md'),
+        const commentContent = readFileSync(
+            resolve(__dirname, 'samples/utils/v3_trigger_wrong.test.md'),
             { encoding: 'utf8' },
         )
 

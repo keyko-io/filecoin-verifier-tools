@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-function parseMultisigReconnectComment(commentBody) {
+export function parseMultisigReconnectComment(commentBody) {
 const data = {
     regexRequest: 'Multisig Notary Reconnection Request',
     msigAddress: 'Multisig Notary Address',
@@ -36,5 +36,3 @@ for (const [key, value] of Object.entries(data)) {
 
 return parsedData
 }
-
-exports.parseMultisigReconnectComment = parseMultisigReconnectComment

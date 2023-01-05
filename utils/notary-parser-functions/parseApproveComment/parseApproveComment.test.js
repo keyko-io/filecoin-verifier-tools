@@ -1,11 +1,12 @@
-const fs = require('fs')
-const path = require('path')
-const { parseApproveComment } = require('.')
+import { readFileSync } from 'fs'
+import path, { resolve } from 'path'
+import { parseApproveComment } from '.'
+const __dirname = path.resolve()
 
 describe('parseApproved()', () => {
   it('we can parse an approve comment including the right data', () => {
-    const commentContent = fs.readFileSync(
-      path.resolve(__dirname, '../../../samples/utils/notary_approved_comment.test.md'),
+    const commentContent = readFileSync(
+      resolve(__dirname, 'samples/utils/notary_approved_comment.test.md'),
       { encoding: 'utf8' },
     )
     const parsedResult = parseApproveComment(commentContent)

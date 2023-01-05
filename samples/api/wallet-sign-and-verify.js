@@ -1,25 +1,19 @@
-const VerifyAPI = require('../../api/api.js')
-const MockWallet = require('../mockWallet')
-const constants = require('../constants')
+import VerifyAPI from '../../api/api.js'
+import MockWallet from '../mockWallet.js'
+import { lotus_endpoint, token_path, rootkey_mnemonic, path } from '../constants.js'
+import { readFileSync } from 'fs'
+const endpointUrl = lotus_endpoint
+const tokenPath = token_path
 
-const mockWallet = new MockWallet(constants.verifier_mnemonic, constants.path)
+const mockWallet = new MockWallet(rootkey_mnemonic, path)
 
-// const api = new VerifyAPI(VerifyAPI.standAloneProvider('https://node.glif.io/space06/lotus/rpc/v0'
-// , {
-//   token: async () => {
-//     return ''
-//   },
-// }), mockWallet)
-const api = new VerifyAPI( // eslint-disable-line
-  VerifyAPI.standAloneProvider('https://lotus.filecoin.nevermined.rocks/rpc/v0'
-    , {
-      token: async () => {
-        return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.wpOIystriKCXuvbxQnMnYP8tNxgi3Uwn3yeBpeiZJtw'
-      },
-    })
-  , mockWallet
-  // , { sign: sign, getAccounts: getAccounts }
-  , process.env.NETWORK_TYPE !== 'Mainnet', // if node != Mainnet => testnet = true
+const api = new VerifyAPI(
+  VerifyAPI.standAloneProvider(endpointUrl, {
+    token: async () => {
+      return readFileSync(tokenPath)
+    },
+  },
+  ), mockWallet,
 )
 
 async function walletSignMessageApi() {

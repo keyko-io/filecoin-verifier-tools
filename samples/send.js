@@ -1,26 +1,26 @@
-const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
-const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
-const { mainnet } = require('@filecoin-shipyard/lotus-client-schema')
-const fs = require('fs')
-const signer = require('@zondax/filecoin-signing-tools/js')
-const methods = require('../filecoin/methods').testnet
-const constants = require('./constants')
-const MockWallet = require('./mockWallet')
+import { LotusRPC } from '@filecoin-shipyard/lotus-client-rpc'
+import { NodejsProvider as Provider } from '@filecoin-shipyard/lotus-client-provider-nodejs'
+import { mainnet } from '@filecoin-shipyard/lotus-client-schema'
+import { readFileSync } from 'fs'
+import { keyDerive } from '@zondax/filecoin-signing-tools/js'
+import { testnet as methods } from '../filecoin/methods'
+import { lotus_endpoint, token_path, verifier_mnemonic, path, rootkey_mnemonic } from './constants'
+import MockWallet from './mockWallet'
 
-const provider = new Provider(constants.lotus_endpoint, {
+const provider = new Provider(lotus_endpoint, {
   token: async () => {
-    return fs.readFileSync(constants.token_path)
+    return readFileSync(token_path)
   },
 })
 
 const client = new LotusRPC(provider, { schema: mainnet.fullNode })
 
-const mockWallet = new MockWallet(constants.verifier_mnemonic, constants.path)
+const mockWallet = new MockWallet(verifier_mnemonic, path)
 
-const key = signer.keyDerive(constants.verifier_mnemonic, `${constants.path}/2`, '')
+const key = keyDerive(verifier_mnemonic, `${path}/2`, '')
 console.log('verifier address', key.address)
 
-const key2 = signer.keyDerive(constants.rootkey_mnemonic, `${constants.path}/2`, '')
+const key2 = keyDerive(rootkey_mnemonic, `${path}/2`, '')
 console.log('rootkey address', key2.address)
 
 async function main() {

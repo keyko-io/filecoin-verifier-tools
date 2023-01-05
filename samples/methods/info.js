@@ -1,17 +1,17 @@
+import { LotusRPC } from '@filecoin-shipyard/lotus-client-rpc'
+import { NodejsProvider as Provider } from '@filecoin-shipyard/lotus-client-provider-nodejs'
+import { mainnet } from '@filecoin-shipyard/lotus-client-schema'
+import { readFileSync } from 'fs'
+import { lotus_endpoint, token_path } from '../constants.js'
+import { methods as m } from '../../filecoin/methods.js'
 
-const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
-const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
-const { mainnet } = require('@filecoin-shipyard/lotus-client-schema')
-const fs = require('fs')
-const methods = require('../../filecoin/methods').testnet
-const constants = require('../constants')
-
-const endpointUrl = constants.lotus_endpoint
-const tokenPath = constants.token_path
+const methods = m.testnet
+const endpointUrl = lotus_endpoint
+const tokenPath = token_path
 
 const provider = new Provider(endpointUrl, {
   token: async () => {
-    return fs.readFileSync(tokenPath)
+    return readFileSync(tokenPath)
   },
 })
 

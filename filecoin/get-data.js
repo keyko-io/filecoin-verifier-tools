@@ -1,9 +1,9 @@
 
-const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
-const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
-const { mainnet } = require('@filecoin-shipyard/lotus-client-schema')
+import { LotusRPC } from '@filecoin-shipyard/lotus-client-rpc'
+import { NodejsProvider as Provider } from '@filecoin-shipyard/lotus-client-provider-nodejs'
+import { mainnet } from '@filecoin-shipyard/lotus-client-schema'
 
-exports.make = function (endpointUrl) {
+export function make(endpointUrl) {
   const provider = new Provider(endpointUrl)
 
   const client = new LotusRPC(provider, { schema: mainnet.fullNode })

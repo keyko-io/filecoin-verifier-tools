@@ -1,11 +1,12 @@
 /* eslint-disable indent */
-const fs = require('fs')
-const path = require('path')
-const { parseNotaryConfirmation } = require('.')
+import { readFileSync } from 'fs'
+import path, { resolve } from 'path'
+import { parseNotaryConfirmation } from '.'
+const __dirname = path.resolve()
 
 describe('parseNotaryConfirmation()', () => {
-    const commentContent = fs.readFileSync(
-        path.resolve(__dirname, '../../../samples/utils/notary_confirmation.test.md'),
+    const commentContent = readFileSync(
+        resolve(__dirname, 'samples/utils/notary_confirmation.test.md'),
         { encoding: 'utf8' },
 
     )

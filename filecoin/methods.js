@@ -1,11 +1,12 @@
 
-const signer = require('@zondax/filecoin-signing-tools/js')
-const cbor = require('cbor')
-const hamt = require('../hamt/hamt')
-const blake = require('blakejs')
-const address = require('@glif/filecoin-address')
-const CID = require('cids')
-const multihashes = require('multihashes')
+import * as signer from '@zondax/filecoin-signing-tools/js'
+import cbor from 'cbor'
+import * as hamt from '../hamt/hamt-2.js'
+import blake from 'blakejs'
+import * as address from '@glif/filecoin-address'
+// const CID = require('multiformats/cid')
+import { CID } from 'multiformats/cid'
+import multihashes from 'multihashes'
 
 function cborEncode(...obj) {
   const enc = new cbor.Encoder()
@@ -20,7 +21,9 @@ function make(testnet) {
   }
 
   function addressAsBytes(str) {
-    return Buffer.from((address.newFromString(str)).str, 'binary')
+    const nfs = address.newFromString(str)
+    const res = Buffer.from(nfs.str, 'binary')
+    return res
   }
 
   /*
@@ -186,7 +189,7 @@ function make(testnet) {
     const msg = {
       to: tx.to,
       from: address,
-      nonce: nonce,
+      nonce,
       value: tx.value.toString() || '0',
       gasfeecap: res.GasFeeCap,
       gaspremium: res.GasPremium,
@@ -656,7 +659,7 @@ function make(testnet) {
   const multisigCID = new CID(1, 'raw', multihashes.encode(Buffer.from('fil/7/multisig'), 'identity'))
 
   async function buildArrayData(data, load) {
-    var dataArray = []
+    const dataArray = []
     await hamt.forEach(data, load, function (k, v) {
       dataArray.push([bytesToAddress(k), hamt.bytesToBig(v)])
     })
@@ -694,7 +697,7 @@ function make(testnet) {
   }
 }
 
-module.exports = {
+export const methods = {
   mainnet: make(false),
   testnet: make(true),
 }
