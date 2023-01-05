@@ -16,5 +16,5 @@ jobs:
       run: |
         npm install
         npm ci
-        run: npx eslint . --fix
+        run npx eslint . --fix
 
