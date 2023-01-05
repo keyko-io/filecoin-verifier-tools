@@ -1,9 +1,9 @@
 {
   "name": "@keyko-io/filecoin-verifier-tools",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "Javascript implementation of a HAMT using ipld",
   "type": "module",
-  "main": "main.js",
+  "main": "build/main.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/keyko-io/filecoin-verifier-tools.git"
@@ -11,7 +11,8 @@
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules && npx jest",
     "lint": "eslint .",
-    "lint-fix": "eslint . --fix"
+    "lint-fix": "eslint . --fix",
+    "build": "rollup -c"
   },
   "keywords": [],
   "author": "Keyko <root@keyko.io>",
@@ -26,6 +27,7 @@
     "@filecoin-shipyard/lotus-client-rpc": "^1.2.0",
     "@filecoin-shipyard/lotus-client-schema": "4.2.0",
     "@glif/filecoin-address": "^1.1.0",
+    "@types/node": "^18.11.18",
     "@zondax/filecoin-signing-tools": "^0.7.1",
     "axios": "^1.2.1",
     "babel-jest": "^29.3.1",
@@ -46,9 +48,11 @@
     "node-fetch": "^3.3.0",
     "pg": "^8.3.0",
     "pg-hstore": "^2.3.3",
+    "rollup-plugin-typescript2": "^0.34.1",
     "secp256k1": "^4.0.1",
     "sequelize": "^6.3.3",
     "ts-jest": "^29.0.3",
+    "tsc": "^2.0.4",
     "varint": "^6.0.0"
   },
   "devDependencies": {
