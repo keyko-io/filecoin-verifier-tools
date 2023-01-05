@@ -1,16 +1,20 @@
-const VerifyAPI = require('../../api/api.js')
-const MockWallet = require('../mockWallet')
-const constants = require('../constants')
+import VerifyAPI from '../../api/api.js'
+import MockWallet from '../mockWallet.js'
+import { lotus_endpoint, token_path, rootkey_mnemonic, path } from '../constants.js'
+import { readFileSync } from 'fs'
+const endpointUrl = lotus_endpoint
+const tokenPath = token_path
 
-const endpointUrl = constants.lotus_endpoint
+const mockWallet = new MockWallet(rootkey_mnemonic, path)
 
-const token = constants.lotus_token
-
-const mockWallet = new MockWallet(constants.rootkey_mnemonic, constants.path)
-
-const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
-  token,
-}), mockWallet)
+const api = new VerifyAPI(
+  VerifyAPI.standAloneProvider(endpointUrl, {
+    token: async () => {
+      return readFileSync(tokenPath)
+    },
+  },
+  ), mockWallet,
+)
 
 async function main() {
   const tx = await api.getTxFromMsgCid('bafy2bzacecwcemtcctinqjjrjcnchds5ceiqaffac6vlp4mn5i4plsb5cohcw')

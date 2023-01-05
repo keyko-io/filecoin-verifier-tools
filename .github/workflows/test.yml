@@ -1,20 +1,21 @@
 name: Test
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
 
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
+    - name: Test
+      uses: actions/setup-node@v1
       with:
-        node-version: '14.x'
-    - name: Lint
-      run: |
-        npm install
-        npm ci
-        npm run test
-
+        node-version: ${{ matrix.node-version }}
+    - run: echo "NODE_OPTIONS=--experimental-vm-modules" >> $GITHUB_ENV
+    - run: echo "NODE_OPTIONS=$NODE_OPTIONS"
+    - run: npm ci
+    - run: npx jest 

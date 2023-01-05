@@ -1,4 +1,5 @@
-const methods = require('../../filecoin/methods').mainnet
+import { methods as m } from '../../filecoin/methods.js'
+const methods = m.testnet
 
 function main() {
   console.log(process.argv[2])

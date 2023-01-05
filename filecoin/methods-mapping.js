@@ -11,6 +11,6 @@ const methods_map = {
   LockBalance: 9,
 }
 
-module.exports = {
+export default {
   msigMethods: methods_map,
 }

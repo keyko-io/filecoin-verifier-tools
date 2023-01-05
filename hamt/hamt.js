@@ -1,5 +1,5 @@
-const address = require('@glif/filecoin-address')
-const sha256 = require('js-sha256')
+import { encode, Address } from '@glif/filecoin-address'
+import sha256 from 'js-sha256'
 
 // Get n next bits
 function nextBits(obj, n) {
@@ -22,8 +22,10 @@ function indexForBitPos(bp, bitfield) {
   return idx
 }
 
-exports.nextBits = nextBits
-exports.indexForBitPos = indexForBitPos
+const _nextBits = nextBits
+export { _nextBits as nextBits }
+const _indexForBitPos = indexForBitPos
+export { _indexForBitPos as indexForBitPos }
 
 function getBit(b, n) {
   return Number((b >> n) & 0x1n)
@@ -63,7 +65,8 @@ function makeBuffers(obj) {
   return obj
 }
 
-exports.makeBuffers = makeBuffers
+const _makeBuffers = makeBuffers
+export { _makeBuffers as makeBuffers }
 
 async function forEach(n, load, cb) {
   for (const c of n.data.pointers) {
@@ -87,7 +90,8 @@ function bytesToBig(p) {
   return acc
 }
 
-exports.bytesToBig = bytesToBig
+const _bytesToBig = bytesToBig
+export { _bytesToBig as bytesToBig }
 
 function parseNode(data) {
   return {
@@ -96,22 +100,24 @@ function parseNode(data) {
   }
 }
 
-exports.parseNode = parseNode
+const _parseNode = parseNode
+export { _parseNode as parseNode }
 
-exports.find = async function (data, load, key) {
+export async function find(data, load, key) {
   const hash = bytesToBig(Buffer.from(sha256(key), 'hex'))
   return getValue({ bitWidth: 5, data: parseNode(data) }, load, { num: hash, left: 256 }, key)
 }
 
-exports.forEach = async function (data, load, cb) {
+const _forEach = async function (data, load, cb) {
   await forEach({ bitWidth: 5, data: parseNode(data) }, load, cb)
 }
+export { _forEach as forEach }
 
-exports.buildArrayData = async function (data, load) {
-  var dataArray = []
+export async function buildArrayData(data, load) {
+  const dataArray = []
   await forEach({ bitWidth: 5, data: parseNode(data) }, load,
     (k, v) => {
-      dataArray.push([address.encode('t', new address.Address(k)), bytesToBig(makeBuffers(v))])
+      dataArray.push([encode('t', new Address(k)), bytesToBig(makeBuffers(v))])
     })
 
   return dataArray
@@ -130,6 +136,7 @@ function readVarInt(bytes, offset) {
   return res
 }
 
-exports.readVarInt = function (bytes, offset) {
+const _readVarInt = function (bytes, offset) {
   return readVarInt(bytes, offset || 0)
 }
+export { _readVarInt as readVarInt }

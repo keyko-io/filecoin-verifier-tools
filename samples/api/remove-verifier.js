@@ -1,19 +1,22 @@
-const VerifyAPI = require('../../api/api')
-const methods = require('../../filecoin/methods').testnet
-const MockWallet = require('../mockWallet')
-const fs = require('fs')
-const constants = require('../constants')
+import VerifyAPI from '../../api/api.js'
+import MockWallet from '../mockWallet.js'
+import { methods as m } from '../../filecoin/methods.js'
+import { lotus_endpoint, token_path, rootkey_mnemonic, path } from '../constants.js'
+import { readFileSync } from 'fs'
+const endpointUrl = lotus_endpoint
+const tokenPath = token_path
+const methods = m.testnet
 
-const endpointUrl = constants.lotus_endpoint
-const tokenPath = constants.token_path
+const mockWallet = new MockWallet(rootkey_mnemonic, path)
 
-const mockWallet = new MockWallet(constants.rootkey_mnemonic, constants.path)
-
-const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
-  token: async () => {
-    return fs.readFileSync(tokenPath)
+const api = new VerifyAPI(
+  VerifyAPI.standAloneProvider(endpointUrl, {
+    token: async () => {
+      return readFileSync(tokenPath)
+    },
   },
-}), mockWallet)
+  ), mockWallet,
+)
 
 async function main() {
   console.log(methods.verifreg.removeVerifier(process.argv[2]).params.toString('hex'))

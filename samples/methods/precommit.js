@@ -1,7 +1,7 @@
 
-const methods = require('../../filecoin/methods').testnet
-const { make } = require('../../filecoin/get-data')
-
+import { methods as m } from '../../filecoin/methods.js'
+import { make } from '../../filecoin/get-data.js'
+const methods = m.testnet
 /*
 const testdata = [
   'Ag==',

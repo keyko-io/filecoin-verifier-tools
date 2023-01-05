@@ -1,8 +1,7 @@
-const MockWallet = require('../mockWallet')
-const constants = require('../constants')
-const signer = require('@zondax/filecoin-signing-tools/js')
+import MockWallet from '../mockWallet.js'
+import { rootkey_mnemonic, path } from '../constants.js'
 
-const mockWallet = new MockWallet(constants.rootkey_mnemonic, constants.path)
+const mockWallet = new MockWallet(rootkey_mnemonic, path)
 
 console.log(mockWallet.getAccountInfo())
-console.log(signer.generateMnemonic())
+// console.log(generateMnemonic())
