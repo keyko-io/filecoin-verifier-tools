@@ -12,5 +12,7 @@ jobs:
           version: 14.x
       - name: Install dependencies
         run: npm install
+      - name: Install dependencies
+        run: npm ci
       - name: Run lint
         run: npx eslint .
