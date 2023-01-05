@@ -1,11 +1,11 @@
-import { parseApprovedRequestWithSignerAddress } from './ldn-parser-functions/parseApprovedRequestWithSignerAddress'
-import { ldnv3TriggerCommentParser } from './ldn-parser-functions/ldnv3TriggerCommentParser'
+import { parseApprovedRequestWithSignerAddress } from './ldn-parser-functions/parseApprovedRequestWithSignerAddress/index.js'
+import { ldnv3TriggerCommentParser } from './ldn-parser-functions/ldnv3TriggerCommentParser/index.js'
 import { parseIssue } from './ldn-parser-functions/parseIssue'
-import { parseMultisigNotaryRequest } from './ldn-parser-functions/parseMultisigNotaryRequest'
-import { parseMultisigReconnectComment } from './ldn-parser-functions/parseMultisigReconnectComment'
-import { parseNotaryConfirmation } from './ldn-parser-functions/parseNotaryConfirmation'
-import { parseWeeklyDataCapAllocationUpdateRequest } from './ldn-parser-functions/parseWeeklyDataCapAllocationUpdateRequest/index'
-import { parseReleaseRequest } from './ldn-parser-functions/parseReleaseRequest'
+import { parseMultisigNotaryRequest } from './ldn-parser-functions/parseMultisigNotaryRequest/index.js'
+import { parseMultisigReconnectComment } from './ldn-parser-functions/parseMultisigReconnectComment/index.js'
+import { parseNotaryConfirmation } from './ldn-parser-functions/parseNotaryConfirmation/index.js'
+import { parseWeeklyDataCapAllocationUpdateRequest } from './ldn-parser-functions/parseWeeklyDataCapAllocationUpdateRequest/index.js'
+import { parseReleaseRequest } from './ldn-parser-functions/parseReleaseRequest/index.js'
 
 export {
   parseIssue,

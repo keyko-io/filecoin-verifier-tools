@@ -1,6 +1,6 @@
 /* eslint-disable indent */
-import { parseNewLdn } from './parseNewLdn'
-import { parseOldLDN } from './parseOldLDN'
+import { parseNewLdn } from './parseNewLdn/index'
+import { parseOldLDN } from './parseOldLDN/index'
 
 // ldn template parser
 export function parseIssue(issueContent) {
