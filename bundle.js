@@ -1,54 +1,56 @@
-'use strict';
+'use strict'
 
-var lotusClientSchema = require('@filecoin-shipyard/lotus-client-schema');
-var signer = require('@zondax/filecoin-signing-tools/js');
-var cbor = require('cbor');
-var address = require('@glif/filecoin-address');
-var jsSha256 = require('js-sha256');
-var blake = require('blakejs');
-var cid = require('multiformats/cid');
-var multihashes = require('multihashes');
-var lotusClientProviderBrowser = require('@filecoin-shipyard/lotus-client-provider-browser');
-var lotusClientProviderNodejs = require('@filecoin-shipyard/lotus-client-provider-nodejs');
-var lotusClientRpc = require('@filecoin-shipyard/lotus-client-rpc');
+const lotusClientSchema = require('@filecoin-shipyard/lotus-client-schema')
+const signer = require('@zondax/filecoin-signing-tools/js')
+const cbor = require('cbor')
+const address = require('@glif/filecoin-address')
+const jsSha256 = require('js-sha256')
+const blake = require('blakejs')
+const cid = require('multiformats/cid')
+const multihashes = require('multihashes')
+const lotusClientProviderBrowser = require('@filecoin-shipyard/lotus-client-provider-browser')
+const lotusClientProviderNodejs = require('@filecoin-shipyard/lotus-client-provider-nodejs')
+const lotusClientRpc = require('@filecoin-shipyard/lotus-client-rpc')
 
 function _interopNamespaceDefault(e) {
-  var n = Object.create(null);
+  const n = Object.create(null)
   if (e) {
     Object.keys(e).forEach(function (k) {
       if (k !== 'default') {
-        var d = Object.getOwnPropertyDescriptor(e, k);
-        Object.defineProperty(n, k, d.get ? d : {
-          enumerable: true,
-          get: function () { return e[k]; }
-        });
+        const d = Object.getOwnPropertyDescriptor(e, k)
+        Object.defineProperty(n, k, d.get
+          ? d
+          : {
+              enumerable: true,
+              get: function () { return e[k] },
+            })
       }
-    });
+    })
   }
-  n.default = e;
-  return Object.freeze(n);
+  n.default = e
+  return Object.freeze(n)
 }
 
-var signer__namespace = /*#__PURE__*/_interopNamespaceDefault(signer);
-var address__namespace = /*#__PURE__*/_interopNamespaceDefault(address);
+const signer__namespace = /* #__PURE__ */_interopNamespaceDefault(signer)
+const address__namespace = /* #__PURE__ */_interopNamespaceDefault(address)
 
 // Get n next bits
 function nextBits(obj, n) {
   // if (obj.left < n) throw new Error("out of bits")
-  const res = (obj.num >> BigInt(obj.left - n)) & BigInt((1 << n) - 1);
-  obj.left -= n;
+  const res = (obj.num >> BigInt(obj.left - n)) & BigInt((1 << n) - 1)
+  obj.left -= n
   return res
 }
 
 function indexForBitPos(bp, bitfield) {
-  let acc = bitfield;
-  let idx = 0;
+  let acc = bitfield
+  let idx = 0
   while (bp > 0) {
     if ((acc & 1n) === 1n) {
-      idx++;
+      idx++
     }
-    bp--;
-    acc = acc >> 1n;
+    bp--
+    acc = acc >> 1n
   }
   return idx
 }
@@ -58,21 +60,21 @@ function getBit(b, n) {
 }
 
 async function getValue(n, load, hv, key) {
-  const idx = nextBits(hv, n.bitWidth);
+  const idx = nextBits(hv, n.bitWidth)
   if (getBit(n.data.bitfield, idx) === 0) {
     throw new Error('not found in bitfield')
   }
 
-  const cindex = indexForBitPos(idx, n.data.bitfield);
+  const cindex = indexForBitPos(idx, n.data.bitfield)
 
-  const c = n.data.pointers[cindex];
+  const c = n.data.pointers[cindex]
 
   if (c instanceof Array) {
     for (const [k, v] of c) {
       if (makeBuffers(k).toString() === makeBuffers(key).toString()) return makeBuffers(v)
     }
   } else {
-    const child = await load(c['/']);
+    const child = await load(c['/'])
     return getValue({ bitWidth: n.bitWidth, data: parseNode(child) }, load, hv, key)
   }
   throw new Error('key not found')
@@ -95,20 +97,20 @@ async function forEachPrivate(n, load, cb) {
   for (const c of n.data.pointers) {
     if (c instanceof Array) {
       for (const [k, v] of c) {
-        await cb(makeBuffers(k), makeBuffers(v));
+        await cb(makeBuffers(k), makeBuffers(v))
       }
     } else {
-      const child = await load(c['/']);
-      await forEachPrivate({ bitWidth: n.bitWidth, data: parseNode(child) }, load, cb);
+      const child = await load(c['/'])
+      await forEachPrivate({ bitWidth: n.bitWidth, data: parseNode(child) }, load, cb)
     }
   }
 }
 
 function bytesToBig(p) {
-  let acc = 0n;
+  let acc = 0n
   for (let i = 0; i < p.length; i++) {
-    acc *= 256n;
-    acc += BigInt(p[i]);
+    acc *= 256n
+    acc += BigInt(p[i])
   }
   return acc
 }
@@ -121,46 +123,46 @@ function parseNode(data) {
 }
 
 const find = async function (data, load, key) {
-  const hash = bytesToBig(Buffer.from(jsSha256.sha256(key), 'hex'));
+  const hash = bytesToBig(Buffer.from(jsSha256.sha256(key), 'hex'))
   return getValue({ bitWidth: 5, data: parseNode(data) }, load, { num: hash, left: 256 }, key)
-};
+}
 
 const forEach = async function (data, load, cb) {
-  await forEachPrivate({ bitWidth: 5, data: parseNode(data) }, load, cb);
-};
+  await forEachPrivate({ bitWidth: 5, data: parseNode(data) }, load, cb)
+}
 
 function readVarIntPrivate(bytes, offset) {
-  let res = 0n;
-  let acc = 1n;
+  let res = 0n
+  let acc = 1n
   for (let i = offset; i < bytes.length; i++) {
-    res += BigInt(bytes[i] & 0x7f) * acc;
+    res += BigInt(bytes[i] & 0x7f) * acc
     if (bytes[i] < 0x7f) {
       return res
     }
-    acc *= 128n;
+    acc *= 128n
   }
   return res
 }
 
 const readVarInt = function (bytes, offset) {
   return readVarIntPrivate(bytes, offset || 0)
-};
+}
 
 function cborEncode(...obj) {
-  const enc = new cbor.Encoder();
-  enc.addSemanticType(Buffer, enc._pushBuffer);
+  const enc = new cbor.Encoder()
+  enc.addSemanticType(Buffer, enc._pushBuffer)
   return enc._encodeAll(obj)
 }
 
 function make(testnet) {
   function bytesToAddress(payload) {
-    const addr = new address__namespace.Address(payload);
+    const addr = new address__namespace.Address(payload)
     return address__namespace.encode(testnet ? 't' : 'f', addr)
   }
 
   function addressAsBytes(str) {
-    const nfs = address__namespace.newFromString(str);
-    const res = Buffer.from(nfs.str, 'binary');
+    const nfs = address__namespace.newFromString(str)
+    const res = Buffer.from(nfs.str, 'binary')
     return res
   }
 
@@ -286,12 +288,12 @@ function make(testnet) {
   */
 
   async function signTx(client, indexAccount, walletContext, tx) {
-    const head = await client.chainHead();
-    const address = (await walletContext.getAccounts())[indexAccount];
+    const head = await client.chainHead()
+    const address = (await walletContext.getAccounts())[indexAccount]
 
     // const state = await client.stateGetActor(address, head.Cids)
     // let nonce = state.Nonce
-    const nonce = await client.mpoolGetNonce(address);
+    const nonce = await client.mpoolGetNonce(address)
     // console.log(nonce)
     // const pending = await client.mpoolPending(head.Cids)
     // for (const { Message: tx } of pending) {
@@ -318,11 +320,11 @@ function make(testnet) {
       GasLimit: tx.gas || 0,
       Method: tx.method,
       Params: tx.params.toString('base64'),
-    };
+    }
 
-    console.log(estimation_msg);
-    const res = await client.gasEstimateMessageGas(estimation_msg, { MaxFee: '100000000000000000' }, head.Cids);
-    console.log(res);
+    console.log(estimation_msg)
+    const res = await client.gasEstimateMessageGas(estimation_msg, { MaxFee: '100000000000000000' }, head.Cids)
+    console.log(res)
 
     const msg = {
       to: tx.to,
@@ -334,31 +336,31 @@ function make(testnet) {
       gaslimit: res.GasLimit,
       method: tx.method,
       params: tx.params,
-    };
+    }
 
     return walletContext.sign(msg, indexAccount)
   }
 
   // returns tx hash
   async function sendTx(client, indexAccount, walletContext, obj) {
-    const tx = await signTx(client, indexAccount, walletContext, obj);
-    console.log('going to send', tx);
+    const tx = await signTx(client, indexAccount, walletContext, obj)
+    console.log('going to send', tx)
     return await client.mpoolPush(JSON.parse(tx))
   }
 
   async function getReceipt(client, id) {
     while (true) {
-      const res = await client.stateSearchMsg({ '/': id });
+      const res = await client.stateSearchMsg({ '/': id })
       if (res && res.Receipt) {
         return res.Receipt
       }
-      await new Promise(resolve => { setTimeout(resolve, 1000); });
+      await new Promise(resolve => { setTimeout(resolve, 1000) })
     }
   }
 
   async function getMessage(client, cid) {
     try {
-      const res = await client.chainGetMessage({ '/': cid });
+      const res = await client.chainGetMessage({ '/': cid })
       return res
     } catch (error) {
       // console.log(error)
@@ -367,7 +369,7 @@ function make(testnet) {
 
   async function stateWaitMsg(client, cid) {
     try {
-      const res = await client.stateWaitMsg({ '/': cid }, 1);
+      const res = await client.stateWaitMsg({ '/': cid }, 1)
       return res
     } catch (error) {
       //  console.log(error)
@@ -398,9 +400,9 @@ function make(testnet) {
     }
   }
 
-  const VERIFREG = testnet ? 't06' : 'f06';
-  const INIT_ACTOR = testnet ? 't01' : 'f01';
-  const ROOTKEY = testnet ? 't080' : 'f080';
+  const VERIFREG = testnet ? 't06' : 'f06'
+  const INIT_ACTOR = testnet ? 't01' : 'f01'
+  const ROOTKEY = testnet ? 't080' : 'f080'
 
   function encodeAddVerifier(verified, cap) {
     return {
@@ -435,8 +437,8 @@ function make(testnet) {
   }
 
   function encodeApprove(msig, txid, from, msg) {
-    const hashData = encodeProposalHashdata(from, msg);
-    const hash = blake.blake2bHex(hashData, null, 32);
+    const hashData = encodeProposalHashdata(from, msg)
+    const hash = blake.blake2bHex(hashData, null, 32)
     return {
       to: msig,
       method: 3,
@@ -494,21 +496,21 @@ function make(testnet) {
     if (schema.type === 'hamt') {
       return {
         find: async (lookup, key) => {
-          const res = await find(data, lookup, encode(schema.key, key));
+          const res = await find(data, lookup, encode(schema.key, key))
           return decode(schema.value, res)
         },
         asList: async (lookup) => {
-          const res = [];
+          const res = []
           await forEach(data, lookup, async (k, v) => {
-            res.push([decode(schema.key, k), decode(schema.value, v)]);
-          });
+            res.push([decode(schema.key, k), decode(schema.value, v)])
+          })
           return res
         },
         asObject: async (lookup) => {
-          const res = {};
+          const res = {}
           await forEach(data, lookup, async (k, v) => {
-            res[decode(schema.key, k)] = decode(schema.value, v);
-          });
+            res[decode(schema.key, k)] = decode(schema.value, v)
+          })
           return res
         },
       }
@@ -525,23 +527,23 @@ function make(testnet) {
       }
       if (schema.length !== data.length) throw new Error('schema and data length do not match')
       if (isType(schema[0])) {
-        const res = [];
+        const res = []
         for (let i = 0; i < data.length; i++) {
-          res.push(decode(schema[i], data[i]));
+          res.push(decode(schema[i], data[i]))
         }
         return res
       }
-      const res = {};
+      const res = {}
       for (let i = 0; i < data.length; i++) {
-        res[schema[i][0]] = decode(schema[i][1], data[i]);
+        res[schema[i][0]] = decode(schema[i][1], data[i])
       }
       return res
     }
     if (typeof schema === 'object') {
-      const res = {};
-      const entries = Object.entries(schema);
+      const res = {}
+      const entries = Object.entries(schema)
       for (let i = 0; i < entries.length; i++) {
-        res[entries[i][0]] = decode(entries[i][1], data[i]);
+        res[entries[i][0]] = decode(entries[i][1], data[i])
       }
       return res
     }
@@ -574,8 +576,8 @@ function make(testnet) {
       return data
     }
     if (schema.type === 'hash') {
-      const hashData = cborEncode(encode(schema.input, data));
-      const hash = blake.blake2bHex(hashData, null, 32);
+      const hashData = cborEncode(encode(schema.input, data))
+      const hash = blake.blake2bHex(hashData, null, 32)
       return Buffer.from(hash, 'hex')
     }
     if (schema instanceof Array) {
@@ -586,23 +588,23 @@ function make(testnet) {
         return cborEncode(encode(schema[1], data))
       }
       if (schema.length !== data.length) throw new Error('schema and data length do not match')
-      const res = [];
+      const res = []
       for (let i = 0; i < data.length; i++) {
-        res.push(encode(schema[i], data[i]));
+        res.push(encode(schema[i], data[i]))
       }
       return res
     }
     if (typeof schema === 'object') {
-      const res = [];
-      const entries = Object.entries(schema);
+      const res = []
+      const entries = Object.entries(schema)
       for (let i = 0; i < entries.length; i++) {
-        let arg;
+        let arg
         if (data instanceof Array) {
-          arg = data[i];
+          arg = data[i]
         } else {
-          arg = data[entries[i][0]];
+          arg = data[entries[i][0]]
         }
-        res.push(encode(entries[i][1], arg));
+        res.push(encode(entries[i][1], arg))
       }
       return res
     }
@@ -610,14 +612,14 @@ function make(testnet) {
   }
 
   function actor(address, spec) {
-    const res = {};
+    const res = {}
     for (const [num, method] of Object.entries(spec)) {
       res[method.name] = function (data) {
-        let params;
+        let params
         if (arguments.length > 1) {
-          params = encode(method.input, Array.from(arguments));
+          params = encode(method.input, Array.from(arguments))
         } else {
-          params = encode(method.input, data);
+          params = encode(method.input, data)
         }
         // console.log("params", params)
         return {
@@ -626,7 +628,7 @@ function make(testnet) {
           method: parseInt(num),
           params: cborEncode(params),
         }
-      };
+      }
     }
     return res
   }
@@ -700,7 +702,7 @@ function make(testnet) {
         newThreshold: 'int',
       },
     },
-  };
+  }
 
   const init = {
     2: {
@@ -710,14 +712,14 @@ function make(testnet) {
         params: 'buffer',
       },
     },
-  };
+  }
 
   const msig_constructor = ['cbor', {
     signers: ['list', 'address'],
     threshold: 'int',
     unlockDuration: 'int',
     startEpoch: 'int',
-  }];
+  }]
 
   const pending = {
     type: 'hamt',
@@ -729,7 +731,7 @@ function make(testnet) {
       params: 'buffer',
       signers: ['list', 'address'],
     },
-  };
+  }
 
   const msig_state = {
     signers: ['list', 'address'],
@@ -739,7 +741,7 @@ function make(testnet) {
     start_epoch: 'int',
     unlock_duration: 'int',
     pending: ['ref', pending],
-  };
+  }
 
   const verifreg = {
     2: {
@@ -760,19 +762,19 @@ function make(testnet) {
         cap: 'bigint',
       },
     },
-  };
+  }
 
   const table = {
     type: 'hamt',
     key: 'address',
     value: 'bigint',
-  };
+  }
 
   const verifreg_state = {
     rootkey: 'address',
     verifiers: ['ref', table],
     clients: ['ref', table],
-  };
+  }
 
   const reg = {
     t080: multisig,
@@ -781,26 +783,26 @@ function make(testnet) {
     f080: multisig,
     f06: verifreg,
     f01: init,
-  };
+  }
 
   function parse(tx) {
     try {
-      const actor = reg[tx.to] || multisig;
-      const { name, input } = actor[tx.method];
-      const params = decode(input, cbor.decode(tx.params));
+      const actor = reg[tx.to] || multisig
+      const { name, input } = actor[tx.method]
+      const params = decode(input, cbor.decode(tx.params))
       return { name, params, parsed: params && parse(params) }
     } catch (err) {
       return null
     }
   }
 
-  const multisigCID = new cid.CID(1, 'raw', multihashes.encode(Buffer.from('fil/7/multisig'), 'identity'));
+  const multisigCID = new cid.CID(1, 'raw', multihashes.encode(Buffer.from('fil/7/multisig'), 'identity'))
 
   async function buildArrayData(data, load) {
-    const dataArray = [];
+    const dataArray = []
     await forEach(data, load, function (k, v) {
-      dataArray.push([bytesToAddress(k), bytesToBig(v)]);
-    });
+      dataArray.push([bytesToAddress(k), bytesToBig(v)])
+    })
     return dataArray
   }
 
@@ -838,50 +840,50 @@ function make(testnet) {
 const methods = {
   mainnet: make(false),
   testnet: make(true),
-};
+}
 
-const cacheAddress = {};
-const cacheKey = {};
+const cacheAddress = {}
+const cacheKey = {}
 
 class VerifyAPI {
   constructor(lotusClient, walletContext, testnet = true) {
-    this.methods = testnet ? methods.testnet : methods.mainnet;
-    this.client = lotusClient;
-    this.walletContext = walletContext;
+    this.methods = testnet ? methods.testnet : methods.mainnet
+    this.client = lotusClient
+    this.walletContext = walletContext
   }
 
   static standAloneProvider(lotusEndpoint, token) {
-    const provider = new lotusClientProviderNodejs.NodejsProvider(lotusEndpoint, token);
+    const provider = new lotusClientProviderNodejs.NodejsProvider(lotusEndpoint, token)
     return new lotusClientRpc.LotusRPC(provider, { schema: lotusClientSchema.mainnet.fullNode })
   }
 
   static browserProvider(lotusEndpoint, token) {
-    const provider = new lotusClientProviderBrowser.BrowserProvider(lotusEndpoint, token);
+    const provider = new lotusClientProviderBrowser.BrowserProvider(lotusEndpoint, token)
     return new lotusClientRpc.LotusRPC(provider, { schema: lotusClientSchema.mainnet.fullNode })
   }
 
   async load(a) {
-    const res = await this.client.chainGetNode(a);
+    const res = await this.client.chainGetNode(a)
     return res.Obj
   }
 
   async getPath(addr, path) {
-    const head = await this.client.chainHead();
-    const actor = await this.client.stateGetActor(addr, head.Cids);
+    const head = await this.client.chainHead()
+    const actor = await this.client.stateGetActor(addr, head.Cids)
     // const state = head.Blocks[0].ParentStateRoot['/']
     // return (await this.client.chainGetNode(`${state}/1/@Ha:${addr}/${path}`)).Obj
     return (await this.client.chainGetNode(`${actor.Head['/']}/${path}`)).Obj
   }
 
   async listVerifiers() {
-    const verifiers = await this.getPath(this.methods.VERIFREG, '1');
-    const listOfVerifiers = await this.methods.buildArrayData(verifiers, a => this.load(a));
-    const returnList = [];
+    const verifiers = await this.getPath(this.methods.VERIFREG, '1')
+    const listOfVerifiers = await this.methods.buildArrayData(verifiers, a => this.load(a))
+    const returnList = []
     for (const [key, value] of listOfVerifiers) {
       returnList.push({
         verifier: key,
         datacap: value.toString(10),
-      });
+      })
     }
     return returnList
   }
@@ -893,8 +895,8 @@ class VerifyAPI {
 
   async proposeVerifier(verifierAccount, datacap, indexAccount, wallet, { gas } = { gas: 0 }) {
     // Not address but account in the form "t01004", for instance
-    const tx = this.methods.rootkey.propose(this.methods.verifreg.addVerifier(verifierAccount, datacap));
-    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas });
+    const tx = this.methods.rootkey.propose(this.methods.verifreg.addVerifier(verifierAccount, datacap))
+    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas })
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
     return res['/']
@@ -902,15 +904,15 @@ class VerifyAPI {
 
   async proposeRemoveVerifier(verifierAccount, indexAccount, wallet, { gas } = { gas: 0 }) {
     // Not address but account in the form "t01004", for instance
-    const tx = this.methods.rootkey.propose(this.methods.verifreg.removeVerifier(verifierAccount));
-    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas });
+    const tx = this.methods.rootkey.propose(this.methods.verifreg.removeVerifier(verifierAccount))
+    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas })
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
     return res['/']
   }
 
   async send(tx, indexAccount, wallet, { gas } = { gas: 0 }) {
-    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas });
+    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas })
     return res['/']
   }
 
@@ -928,9 +930,9 @@ class VerifyAPI {
 
   async approveVerifier(verifierAccount, datacap, fromAccount, transactionId, indexAccount, wallet, { gas } = { gas: 0 }) {
     // Not address but account in the form "t01003", for instance
-    const add = this.methods.verifreg.addVerifier(verifierAccount, datacap);
-    const tx = this.methods.rootkey.approve(parseInt(transactionId, 10), { ...add, from: fromAccount });
-    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas });
+    const add = this.methods.verifreg.addVerifier(verifierAccount, datacap)
+    const tx = this.methods.rootkey.approve(parseInt(transactionId, 10), { ...add, from: fromAccount })
+    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas })
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
     return res['/']
@@ -938,9 +940,9 @@ class VerifyAPI {
 
   async removeVerifier(verifierAccount, fromAccount, transactionId, indexAccount, wallet, { gas } = { gas: 0 }) {
     // Not address but account in the form "t01003", for instance
-    const remove = this.methods.verifreg.removeVerifier(verifierAccount);
-    const tx = this.methods.rootkey.approve(parseInt(transactionId, 10), { ...remove, from: fromAccount });
-    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas });
+    const remove = this.methods.verifreg.removeVerifier(verifierAccount)
+    const tx = this.methods.rootkey.approve(parseInt(transactionId, 10), { ...remove, from: fromAccount })
+    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas })
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
     return res['/']
@@ -948,23 +950,23 @@ class VerifyAPI {
 
   async cancelVerifier(verifierAccount, datacap, fromAccount, transactionId, indexAccount, wallet, { gas } = { gas: 0 }) {
     // Not address but account in the form "t01003", for instance
-    const add = this.methods.verifreg.addVerifier(verifierAccount, datacap);
-    const tx = this.methods.rootkey.cancel(parseInt(transactionId, 10), { ...add, from: fromAccount });
-    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas });
+    const add = this.methods.verifreg.addVerifier(verifierAccount, datacap)
+    const tx = this.methods.rootkey.cancel(parseInt(transactionId, 10), { ...add, from: fromAccount })
+    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas })
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
     return res['/']
   }
 
   async listVerifiedClients() {
-    const verified = await this.getPath(this.methods.VERIFREG, '2');
-    const listOfVerified = await this.methods.buildArrayData(verified, a => this.load(a));
-    const returnList = [];
+    const verified = await this.getPath(this.methods.VERIFREG, '2')
+    const listOfVerified = await this.methods.buildArrayData(verified, a => this.load(a))
+    const returnList = []
     for (const [key, value] of listOfVerified) {
       returnList.push({
         verified: key,
         datacap: value.toString(10),
-      });
+      })
     }
     return returnList
   }
@@ -974,14 +976,14 @@ class VerifyAPI {
   }
 
   async listSigners(addr) {
-    const data = await this.getPath(addr, '');
-    const info = this.methods.decode(this.methods.msig_state, data);
+    const data = await this.getPath(addr, '')
+    const info = this.methods.decode(this.methods.msig_state, data)
     return info.signers
   }
 
   async actorType(addr) {
-    const head = await this.client.chainHead();
-    const actor = await this.client.stateGetActor(addr, head.Cids);
+    const head = await this.client.chainHead()
+    const actor = await this.client.stateGetActor(addr, head.Cids)
     return actor.Code['/']
   }
 
@@ -990,9 +992,9 @@ class VerifyAPI {
       return cacheAddress[str]
     }
     try {
-      const head = await this.client.chainHead();
-      const ret = await this.client.stateLookupID(str, head.Cids);
-      cacheAddress[str] = ret;
+      const head = await this.client.chainHead()
+      const ret = await this.client.stateLookupID(str, head.Cids)
+      cacheAddress[str] = ret
       return ret
     } catch (err) {
       return str
@@ -1004,8 +1006,8 @@ class VerifyAPI {
       return cacheKey[str]
     }
     try {
-      const head = await this.client.chainHead();
-      cacheKey[str] = await this.client.stateAccountKey(str, head.Cids);
+      const head = await this.client.chainHead()
+      cacheKey[str] = await this.client.stateAccountKey(str, head.Cids)
       return cacheKey[str]
     } catch (err) {
       return str
@@ -1013,14 +1015,14 @@ class VerifyAPI {
   }
 
   async actorAddress(str) {
-    const head = await this.client.chainHead();
+    const head = await this.client.chainHead()
     return this.client.stateLookupID(str, head.Cids)
   }
 
   async actorKey(str) {
     try {
-      const head = await this.client.chainHead();
-      const res = await this.client.stateAccountKey(str, head.Cids);
+      const head = await this.client.chainHead()
+      const res = await this.client.stateAccountKey(str, head.Cids)
       return res
     } catch (err) {
       return str
@@ -1029,10 +1031,10 @@ class VerifyAPI {
 
   async checkClient(verified) {
     try {
-      const data = await this.getPath(this.methods.VERIFREG, '');
-      const info = this.methods.decode(this.methods.verifreg_state, data);
-      const clients = await info.clients(a => this.load(a));
-      const datacap = await clients.find(a => this.load(a), verified);
+      const data = await this.getPath(this.methods.VERIFREG, '')
+      const info = this.methods.decode(this.methods.verifreg_state, data)
+      const clients = await info.clients(a => this.load(a))
+      const datacap = await clients.find(a => this.load(a), verified)
       return [{ verified, datacap }]
     } catch (err) {
       return []
@@ -1041,10 +1043,10 @@ class VerifyAPI {
 
   async checkVerifier(verifier) {
     try {
-      const data = await this.getPath(this.methods.VERIFREG, '');
-      const info = this.methods.decode(this.methods.verifreg_state, data);
-      const verifiers = await info.verifiers(a => this.load(a));
-      const datacap = await verifiers.find(a => this.load(a), verifier);
+      const data = await this.getPath(this.methods.VERIFREG, '')
+      const info = this.methods.decode(this.methods.verifreg_state, data)
+      const verifiers = await info.verifiers(a => this.load(a))
+      const datacap = await verifiers.find(a => this.load(a), verifier)
       return [{ verifier, datacap }]
     } catch (err) {
       return []
@@ -1052,19 +1054,19 @@ class VerifyAPI {
   }
 
   async verifyClient(clientAddress, datacap, indexAccount, wallet, { gas } = { gas: 0 }) {
-    const arg = this.methods.verifreg.addVerifiedClient(clientAddress, datacap);
-    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...arg, gas });
+    const arg = this.methods.verifreg.addVerifiedClient(clientAddress, datacap)
+    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...arg, gas })
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
     return res['/']
   }
 
   async multisigVerifyClient(multisigAddress, clientAddress, datacap, indexAccount, wallet, { gas } = { gas: 0 }) {
-    const tx = this.methods.verifreg.addVerifiedClient(clientAddress, datacap);
-    const m_actor = this.methods.actor(multisigAddress, this.methods.multisig);
+    const tx = this.methods.verifreg.addVerifiedClient(clientAddress, datacap)
+    const m_actor = this.methods.actor(multisigAddress, this.methods.multisig)
 
-    const proposeTx = m_actor.propose(tx);
-    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...proposeTx, gas });
+    const proposeTx = m_actor.propose(tx)
+    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...proposeTx, gas })
 
     // res has this shape: {/: "bafy2bzaceb32fwcf7uatfxfs367f3tw5yejcresnw4futiz35heb57ybaqxvu"}
     // we return the messageID
@@ -1072,55 +1074,55 @@ class VerifyAPI {
   }
 
   async approvePending(msig, tx, from, wallet) {
-    const m1_actor = this.methods.actor(msig, this.methods.multisig);
-    const messageId = await this.send(m1_actor.approve(parseInt(tx.id), tx.tx), from, wallet);
+    const m1_actor = this.methods.actor(msig, this.methods.multisig)
+    const messageId = await this.send(m1_actor.approve(parseInt(tx.id), tx.tx), from, wallet)
     return messageId
   }
 
   async cancelPending(msig, tx, from, wallet) {
-    const m1_actor = this.methods.actor(msig, this.methods.multisig);
+    const m1_actor = this.methods.actor(msig, this.methods.multisig)
     return await this.send(m1_actor.cancel(parseInt(tx.id), tx.tx), from, wallet)
   }
 
   async getTxFromMsgCid(cid) {
     try {
-      const waitMsg = await this.stateWaitMessage(cid);
-      const txId = waitMsg.ReturnDec.TxnID;
+      const waitMsg = await this.stateWaitMessage(cid)
+      const txId = waitMsg.ReturnDec.TxnID
 
-      const getMessage = await this.getMessage(cid);
-      const to = getMessage.To;
+      const getMessage = await this.getMessage(cid)
+      const to = getMessage.To
 
-      const pendingTxs = await this.pendingTransactions(to);
-      const tx = pendingTxs.find(tx => { return tx.id === txId });
+      const pendingTxs = await this.pendingTransactions(to)
+      const tx = pendingTxs.find(tx => { return tx.id === txId })
 
       if (!tx) return null
       return tx
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 
   async multisigProposeClient(m0_addr, m1_addr, client, cap, from, wallet) {
-    const amount = cap * 1073741824n; // 1 GiB
-    const m0_actor = this.methods.actor(m0_addr, this.methods.multisig);
-    const m1_actor = this.methods.actor(m1_addr, this.methods.multisig);
-    const tx = this.methods.verifreg.addVerifiedClient(client, amount);
-    const tx2 = m0_actor.propose(tx);
+    const amount = cap * 1073741824n // 1 GiB
+    const m0_actor = this.methods.actor(m0_addr, this.methods.multisig)
+    const m1_actor = this.methods.actor(m1_addr, this.methods.multisig)
+    const tx = this.methods.verifreg.addVerifiedClient(client, amount)
+    const tx2 = m0_actor.propose(tx)
     return await this.send(m1_actor.propose(tx2), from, wallet)
   }
 
   async newMultisig(signers, threshold, cap, from, wallet) {
-    const tx = this.methods.init.exec(this.methods.multisigCID, this.methods.encode(this.methods.msig_constructor, [signers, threshold, cap, 1000]));
-    const txid = await this.send({ ...tx, value: cap }, from, wallet);
-    const receipt = await this.getReceipt(txid);
-    const [addr] = this.methods.decode(['list', 'address'], cbor.decode(Buffer.from(receipt.Return, 'base64')));
+    const tx = this.methods.init.exec(this.methods.multisigCID, this.methods.encode(this.methods.msig_constructor, [signers, threshold, cap, 1000]))
+    const txid = await this.send({ ...tx, value: cap }, from, wallet)
+    const receipt = await this.getReceipt(txid)
+    const [addr] = this.methods.decode(['list', 'address'], cbor.decode(Buffer.from(receipt.Return, 'base64')))
     return addr
   }
 
   async multisigAdd(addr, signer, from, wallet) {
-    const actor = this.methods.actor(addr, this.methods.multisig);
-    const tx = actor.propose(actor.addSigner(signer, false));
-    const txid = await this.send(tx, from, wallet);
+    const actor = this.methods.actor(addr, this.methods.multisig)
+    const tx = actor.propose(actor.addSigner(signer, false))
+    const txid = await this.send(tx, from, wallet)
     return this.getReceipt(txid)
   }
 
@@ -1129,30 +1131,30 @@ class VerifyAPI {
   }
 
   async multisigInfo(addr) {
-    const data = await this.getPath(addr, '');
+    const data = await this.getPath(addr, '')
     return this.methods.decode(this.methods.msig_state, data)
   }
 
   async pendingTransactions(addr) {
-    const data = await this.getPath(addr, '6');
-    const info = this.methods.decode(this.methods.pending, data);
-    const obj = await info.asObject(a => this.load(a));
-    const returnList = [];
+    const data = await this.getPath(addr, '6')
+    const info = this.methods.decode(this.methods.pending, data)
+    const obj = await info.asObject(a => this.load(a))
+    const returnList = []
     for (const [k, v] of Object.entries(obj)) {
-      const parsed = this.methods.parse(v);
+      const parsed = this.methods.parse(v)
       returnList.push({
         id: parseInt(k),
         tx: { ...v, from: v.signers[0] },
         parsed,
         signers: v.signers,
-      });
+      })
     }
     return returnList
   }
 
   async signAndPushCustomTransaction(from, to, params) {
     try {
-      const nonce = await this.client.mpoolGetNonce(from);
+      const nonce = await this.client.mpoolGetNonce(from)
 
       const msg = {
         // version: 42,
@@ -1165,9 +1167,9 @@ class VerifyAPI {
         gaspremium: '0',
         method: 1,
         params,
-      };
-      const walletSignMessage = await this.client.walletSignMessage(from, msg);
-      const pushedMsgId = await this.client.mpoolPush(walletSignMessage);
+      }
+      const walletSignMessage = await this.client.walletSignMessage(from, msg)
+      const pushedMsgId = await this.client.mpoolPush(walletSignMessage)
       return { success: true, walletSignMessage, pushedMsgId }
     } catch (error) {
       return { success: false, error }
@@ -1176,7 +1178,7 @@ class VerifyAPI {
 
   async listMessagesFromToAddress(From, To, heightPerc = 0.5) {
     try {
-      const head = await this.client.chainHead();
+      const head = await this.client.chainHead()
       const messages = await this.client.stateListMessages(
         {
           To,
@@ -1184,7 +1186,7 @@ class VerifyAPI {
         },
         head.Cids,
         Math.round(head.Height - head.Height * heightPerc),
-      );
+      )
       return messages ? { success: true, messages } : { success: false }
     } catch (error) {
       return { success: false, error }
@@ -1193,7 +1195,7 @@ class VerifyAPI {
 
   async mpoolPush(walletSignMessage) {
     try {
-      const pushedMsgId = await this.client.mpoolPush(walletSignMessage);
+      const pushedMsgId = await this.client.mpoolPush(walletSignMessage)
       return pushedMsgId
     } catch (error) {
       return false
@@ -1211,38 +1213,38 @@ function parseApprovedRequestWithSignerAddress(issueContent) {
         signerAddress: 'Signer Address',
         message: 'Message sent to Filecoin Network',
         uuid: 'Id',
-    };
+    }
     const parsedData = {
         correct: true,
         errorMessage: '',
         errorDetails: '',
-    };
+    }
 
-    const trimmed = issueContent.replace(/(\n)|(\r)/gm, '');
+    const trimmed = issueContent.replace(/(\n)|(\r)/gm, '')
 
     for (const [key, value] of Object.entries(data)) {
-        let rg = new RegExp(`(?<=${value}>)(.*?)(?=#)`);
+        let rg = new RegExp(`(?<=${value}>)(.*?)(?=#)`)
 
         if (key === 'address') {
             // here some space problem which is always giving the => signer address thats why i create another rg with space
-            rg = new RegExp(`(?<=${value} >)(.*?)(?=#)`);
+            rg = new RegExp(`(?<=${value} >)(.*?)(?=#)`)
         }
 
         if (key === 'method') {
-            parsedData.approvedMessage = trimmed.includes(value);
+            parsedData.approvedMessage = trimmed.includes(value)
             continue
         }
 
-        const result = trimmed?.match(rg)[0].trim() || null;
-        const resultIsNull = !result || !result.length;
+        const result = trimmed?.match(rg)[0].trim() || null
+        const resultIsNull = !result || !result.length
 
         if (resultIsNull) {
-            parsedData.correct = false;
-            parsedData.errorMessage += `We could not find **${value}** field in the information provided\n`;
-            if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.';
+            parsedData.correct = false
+            parsedData.errorMessage += `We could not find **${value}** field in the information provided\n`
+            if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
             continue
         }
-        parsedData[key] = result || null;
+        parsedData[key] = result || null
     }
 
     return parsedData
@@ -1259,42 +1261,42 @@ function parseApprovedRequestWithSignerAddress(issueContent) {
  * @link to regex --> https://regex101.com/r/31sf7d/1
  */
 function ldnv3TriggerCommentParser(commentBody) {
-    const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '');
+    const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '')
     const data = {
         isTriggerComment: 'Datacap Request Trigger',
         totalDatacap: 'Total DataCap requested',
         weeklyDatacap: 'Expected weekly DataCap usage rate',
         clientAddress: 'Client address',
-    };
+    }
 
     const parsedData = {
         correct: true,
         errorMessage: '',
-    };
+    }
 
     for (const [k, v] of Object.entries(data)) {
         if (k === 'isTriggerComment') {
-            parsedData.isTriggerComment = trimmed.includes(v);
+            parsedData.isTriggerComment = trimmed.includes(v)
             continue
         }
-        const rg = new RegExp(`(?<=${v})(.*?)?(?=#)(?=#)|(?<=${v}).*$`);
-        const result = trimmed?.match(rg)[0].trim() || null;
-        const resultIsNull = !result || !result.length;
+        const rg = new RegExp(`(?<=${v})(.*?)?(?=#)(?=#)|(?<=${v}).*$`)
+        const result = trimmed?.match(rg)[0].trim() || null
+        const resultIsNull = !result || !result.length
 
         if (resultIsNull) {
-            parsedData.correct = false;
-            parsedData.errorMessage += `We could not find **${v}** field in the information provided\n`;
-            if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.';
+            parsedData.correct = false
+            parsedData.errorMessage += `We could not find **${v}** field in the information provided\n`
+            if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
             continue
         }
-        parsedData[k] = result || null;
+        parsedData[k] = result || null
     }
     return parsedData
 }
 
 /* eslint-disable indent */
 function parseNewLdn(trimmed) {
-    const regexForAdress = /^(f1|f3)/;
+    const regexForAdress = /^(f1|f3)/
 
     const data = {
         name: 'Data Owner Name',
@@ -1305,34 +1307,34 @@ function parseNewLdn(trimmed) {
         address: 'On-chain address for first allocation',
         isCustomNotary: 'Custom multisig',
         identifier: 'Identifier',
-    };
+    }
 
     const parsedData = {
         correct: true,
         errorMessage: '',
         errorDetails: '',
-    };
+    }
 
     for (const [k, v] of Object.entries(data)) {
-        const rg = new RegExp(`(?<=${v})(.*?)(?=#)`);
-        const regexIsNull = !trimmed.match(rg) || !trimmed.match(rg).length || !trimmed.match(rg)[0];
+        const rg = new RegExp(`(?<=${v})(.*?)(?=#)`)
+        const regexIsNull = !trimmed.match(rg) || !trimmed.match(rg).length || !trimmed.match(rg)[0]
 
         if ((k === 'identifier' || k === 'Custom multisig') && regexIsNull) continue
 
         if (regexIsNull) {
-            parsedData.correct = false;
-            parsedData.errorMessage += `We could not find **${v}** field in the information provided\n`;
-            if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.';
+            parsedData.correct = false
+            parsedData.errorMessage += `We could not find **${v}** field in the information provided\n`
+            if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
             continue
         }
 
-        parsedData[k] = trimmed.match(rg) ? trimmed.match(rg)[0] : null;
+        parsedData[k] = trimmed.match(rg) ? trimmed.match(rg)[0] : null
 
-        const isCustomRg = /- \[x\] Use Custom Multisig/gi;
+        const isCustomRg = /- \[x\] Use Custom Multisig/gi
 
-        if (k === 'isCustomNotary') parsedData[k] = isCustomRg.test(parsedData[k]);
+        if (k === 'isCustomNotary') parsedData[k] = isCustomRg.test(parsedData[k])
 
-        if (parsedData[k] === '_No response_') parsedData[k] = null;
+        if (parsedData[k] === '_No response_') parsedData[k] = null
 
         if (k === 'address') {
             parsedData['isAddressFormatted'] = regexForAdress.test(parsedData[k]); //eslint-disable-line
@@ -1358,44 +1360,44 @@ function parseOldLDN(issueContent) {
     address: 'On-chain address for first allocation',
     isCustomNotary: 'Type',
     identifier: /Identifier: (.*)/,
-  };
+  }
 
-  const regexForAdress = /^(f1|f3)/;
+  const regexForAdress = /^(f1|f3)/
 
   const parsedData = {
     correct: true,
     errorMessage: '',
     errorDetails: '',
-  };
+  }
 
-  const trimmed = issueContent.replace(/(\n)|(\r)/gm, '');
+  const trimmed = issueContent.replace(/(\n)|(\r)/gm, '')
 
   for (const [key, value] of Object.entries(data)) {
-    const rg = new RegExp(`(?<=${value}:)(.*?)(?=-)`);
+    const rg = new RegExp(`(?<=${value}:)(.*?)(?=-)`)
 
-    let result;
+    let result
     if (key === 'identifier') {
-      result = issueContent.match(value)[1].trim();
+      result = issueContent.match(value)[1].trim()
     } else {
-      result = trimmed?.match(rg)[0].trim() || null;
+      result = trimmed?.match(rg)[0].trim() || null
     }
 
-    const resultIsNull = !result || !result.length;
+    const resultIsNull = !result || !result.length
 
     if (resultIsNull) {
       if (key === 'identifier' || key === 'isCustomNotary') continue
-      parsedData.correct = false;
-      parsedData.errorMessage += `We could not find **${value}** field in the information provided\n`;
-      if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.';
+      parsedData.correct = false
+      parsedData.errorMessage += `We could not find **${value}** field in the information provided\n`
+      if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
       continue
     }
 
     if (key === 'isCustomNotary') {
-      parsedData[key] = result === 'Custom Notary';
+      parsedData[key] = result === 'Custom Notary'
       continue
     }
 
-    parsedData[key] = result || null;
+    parsedData[key] = result || null
 
     if (key === 'address') {
       parsedData["isAddressFormatted"] = regexForAdress.test(parsedData[key]); //eslint-disable-line
@@ -1409,7 +1411,7 @@ function parseOldLDN(issueContent) {
 
 // ldn template parser
 function parseIssue$1(issueContent) {
-    const trimmed = issueContent.replace(/(\n)|(\r)/gm, '');
+    const trimmed = issueContent.replace(/(\n)|(\r)/gm, '')
 
     if (trimmed.startsWith('### Data Owner Name')) { return parseNewLdn(trimmed) }
 
@@ -1422,34 +1424,34 @@ function parseMultisigNotaryRequest(commentBody) {
         regexMultisig: 'Multisig Notary requested',
         totalDatacaps: 'Total DataCap requested',
         weeklyDatacap: 'Expected weekly DataCap usage rate',
-};
+}
 
 const parsedData = {
     correct: true,
     multisigMessage: true,
     errorMessage: '',
-};
+}
 
-const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '');
+const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '')
 
 for (const [key, value] of Object.entries(data)) {
-    const rg = new RegExp(`(?<=${value})(.*?)?(?=#)(?=#)|(?<=${value}).*$`);
+    const rg = new RegExp(`(?<=${value})(.*?)?(?=#)(?=#)|(?<=${value}).*$`)
 
     if (key === 'regexMultisig') {
-        parsedData.multisigMessage = trimmed.includes(value);
+        parsedData.multisigMessage = trimmed.includes(value)
         continue
     }
 
-    const result = trimmed?.match(rg)[0].trim() || null;
-    const resultIsNull = !result || !result.length;
+    const result = trimmed?.match(rg)[0].trim() || null
+    const resultIsNull = !result || !result.length
 
     if (resultIsNull) {
-        parsedData.correct = false;
-        parsedData.errorMessage += `We could not find **${value}** field in the information provided\n`;
-        if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.';
+        parsedData.correct = false
+        parsedData.errorMessage += `We could not find **${value}** field in the information provided\n`
+        if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
         continue
     }
-    parsedData[key] = result || null;
+    parsedData[key] = result || null
 }
 
 return parsedData
@@ -1462,44 +1464,44 @@ const data = {
     msigAddress: 'Multisig Notary Address',
     clientAddress: 'Client Address',
     issueURI: 'Notary Governance Issue',
-};
+}
 
 const parsedData = {
     correct: true,
     multisigMessage: true,
     errorMessage: '',
-};
-const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '');
+}
+const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '')
 
 for (const [key, value] of Object.entries(data)) {
-    const rg = new RegExp(`(?<=${value})(.*?)?(?=#)(?=#)|(?<=${value}).*$`);
+    const rg = new RegExp(`(?<=${value})(.*?)?(?=#)(?=#)|(?<=${value}).*$`)
 
     if (key === 'regexRequest') {
-        parsedData.multisigMessage = trimmed.includes(value);
+        parsedData.multisigMessage = trimmed.includes(value)
         continue
     }
 
-    const result = trimmed?.match(rg)[0].trim() || null;
-    const resultIsNull = !result || !result.length;
+    const result = trimmed?.match(rg)[0].trim() || null
+    const resultIsNull = !result || !result.length
 
     if (resultIsNull) {
-        parsedData.correct = false;
-        parsedData.errorMessage += `We could not find **${value}** field in the information provided\n`;
-        if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.';
+        parsedData.correct = false
+        parsedData.errorMessage += `We could not find **${value}** field in the information provided\n`
+        if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
         continue
     }
-    parsedData[key] = result || null;
+    parsedData[key] = result || null
 }
 
 return parsedData
 }
 
 function parseNotaryConfirmation(commentContent, title) {
-  const result = title.match(/#(\d+)/);
+  const result = title.match(/#(\d+)/)
 
-  const confirmationText = '## The request has been signed by a new Root Key Holder';
+  const confirmationText = '## The request has been signed by a new Root Key Holder'
 
-  const confirmationMessage = commentContent.includes(confirmationText);
+  const confirmationMessage = commentContent.includes(confirmationText)
 
   if (!result) {
     return {
@@ -1519,34 +1521,34 @@ function parseWeeklyDataCapAllocationUpdateRequest(commentBody) {
     const data = {
         regexRequest: 'Weekly DataCap Allocation Update requested',
         allocationDatacap: 'Update to expected weekly DataCap usage rate',
-    };
+    }
 
     const parsedData = {
         correct: true,
         multisigMessage: true,
         errorMessage: '',
-    };
+    }
 
-const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '');
+const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '')
 
 for (const [key, value] of Object.entries(data)) {
-    const rg = new RegExp(`(?<=${value})(.*?)?(?=#)(?=#)|(?<=${value}).*$`);
+    const rg = new RegExp(`(?<=${value})(.*?)?(?=#)(?=#)|(?<=${value}).*$`)
 
     if (key === 'regexRequest') {
-        parsedData.multisigMessage = trimmed.includes(value);
+        parsedData.multisigMessage = trimmed.includes(value)
         continue
     }
 
-    const result = trimmed?.match(rg)[0].trim() || null;
-    const resultIsNull = !result || !result.length;
+    const result = trimmed?.match(rg)[0].trim() || null
+    const resultIsNull = !result || !result.length
 
     if (resultIsNull) {
-        parsedData.correct = false;
-        parsedData.errorMessage += `We could not find **${value}** field in the information provided\n`;
-        if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.';
+        parsedData.correct = false
+        parsedData.errorMessage += `We could not find **${value}** field in the information provided\n`
+        if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
         continue
     }
-    parsedData[key] = result || null;
+    parsedData[key] = result || null
 }
 
 return parsedData
@@ -1554,61 +1556,61 @@ return parsedData
 
 /* eslint-disable indent */
 function parseReleaseRequest(commentBody) {
-    const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '');
+    const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '')
     const data = {
         regexMultisig: 'DataCap Allocation requested',
         notaryAddress: 'Multisig Notary address',
         clientAddress: 'Client address',
         allocationDatacap: 'DataCap allocation requested',
         uuid: 'Id',
-    };
+    }
 
     const parsedData = {
         correct: true,
         multisigMessage: true,
         errorMessage: '',
-    };
+    }
 
     for (const [k, v] of Object.entries(data)) {
         if (k === 'regexMultisig') {
-            parsedData.multisigMessage = trimmed.includes(v);
+            parsedData.multisigMessage = trimmed.includes(v)
             continue
         }
-        const rg = new RegExp(`(?<=${v})(.*?)?(?=#)(?=#)|(?<=${v}).*$`);
-        const result = trimmed?.match(rg)[0].trim() || null;
-        const resultIsNull = !result || !result.length;
+        const rg = new RegExp(`(?<=${v})(.*?)?(?=#)(?=#)|(?<=${v}).*$`)
+        const result = trimmed?.match(rg)[0].trim() || null
+        const resultIsNull = !result || !result.length
 
         if (resultIsNull) {
-            parsedData.correct = false;
-            parsedData.errorMessage += `We could not find **${v}** field in the information provided\n`;
-            if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.';
+            parsedData.correct = false
+            parsedData.errorMessage += `We could not find **${v}** field in the information provided\n`
+            if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
             continue
         }
 
         if (k === 'allocationDatacap') {
-            parsedData.allocationDataCapAmount = [result];
+            parsedData.allocationDataCapAmount = [result]
         }
 
-        parsedData[k] = result || null;
+        parsedData[k] = result || null
     }
     return parsedData
 }
 
-var largeIssueParser = /*#__PURE__*/Object.freeze({
+const largeIssueParser = /* #__PURE__ */Object.freeze({
   __proto__: null,
-  ldnv3TriggerCommentParser: ldnv3TriggerCommentParser,
-  parseApprovedRequestWithSignerAddress: parseApprovedRequestWithSignerAddress,
+  ldnv3TriggerCommentParser,
+  parseApprovedRequestWithSignerAddress,
   parseIssue: parseIssue$1,
-  parseMultisigNotaryRequest: parseMultisigNotaryRequest,
-  parseMultisigReconnectComment: parseMultisigReconnectComment,
-  parseNotaryConfirmation: parseNotaryConfirmation,
-  parseReleaseRequest: parseReleaseRequest,
-  parseWeeklyDataCapAllocationUpdateRequest: parseWeeklyDataCapAllocationUpdateRequest
-});
+  parseMultisigNotaryRequest,
+  parseMultisigReconnectComment,
+  parseNotaryConfirmation,
+  parseReleaseRequest,
+  parseWeeklyDataCapAllocationUpdateRequest,
+})
 
 // used in large-issue-parser and notary-issue-parser
 function matchGroupLargeNotary(regex, content) {
-  let m;
+  let m
   if ((m = regex.exec(content)) !== null) {
     if (m.length >= 2) {
       return m[1].trim()
@@ -1622,10 +1624,10 @@ function parseNotaryAddress(issueContent) {
     regexAddressZero: /-?\s*On-chain\s*Address\(es\)\s*to\s*be\s*Notarized:\s*(.*)/mi,
     regexAddressOne: /-?\s*On-chain\s*Address\s*to\s*be\s*Notarized:\s*(.*)/mi,
     regexAddressTwo: /-?\s*On-chain\s*address\s*to\s*be\s*notarized\s*\(recommend using a new address\):\s*(.*)/mi,
-  };
+  }
 
   for (const key of Object.keys(regexObj)) {
-    const address = matchGroupLargeNotary(regexObj[key], issueContent);
+    const address = matchGroupLargeNotary(regexObj[key], issueContent)
 
     if (address) {
       return address
@@ -1635,9 +1637,9 @@ function parseNotaryAddress(issueContent) {
 }
 
 function parseNotaryLedgerVerifiedComment(commentContent) {
-  const regexVerified = /##\s*Notary\s*Ledger\s*Verified/m;
+  const regexVerified = /##\s*Notary\s*Ledger\s*Verified/m
 
-  const verified = matchGroupLargeNotary(regexVerified, commentContent);
+  const verified = matchGroupLargeNotary(regexVerified, commentContent)
 
   if (verified) {
     return {
@@ -1645,8 +1647,8 @@ function parseNotaryLedgerVerifiedComment(commentContent) {
     }
   }
 
-  let errorMessage = '';
-  if (!verified) { errorMessage += 'The issue is not verified\n'; }
+  let errorMessage = ''
+  if (!verified) { errorMessage += 'The issue is not verified\n' }
 
   return {
     correct: false,
@@ -1656,36 +1658,36 @@ function parseNotaryLedgerVerifiedComment(commentContent) {
 }
 
 function parseApproveComment(commentBody) {
-  const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '');
+  const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, '')
 
   const data = {
     approved: 'Request Approved',
     address: 'Address',
     datacap: 'Datacap Allocated',
-  };
+  }
 
   const parsedData = {
     correct: true,
     errorMessage: '',
     approvedMessage: true,
-  };
+  }
 
   for (const [k, v] of Object.entries(data)) {
     if (k === 'approved') {
-      parsedData.isTriggerComment = trimmed.includes(v);
+      parsedData.isTriggerComment = trimmed.includes(v)
       continue
     }
-    const rg = new RegExp(`(?<=${v})(.*?)?(?=#)(?=#)|(?<=${v}).*$`);
-    const result = trimmed?.match(rg)[0].trim() || null;
-    const resultIsNull = !result || !result.length;
+    const rg = new RegExp(`(?<=${v})(.*?)?(?=#)(?=#)|(?<=${v}).*$`)
+    const result = trimmed?.match(rg)[0].trim() || null
+    const resultIsNull = !result || !result.length
 
     if (resultIsNull) {
-      parsedData.correct = false;
-      parsedData.errorMessage += `We could not find **${v}** field in the information provided\n`;
-      if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.';
+      parsedData.correct = false
+      parsedData.errorMessage += `We could not find **${v}** field in the information provided\n`
+      if (parsedData.errorDetails !== '') parsedData.errorDetails = 'Unable to find required attributes.'
       continue
     }
-    parsedData[k] = result || null;
+    parsedData[k] = result || null
   }
   return parsedData
 }
@@ -1701,48 +1703,48 @@ function parseIssue(issueContent) {
     useCases: 'Use case\\(s\\) to be supported',
     datacapRequested: 'DataCap requested for allocation \\(10TiB - 1PiB\\)',
     behalf: /-\s*Are you applying on behalf of yourself or an organization\?:\s*(.*)/m,
-  };
+  }
 
   const parsedData = {
     correct: true,
     errorMessage: '',
     errorDetails: '',
-  };
+  }
 
-  const trimmed = issueContent.replace(/(\n)|(\r)/gm, '');
+  const trimmed = issueContent.replace(/(\n)|(\r)/gm, '')
 
   for (const [key, value] of Object.entries(data)) {
-    const rg = new RegExp(`(?<=${value}:)(.*?)(?=-)`);
+    const rg = new RegExp(`(?<=${value}:)(.*?)(?=-)`)
 
-    let result;
+    let result
     if (key === 'behalf') {
-      result = issueContent.match(value)[1].trim();
+      result = issueContent.match(value)[1].trim()
     } else {
-      result = trimmed?.match(rg)[0].trim() ?? null;
+      result = trimmed?.match(rg)[0].trim() ?? null
     }
 
-    const resultIsNull = !result || !result.length;
+    const resultIsNull = !result || !result.length
 
     if (resultIsNull) {
-      parsedData.correct = false;
-      parsedData.errorMessage += `We could not find **${value}** field in the information provided\n`;
+      parsedData.correct = false
+      parsedData.errorMessage += `We could not find **${value}** field in the information provided\n`
     }
 
-    parsedData[key] = result || null;
+    parsedData[key] = result || null
   }
 
   return parsedData
 }
 
-var notaryIssueParser = /*#__PURE__*/Object.freeze({
+const notaryIssueParser = /* #__PURE__ */Object.freeze({
   __proto__: null,
-  parseApproveComment: parseApproveComment,
-  parseIssue: parseIssue,
-  parseNotaryAddress: parseNotaryAddress,
-  parseNotaryLedgerVerifiedComment: parseNotaryLedgerVerifiedComment
-});
+  parseApproveComment,
+  parseIssue,
+  parseNotaryAddress,
+  parseNotaryLedgerVerifiedComment,
+})
 
-exports.VerifyAPI = VerifyAPI;
-exports.ldnParser = largeIssueParser;
-exports.methods = methods;
-exports.notaryParser = notaryIssueParser;
+exports.VerifyAPI = VerifyAPI
+exports.ldnParser = largeIssueParser
+exports.methods = methods
+exports.notaryParser = notaryIssueParser
