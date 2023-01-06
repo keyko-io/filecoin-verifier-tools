@@ -177,15 +177,29 @@ class VerifyAPI {
     }
   }
 
-  async actorAddress(str) {
-    const head = await this.client.chainHead()
-    return this.client.stateLookupID(str, head.Cids)
+  async actorAddress(str, headCids) {
+    if (!headCids) {
+      headCids = (await this.client.chainHead()).Cids
+    }
+
+    return this.client.stateLookupID(str, headCids)
   }
 
-  async actorKey(str) {
+  async chainHead() {
     try {
-      const head = await this.client.chainHead()
-      const res = await this.client.stateAccountKey(str, head.Cids)
+      return this.client.chainHead()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async actorKey(str, headCids) {
+    try {
+      if (!headCids) {
+        headCids = (await this.client.chainHead()).Cids
+      }
+
+      const res = await this.client.stateAccountKey(str, headCids)
       return res
     } catch (err) {
       return str
