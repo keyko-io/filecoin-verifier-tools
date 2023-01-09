@@ -9,6 +9,6 @@ const methods_map = {
   SwapSigner: 7,
   ChangeNumApprovalsThreshold: 8,
   LockBalance: 9,
-};
+}
 
-export const msigMethods = methods_map;
+export const msigMethods = methods_map
