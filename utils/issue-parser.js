@@ -1,3 +1,6 @@
+/* eslint-disable comma-dangle */
+/* eslint-disable semi */
+/* eslint-disable quotes */
 export function parseIssue(issueContent) {
   const data = {
     name: "Name",
