@@ -1,120 +1,145 @@
 // @ts-nocheck
-const { google } = require('googleapis')
-const { PATH_PREFIX, COLUMN_MAPPING, SCOPES, spreadsheetId, sheetName } = require('./constants')
-const { credentials } = require('./credentials')
+const { google } = require("googleapis");
+const {
+  PATH_PREFIX,
+  COLUMN_MAPPING,
+  SCOPES,
+  spreadsheetId,
+  sheetName,
+} = require("./constants");
+const { credentials } = require("./credentials");
 
-const runSpreadSheetFiller = async (issuesArray) => {
+export const runSpreadSheetFiller = async (issuesArray) => {
   try {
-    const jwtAuth = await authorizeAndRun(credentials)
+    const jwtAuth = await authorizeAndRun(credentials);
     // console.log("jwtAuth",jwtAuth)
-    await fillOrUpdateSpreadsheet(jwtAuth, issuesArray)
+    await fillOrUpdateSpreadsheet(jwtAuth, issuesArray);
   } catch (error) {
-    console.log('error filling up the spreadsheet', error)
+    console.log("error filling up the spreadsheet", error);
   }
-}
+};
 
 const fillOrUpdateSpreadsheet = async (jwtAuth, issuesArray) => {
   try {
-    const sheets = google.sheets({ version: 'v4', auth: jwtAuth })
+    const sheets = google.sheets({ version: "v4", auth: jwtAuth });
 
     // Get the values in the column A
-    const firstColumn = (await sheets.spreadsheets.values.batchGet({
+    const firstColumn = await sheets.spreadsheets.values.batchGet({
       spreadsheetId,
       ranges: [`${sheetName}!A2:A`],
-      majorDimension: 'COLUMNS',
-    }))
+      majorDimension: "COLUMNS",
+    });
 
-    const issuesInSheet = firstColumn.data.valueRanges[0].values ? firstColumn.data.valueRanges[0].values[0] : []
+    const issuesInSheet = firstColumn.data.valueRanges[0].values
+      ? firstColumn.data.valueRanges[0].values[0]
+      : [];
 
-    const data = await addOrUpdateSpreadsheet(issuesArray, issuesInSheet, sheets)
+    const data = await addOrUpdateSpreadsheet(
+      issuesArray,
+      issuesInSheet,
+      sheets
+    );
 
     await sheets.spreadsheets.values.batchUpdate({
       spreadsheetId,
-      valueInputOption: 'USER_ENTERED',
+      valueInputOption: "USER_ENTERED",
       requestBody: {
         data,
       },
-    })
+    });
   } catch (error) {
-    console.log('error in spreadsheetFiller fillOrUpdateSpreadsheet', error)
+    console.log("error in spreadsheetFiller fillOrUpdateSpreadsheet", error);
   }
-}
+};
 
 const addOrUpdateSpreadsheet = async (issuesArray, issuesInSheet, sheets) => {
   try {
-    let numberOfRowsInSheet = issuesInSheet.length + 1 // counting how many issues are there in the spreadsheet
-    const data = []
-    let range = ''
+    let numberOfRowsInSheet = issuesInSheet.length + 1; // counting how many issues are there in the spreadsheet
+    const data = [];
+    let range = "";
 
     for (const issue of issuesArray) {
       if (issuesInSheet.includes(String(issue.issueNumber))) {
-      // if present --> get all the value of the cells of the issue
-        const rowNumber = issuesInSheet.indexOf(String(issue.issueNumber)) + 2
+        // if present --> get all the value of the cells of the issue
+        const rowNumber = issuesInSheet.indexOf(String(issue.issueNumber)) + 2;
 
-        const allRowValues = (await sheets.spreadsheets.values.batchGet({
+        const allRowValues = await sheets.spreadsheets.values.batchGet({
           spreadsheetId,
           ranges: [`${sheetName}!A${rowNumber}:P${rowNumber}`],
-          majorDimension: 'COLUMNS',
-        }))
+          majorDimension: "COLUMNS",
+        });
 
-        const arrayOfCellValuesInRow = allRowValues.data.valueRanges.map((value) => value.values.map(item => item[0] ? item[0] : ''))[0]
+        const arrayOfCellValuesInRow = allRowValues.data.valueRanges.map(
+          (value) => value.values.map((item) => (item[0] ? item[0] : ""))
+        )[0];
 
         // map the array of values in the row
-        const mappedRowObject = {}
+        const mappedRowObject = {};
         for (let i = 0; i < arrayOfCellValuesInRow.length; i++) {
-          mappedRowObject[COLUMN_MAPPING[i].id] = arrayOfCellValuesInRow[i]
+          mappedRowObject[COLUMN_MAPPING[i].id] = arrayOfCellValuesInRow[i];
         }
 
         for (const key of Object.keys(issue)) {
-          const values = [[]]
-          const columnLetter = COLUMN_MAPPING.find(item => item.id === key).columnLetter
+          const values = [[]];
+          const columnLetter = COLUMN_MAPPING.find(
+            (item) => item.id === key
+          ).columnLetter;
           // this is the cell to be updated
-          range = `${sheetName}!${columnLetter}${rowNumber}:${columnLetter}${rowNumber}`
+          range = `${sheetName}!${columnLetter}${rowNumber}:${columnLetter}${rowNumber}`;
 
-          const incomingValue = issue[key]
-          const previousValue = mappedRowObject[key]
+          const incomingValue = issue[key];
+          const previousValue = mappedRowObject[key];
 
           //  compare with the value of the issue passed in the funciton
           if (incomingValue !== previousValue) {
-            if (key === 'title') {
-              const hyperlink = `${PATH_PREFIX}/${issue.issueNumber}`
-              const cellContent = `=HYPERLINK("${hyperlink}", "${incomingValue}")`
-              values[0].push(cellContent)
-              continue
+            if (key === "title") {
+              const hyperlink = `${PATH_PREFIX}/${issue.issueNumber}`;
+              const cellContent = `=HYPERLINK("${hyperlink}", "${incomingValue}")`;
+              values[0].push(cellContent);
+              continue;
             }
 
-            values[0].push(incomingValue)
+            values[0].push(incomingValue);
           } else {
-            continue
+            continue;
           }
-          data.push({ range, values })
+          data.push({ range, values });
         }
-      } else { // if not present --> add the issue in a new row
-        loopObjectKeysAndFillUpData(issue, numberOfRowsInSheet, range, data)
-        numberOfRowsInSheet++
+      } else {
+        // if not present --> add the issue in a new row
+        loopObjectKeysAndFillUpData(issue, numberOfRowsInSheet, range, data);
+        numberOfRowsInSheet++;
       }
     }
-    return data
+    return data;
   } catch (error) {
-    console.log('error in spreadsheetFiller addOrUpdateSpreadsheet', error)
+    console.log("error in spreadsheetFiller addOrUpdateSpreadsheet", error);
   }
-}
+};
 
-const loopObjectKeysAndFillUpData = (issue, numberOfRowsInSheet, range, data) => {
+const loopObjectKeysAndFillUpData = (
+  issue,
+  numberOfRowsInSheet,
+  range,
+  data
+) => {
   for (const key of Object.keys(issue)) {
-    const values = [[]]
-    let cellContent = issue[key]
-    if (key === 'title') {
-      const hyperlink = `${PATH_PREFIX}/${issue.issueNumber}`
-      cellContent = `=HYPERLINK("${hyperlink}", "${issue[key]}")`
+    const values = [[]];
+    let cellContent = issue[key];
+    if (key === "title") {
+      const hyperlink = `${PATH_PREFIX}/${issue.issueNumber}`;
+      cellContent = `=HYPERLINK("${hyperlink}", "${issue[key]}")`;
     }
-    const columnLetter = COLUMN_MAPPING.find(item => item.id === key).columnLetter
-    range = `${sheetName}!${columnLetter}${numberOfRowsInSheet + 1}:${columnLetter}${numberOfRowsInSheet + 1}`
-    values[0].push(cellContent)
-    data.push({ range, values },
-    )
+    const columnLetter = COLUMN_MAPPING.find(
+      (item) => item.id === key
+    ).columnLetter;
+    range = `${sheetName}!${columnLetter}${
+      numberOfRowsInSheet + 1
+    }:${columnLetter}${numberOfRowsInSheet + 1}`;
+    values[0].push(cellContent);
+    data.push({ range, values });
   }
-}
+};
 
 /**
  * @param {Object} credentials The authorization client credentials.
@@ -125,10 +150,9 @@ const authorizeAndRun = async (credentials) => {
     key: credentials.private_key,
     keyId: credentials.private_key_id,
     scopes: SCOPES,
-
-  })
-  return jwtAuth
-}
+  });
+  return jwtAuth;
+};
 
 // TODO run once to create the spreadsheet
 // const createSpreadSheet = async (auth) => {
@@ -188,5 +212,3 @@ const authorizeAndRun = async (credentials) => {
 //     console.log(error)
 //   }
 // }
-
-exports.runSpreadSheetFiller = runSpreadSheetFiller
