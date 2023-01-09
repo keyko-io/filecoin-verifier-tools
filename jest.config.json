@@ -3,7 +3,11 @@
  "transform": {},
  "globals":{
   "NODE_OPTIONS":"--experimental-vm-modules"
- }
+ },
+ "testPathIgnorePatterns":[
+    "./build",
+    "./lib"
+ ]
 }
 
 
