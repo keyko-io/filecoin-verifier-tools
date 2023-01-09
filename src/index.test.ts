@@ -1,4 +1,4 @@
-import * as main from './main'
+import * as main from './index'
 
 describe('test main package', () => {
   it('test api package', () => {

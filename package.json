@@ -8,7 +8,7 @@
     "url": "git+https://github.com/keyko-io/filecoin-verifier-tools.git"
   },
   "scripts": {
-    "test": "NODE_OPTIONS=--experimental-vm-modules && npx jest",
+    "test": "jest",
     "start": "node ./lib/index.js",
     "build": "tsc",
     "lint": "eslint .",
@@ -29,10 +29,10 @@
     "@filecoin-shipyard/lotus-client-rpc": "^1.2.0",
     "@filecoin-shipyard/lotus-client-schema": "4.2.0",
     "@glif/filecoin-address": "^1.1.0",
+    "@types/jest": "^29.2.5",
     "@types/node": "^18.11.18",
     "@zondax/filecoin-signing-tools": "^0.7.1",
     "axios": "^1.2.1",
-    "babel-jest": "^29.3.1",
     "base32-decode": "^1.0.0",
     "base32-encode": "^2.0.0",
     "bip32": "^2.0.5",
