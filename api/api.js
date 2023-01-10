@@ -13,6 +13,7 @@ export class VerifyAPI {
     this.methods = testnet ? methods.testnet : methods.mainnet
     this.client = lotusClient
     this.walletContext = walletContext
+    this.chainHead = null
   }
 
   static standAloneProvider(lotusEndpoint, token) {
@@ -31,8 +32,8 @@ export class VerifyAPI {
   }
 
   async getPath(addr, path) {
-    const head = await this.client.chainHead()
-    const actor = await this.client.stateGetActor(addr, head.Cids)
+    const headCids = (await this.getChainHead()).Cids
+    const actor = await this.client.stateGetActor(addr, headCids)
     // const state = head.Blocks[0].ParentStateRoot['/']
     // return (await this.client.chainGetNode(`${state}/1/@Ha:${addr}/${path}`)).Obj
     return (await this.client.chainGetNode(`${actor.Head['/']}/${path}`)).Obj
@@ -145,8 +146,8 @@ export class VerifyAPI {
   }
 
   async actorType(addr) {
-    const head = await this.client.chainHead()
-    const actor = await this.client.stateGetActor(addr, head.Cids)
+    const headCids = (await this.getChainHead()).Cids
+    const actor = await this.client.stateGetActor(addr, headCids)
     return actor.Code['/']
   }
 
@@ -155,8 +156,8 @@ export class VerifyAPI {
       return cacheAddress[str]
     }
     try {
-      const head = await this.client.chainHead()
-      const ret = await this.client.stateLookupID(str, head.Cids)
+      const headCids = (await this.getChainHead()).Cids
+      const ret = await this.client.stateLookupID(str, headCids)
       cacheAddress[str] = ret
       return ret
     } catch (err) {
@@ -169,8 +170,8 @@ export class VerifyAPI {
       return cacheKey[str]
     }
     try {
-      const head = await this.client.chainHead()
-      cacheKey[str] = await this.client.stateAccountKey(str, head.Cids)
+      const headCids = (await this.getChainHead()).Cids
+      cacheKey[str] = await this.client.stateAccountKey(str, headCids)
       return cacheKey[str]
     } catch (err) {
       return str
@@ -178,14 +179,26 @@ export class VerifyAPI {
   }
 
   async actorAddress(str) {
-    const head = await this.client.chainHead()
-    return this.client.stateLookupID(str, head.Cids)
+    const headCids = (await this.getChainHead()).Cids
+    return this.client.stateLookupID(str, headCids)
+  }
+
+  async getChainHead() {
+    if (this.chainHead) return this.chainHead
+
+    try {
+      const head = await this.client.chainHead()
+      this.chainHead = head
+      return head
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   async actorKey(str) {
     try {
-      const head = await this.client.chainHead()
-      const res = await this.client.stateAccountKey(str, head.Cids)
+      const headCids = (await this.getChainHead()).Cids
+      const res = await this.client.stateAccountKey(str, headCids)
       return res
     } catch (err) {
       return str
@@ -341,7 +354,7 @@ export class VerifyAPI {
 
   async listMessagesFromToAddress(From, To, heightPerc = 0.5) {
     try {
-      const head = await this.client.chainHead()
+      const head = await this.getChainHead()
       const messages = await this.client.stateListMessages(
         {
           To,
