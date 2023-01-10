@@ -7,7 +7,7 @@ const __dirname = path.resolve()
 describe('parseOldLDN()', () => {
     it('we can parse new template correctly', () => {
         const issueContent = readFileSync(
-            resolve(__dirname, 'samples/utils/new_ldn_template_yaml.md'),
+            resolve(__dirname, 'src/samples/utils/new_ldn_template_yaml.md'),
             { encoding: 'utf8' },
         )
 

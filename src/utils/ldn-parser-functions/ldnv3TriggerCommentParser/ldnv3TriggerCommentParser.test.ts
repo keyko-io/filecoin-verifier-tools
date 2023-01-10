@@ -6,7 +6,7 @@ const __dirname = path.resolve()
 describe('v3 Datacap Request Trigger', () => {
     it('we can parse trigger comment correctly', () => {
         const commentContent = readFileSync(
-            resolve(__dirname, 'samples/utils/v3_trigger.test.md'),
+            resolve(__dirname, 'src/samples/utils/v3_trigger.test.md'),
             { encoding: 'utf8' },
         )
 
@@ -22,7 +22,7 @@ describe('v3 Datacap Request Trigger', () => {
 
     it('if the fields are empty , it should give us error and error message', () => {
         const commentContent = readFileSync(
-            resolve(__dirname, 'samples/utils/v3_trigger_wrong.test.md'),
+            resolve(__dirname, 'src/samples/utils/v3_trigger_wrong.test.md'),
             { encoding: 'utf8' },
         )
 

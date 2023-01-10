@@ -1,5 +1,6 @@
+//@ts-nocheck
+import { methods as m } from './methods'
 
-import { methods as m } from './methods.js'
 const methods = m.testnet
 const {
   encodeAddVerifier,

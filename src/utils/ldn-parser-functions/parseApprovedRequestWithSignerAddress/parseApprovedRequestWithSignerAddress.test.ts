@@ -6,7 +6,7 @@ const __dirname = path.resolve()
 describe('parseApprovedRequestWithSignerAddress()', () => {
     it('we can parse an approve comment including the right data', () => {
         const proposeComment = readFileSync(
-            resolve(__dirname, 'samples/utils/ldn_propose_dc_request_comment.test.md'),
+            resolve(__dirname, 'src/samples/utils/ldn_propose_dc_request_comment.test.md'),
             { encoding: 'utf8' },
         )
 
@@ -22,7 +22,7 @@ describe('parseApprovedRequestWithSignerAddress()', () => {
     })
     it('we can parse an approve comment including the right data', () => {
         const approveComment = readFileSync(
-            resolve(__dirname, 'samples/utils/ldn_approve_dc_request_comment.test.md'),
+            resolve(__dirname, 'src/samples/utils/ldn_approve_dc_request_comment.test.md'),
             { encoding: 'utf8' },
         )
         const parsedResultApprove = parseApprovedRequestWithSignerAddress(approveComment)

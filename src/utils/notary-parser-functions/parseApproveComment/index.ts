@@ -1,11 +1,15 @@
+
 interface ApprovedCommentParsedData {
-        correct: boolean;
-        errorMessage: string;
-        approvedMessage: boolean;
-        errorDetails?: string;
-        isTriggerComment?: boolean;
-    } 
-    export function parseApproveComment(commentBody) {
+    correct: boolean;
+    errorMessage: string;
+    approvedMessage: boolean;
+    errorDetails?: string;
+    isTriggerComment?: boolean;
+    address?: string;
+    datacap?: string;
+}
+
+export function parseApproveComment(commentBody) {
     const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, "");
 
     const data = {
@@ -15,8 +19,11 @@ interface ApprovedCommentParsedData {
     };
 
     const parsedData: ApprovedCommentParsedData = {
+        address: "",
+        datacap: "",
         correct: true,
         errorMessage: "",
+        errorDetails: "",
         approvedMessage: true,
     };
 

@@ -10,6 +10,7 @@ export function parseReleaseRequest(commentBody) {
   }
 
   const parsedData = {
+    errorDetails:'',
     regexMultisig: '',
     notaryAddress: '',
     clientAddress: '',
@@ -18,6 +19,7 @@ export function parseReleaseRequest(commentBody) {
     correct: true,
     multisigMessage: true,
     errorMessage: '',
+    allocationDataCapAmount: [],
   }
 
   for (const [k, v] of Object.entries(data)) {

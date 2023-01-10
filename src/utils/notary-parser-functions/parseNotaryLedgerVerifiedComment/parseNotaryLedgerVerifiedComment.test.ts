@@ -6,7 +6,7 @@ const __dirname = resolve()
 describe('parseNotaryLedgerVerifiedComment()', () => {
   it('we can parse the Notary Ledger Verified comment', () => {
     const commentContent = readFileSync(
-      resolve(__dirname, 'samples/utils/notary_ledger_verified_comment.test.md'),
+      resolve(__dirname, 'src/samples/utils/notary_ledger_verified_comment.test.md'),
       { encoding: 'utf8' },
     )
     const parsedResult = parseNotaryLedgerVerifiedComment(commentContent)

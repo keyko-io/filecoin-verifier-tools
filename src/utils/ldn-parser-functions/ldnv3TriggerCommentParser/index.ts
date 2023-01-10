@@ -1,3 +1,4 @@
+//@ts-nocheck
 /* eslint-disable indent */
 /**
  * @param commentBody
@@ -20,6 +21,10 @@ export function ldnv3TriggerCommentParser(commentBody) {
     const parsedData = {
         correct: true,
         errorMessage: '',
+        isTriggerComment: '',
+        totalDatacap: '',
+        weeklyDatacap: '',
+        clientAddress: '',
     }
 
     for (const [k, v] of Object.entries(data)) {

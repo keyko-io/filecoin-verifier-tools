@@ -25,6 +25,7 @@ export function parseNewLdn(trimmed) {
     correct: true,
     errorMessage: '',
     errorDetails: '',
+    isAddressFormatted: false,
   }
 
   for (const [k, v] of Object.entries(data)) {
@@ -45,6 +46,7 @@ export function parseNewLdn(trimmed) {
 
     const isCustomRg = /- \[x\] Use Custom Multisig/gi
 
+    //@ts-ignore
     if (k === 'isCustomNotary') parsedData[k] = isCustomRg.test(parsedData[k])
 
     if (parsedData[k] === '_No response_') parsedData[k] = null

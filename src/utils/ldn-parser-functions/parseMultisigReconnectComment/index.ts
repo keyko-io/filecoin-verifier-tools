@@ -10,6 +10,7 @@ export function parseMultisigReconnectComment(commentBody) {
   const parsedData = {
     regexRequest: '',
     msigAddress: '',
+    errorDetails: '',
     clientAddress: '',
     issueURI: '',
     correct: true,

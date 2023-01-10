@@ -1,13 +1,13 @@
 // @ts-nocheck
-const { google } = require('googleapis')
-const {
+import { google } from 'googleapis'
+import {
   PATH_PREFIX,
   COLUMN_MAPPING,
   SCOPES,
   spreadsheetId,
   sheetName,
-} = require('./constants')
-const { credentials } = require('./credentials')
+} from './constants'
+import { credentials } from './credentials'
 
 export const runSpreadSheetFiller = async (issuesArray) => {
   try {

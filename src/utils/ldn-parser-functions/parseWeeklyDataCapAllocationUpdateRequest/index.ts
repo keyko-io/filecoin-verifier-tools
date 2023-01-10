@@ -10,6 +10,7 @@ export function parseWeeklyDataCapAllocationUpdateRequest(commentBody) {
     allocationDatacap: '',
     correct: true,
     multisigMessage: true,
+    errorDetails: '',
     errorMessage: '',
   }
 

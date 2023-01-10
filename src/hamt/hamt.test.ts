@@ -1,4 +1,4 @@
-
+//@ts-nocheck
 import { nextBits, indexForBitPos, readVarInt, find, bytesToBig, buildArrayData, makeBuffers } from './hamt'
 
 describe('nextBits()', () => {

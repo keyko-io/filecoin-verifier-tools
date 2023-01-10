@@ -7,7 +7,7 @@ const __dirname = path.resolve()
 describe('parseWeeklyDataCapAllocationUpdateRequest()', () => {
     it('we can parse dataCap allocation updates requests', () => {
         const commentContent = readFileSync(
-            resolve(__dirname, 'samples/utils/weekly_datacap_update_request.test.md'),
+            resolve(__dirname, 'src/samples/utils/weekly_datacap_update_request.test.md'),
             { encoding: 'utf8' },
         )
 

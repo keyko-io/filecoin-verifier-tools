@@ -1,12 +1,11 @@
 //@ts-nocheck
 import * as signer from "@zondax/filecoin-signing-tools/js";
 import cbor from "cbor";
-import * as hamt from "../hamt/hamt-2.js";
+import * as hamt from "../hamt/hamt-2";
 import blake from "blakejs";
 import * as address from "@glif/filecoin-address";
 // const { CID } = require("multiformats/cid");
 import { CID } from "multiformats/cid";
-console.log("CID", CID);
 import multihashes from "multihashes";
 import { identity } from "multiformats/hashes/identity";
 import * as rawFormat from "multiformats/codecs/raw";

@@ -7,6 +7,7 @@ export function parseMultisigNotaryRequest(commentBody) {
   }
 
   const parsedData = {
+    errorDetails: '',
     regexMultisig: '',
     totalDatacaps: '',
     weeklyDatacap: '',

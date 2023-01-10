@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { keyDerive, keyRecover, transactionSignLotus } from '@zondax/filecoin-signing-tools/js'
 
 class MockWallet {

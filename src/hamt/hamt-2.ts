@@ -1,15 +1,16 @@
-import { encode, Address } from '@glif/filecoin-address'
-import sha256 from 'js-sha256'
+//@ts-nocheck
+import * as address from '@glif/filecoin-address'
+import { sha256 } from 'js-sha256'
 
 // Get n next bits
-function nextBits(obj, n) {
+export function nextBits(obj, n) {
   // if (obj.left < n) throw new Error("out of bits")
   const res = (obj.num >> BigInt(obj.left - n)) & BigInt((1 << n) - 1)
   obj.left -= n
   return res
 }
 
-function indexForBitPos(bp, bitfield) {
+export function indexForBitPos(bp, bitfield) {
   let acc = bitfield
   let idx = 0
   while (bp > 0) {
@@ -21,11 +22,6 @@ function indexForBitPos(bp, bitfield) {
   }
   return idx
 }
-
-const _nextBits = nextBits
-export { _nextBits as nextBits }
-const _indexForBitPos = indexForBitPos
-export { _indexForBitPos as indexForBitPos }
 
 function getBit(b, n) {
   return Number((b >> n) & 0x1n)
@@ -52,7 +48,7 @@ async function getValue(n, load, hv, key) {
   throw new Error('key not found')
 }
 
-function makeBuffers(obj) {
+export function makeBuffers(obj) {
   if (typeof obj === 'string') {
     return Buffer.from(obj, 'base64')
   }
@@ -65,10 +61,7 @@ function makeBuffers(obj) {
   return obj
 }
 
-const _makeBuffers = makeBuffers
-export { _makeBuffers as makeBuffers }
-
-async function forEach(n, load, cb) {
+async function forEachPrivate(n, load, cb) {
   for (const c of n.data.pointers) {
     if (c instanceof Array) {
       for (const [k, v] of c) {
@@ -76,12 +69,12 @@ async function forEach(n, load, cb) {
       }
     } else {
       const child = await load(c['/'])
-      await forEach({ bitWidth: n.bitWidth, data: parseNode(child) }, load, cb)
+      await forEachPrivate({ bitWidth: n.bitWidth, data: parseNode(child) }, load, cb)
     }
   }
 }
 
-function bytesToBig(p) {
+export function bytesToBig(p) {
   let acc = 0n
   for (let i = 0; i < p.length; i++) {
     acc *= 256n
@@ -90,40 +83,33 @@ function bytesToBig(p) {
   return acc
 }
 
-const _bytesToBig = bytesToBig
-export { _bytesToBig as bytesToBig }
-
-function parseNode(data) {
+export function parseNode(data) {
   return {
     pointers: data[1],
     bitfield: bytesToBig(Buffer.from(data[0]['/'] ? data[0]['/'].bytes : data[0], 'base64')),
   }
 }
 
-const _parseNode = parseNode
-export { _parseNode as parseNode }
-
-export async function find(data, load, key) {
+export const find = async function (data, load, key) {
   const hash = bytesToBig(Buffer.from(sha256(key), 'hex'))
   return getValue({ bitWidth: 5, data: parseNode(data) }, load, { num: hash, left: 256 }, key)
 }
 
-const _forEach = async function (data, load, cb) {
-  await forEach({ bitWidth: 5, data: parseNode(data) }, load, cb)
+export const forEach = async function (data, load, cb) {
+  await forEachPrivate({ bitWidth: 5, data: parseNode(data) }, load, cb)
 }
-export { _forEach as forEach }
 
-export async function buildArrayData(data, load) {
+export const buildArrayData = async function (data, load) {
   const dataArray = []
-  await forEach({ bitWidth: 5, data: parseNode(data) }, load,
+  await forEachPrivate({ bitWidth: 5, data: parseNode(data) }, load,
     (k, v) => {
-      dataArray.push([encode('t', new Address(k)), bytesToBig(makeBuffers(v))])
+      dataArray.push([address.encode('t', new address.Address(k)), bytesToBig(makeBuffers(v))])
     })
 
   return dataArray
 }
 
-function readVarInt(bytes, offset) {
+function readVarIntPrivate(bytes, offset) {
   let res = 0n
   let acc = 1n
   for (let i = offset; i < bytes.length; i++) {
@@ -136,7 +122,6 @@ function readVarInt(bytes, offset) {
   return res
 }
 
-const _readVarInt = function (bytes, offset) {
-  return readVarInt(bytes, offset || 0)
+export const readVarInt = function (bytes, offset) {
+  return readVarIntPrivate(bytes, offset || 0)
 }
-export { _readVarInt as readVarInt }

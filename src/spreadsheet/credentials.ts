@@ -2,8 +2,8 @@
 const formatPK = () => {
   const BEGIN = process.env.BEGIN_KEY_SPREADSHEET
   const END = process.env.END_KEY_SPREADSHEET
-  const splitted = process.env.PRV_KEY_SPREADSHEET.match(/.{1,64}/g)
-  const formatted = `${BEGIN}\n${splitted.join('\n')}\n${END}`
+  const splitted = process?.env?.PRV_KEY_SPREADSHEET?.match(/.{1,64}/g)
+  const formatted = `${BEGIN}\n${splitted?.join('\n')}\n${END}`
   return formatted
 }
 

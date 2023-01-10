@@ -33,6 +33,7 @@ export function parseOldLDN(issueContent) {
     correct: true,
     errorMessage: '',
     errorDetails: '',
+    isAddressFormatted: false,
   }
 
   const trimmed = issueContent.replace(/(\n)|(\r)/gm, '')
@@ -58,6 +59,7 @@ export function parseOldLDN(issueContent) {
     }
 
     if (key === 'isCustomNotary') {
+    //@ts-ignore
       parsedData[key] = result === 'Custom Notary'
       continue
     }

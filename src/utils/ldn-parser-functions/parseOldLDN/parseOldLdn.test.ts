@@ -7,7 +7,7 @@ const __dirname = path.resolve()
 describe('parseOldLDN()', () => {
   it('we can parse trigger comment correctly', () => {
     const issueContent = readFileSync(
-      resolve(__dirname, 'samples/utils/large_client_application.test.md'),
+      resolve(__dirname, 'src/samples/utils/large_client_application.test.md'),
       { encoding: 'utf8' },
     )
 

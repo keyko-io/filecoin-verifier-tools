@@ -6,7 +6,7 @@ const __dirname = path.resolve()
 
 describe('parseNotaryConfirmation()', () => {
     const commentContent = readFileSync(
-        resolve(__dirname, 'samples/utils/notary_confirmation.test.md'),
+        resolve(__dirname, 'src/samples/utils/notary_confirmation.test.md'),
         { encoding: 'utf8' },
 
     )

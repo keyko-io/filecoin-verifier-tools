@@ -7,7 +7,7 @@ const __dirname = path.resolve()
 describe('parseReleaseRequest()', () => {
     it('we can parse dataCap allocation requests', () => {
         const commentContent = readFileSync(
-            resolve(__dirname, 'samples/utils/datacap_allocation_requested.test.md'),
+            resolve(__dirname, 'src/samples/utils/datacap_allocation_requested.test.md'),
             { encoding: 'utf8' },
         )
         const parsedResult = parseReleaseRequest(commentContent)

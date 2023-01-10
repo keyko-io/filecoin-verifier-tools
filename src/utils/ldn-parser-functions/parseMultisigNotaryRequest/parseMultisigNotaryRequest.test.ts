@@ -7,7 +7,7 @@ const __dirname = path.resolve()
 describe('parseMultisigNotaryRequest()', () => {
     it('we can parse dataCap allocation requests', () => {
         const commentContent = readFileSync(
-            resolve(__dirname, 'samples/utils/multising_notary_requested.test.md'),
+            resolve(__dirname, 'src/samples/utils/multising_notary_requested.test.md'),
             { encoding: 'utf8' },
         )
         const parsedResult = parseMultisigNotaryRequest(commentContent)

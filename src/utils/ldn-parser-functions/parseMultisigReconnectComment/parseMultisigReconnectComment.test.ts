@@ -7,7 +7,7 @@ const __dirname = path.resolve()
 describe('parseMultisigReconnectComment()', () => {
     it('we can parse reconnection request', () => {
         const commentContent = readFileSync(
-            resolve(__dirname, 'samples/utils/issue_reconnection_requested.test.md'),
+            resolve(__dirname, 'src/samples/utils/issue_reconnection_requested.test.md'),
             { encoding: 'utf8' },
         )
 

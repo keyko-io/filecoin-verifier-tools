@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { VerifyAPI } from './api'
 import MockWallet from '../samples/mockWallet'
 import { rootkey_mnemonic, path } from '../samples/constants'
