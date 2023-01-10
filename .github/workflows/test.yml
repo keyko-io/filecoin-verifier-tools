@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [18.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -17,5 +17,5 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: echo "NODE_OPTIONS=--experimental-vm-modules" >> $GITHUB_ENV
     - run: echo "NODE_OPTIONS=$NODE_OPTIONS"
-    - run: npm ci
+    - run: yarn
     - run: npx jest 

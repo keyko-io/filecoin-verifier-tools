@@ -5,15 +5,17 @@ module.exports = {
     es2020: true,
     jest: true,
   },
-  extends: [
-    'standard',
-  ],
+  extends: ['standard'],
   parserOptions: {
     ecmaVersion: 12,
   },
   rules: {
     camelcase: 'off',
     'comma-dangle': ['error', 'always-multiline'],
-    'space-before-function-paren': ['error', { anonymous: 'always', named: 'never', asyncArrow: 'always' }],
+    'space-before-function-paren': [
+      'error',
+      { anonymous: 'always', named: 'never', asyncArrow: 'always' },
+    ],
   },
+  ignorePatterns: ['lib/**/**'],
 }
