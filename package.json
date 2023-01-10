@@ -9,7 +9,7 @@
     "url": "git+https://github.com/keyko-io/filecoin-verifier-tools.git"
   },
   "scripts": {
-    "test": "NODE_OPTIONS=--experimental-vm-modules && npx jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
     "build": "rollup -c"
