@@ -3,9 +3,11 @@ import { NodejsProvider as Provider } from '@filecoin-shipyard/lotus-client-prov
 import { mainnet } from '@filecoin-shipyard/lotus-client-schema'
 import { readFileSync } from 'fs'
 import { keyDerive } from '@zondax/filecoin-signing-tools/js'
-import { testnet as methods } from '../filecoin/methods'
+import { methods as m } from '../filecoin/methods'
 import { lotus_endpoint, token_path, verifier_mnemonic, path, rootkey_mnemonic } from './constants'
 import MockWallet from './mockWallet'
+
+const methods = m.testnet
 
 const provider = new Provider(lotus_endpoint, {
   token: async () => {
