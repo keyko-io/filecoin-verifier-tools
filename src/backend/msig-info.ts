@@ -1,4 +1,5 @@
 
+//@ts-nocheck
 const Sequelize = require('sequelize')
 const constants = require('../samples/constants')
 const schema = require('./schema')

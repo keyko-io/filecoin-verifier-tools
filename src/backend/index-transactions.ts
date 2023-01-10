@@ -1,3 +1,4 @@
+//@ts-nocheck
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const { NodejsProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-nodejs')
 const { mainnet } = require('@filecoin-shipyard/lotus-client-schema')

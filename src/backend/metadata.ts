@@ -1,5 +1,6 @@
 // Adding metadata to the DB
 
+//@ts-nocheck
 const Sequelize = require('sequelize')
 const constants = require('../samples/constants')
 const jayson = require('jayson')
