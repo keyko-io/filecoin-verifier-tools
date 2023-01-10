@@ -1,5 +1,7 @@
 node_modules
+lib
 .env
 spreadsheet/createSpreadsheet.js
 lotus/token
 lib
+yarn-error.log
