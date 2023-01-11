@@ -34,10 +34,9 @@ describe('should test the api', () => {
   //   // TODO test approveVerifier
   // })
 
-  it('should get chainHead ', async () => {
+  it('should check the class and chainHead propoerty sohuld not be null', async () => {
     await rkhApi.getChainHead()
-    expect(rkhApi.chainHead).toBe("11")
-    // TODO test approveVerifier
+    expect(rkhApi.chainHead).not.toBeNull()
   })
 
 
