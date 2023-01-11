@@ -17,10 +17,3 @@ export function matchGroup(regex: any, content: string) {
   }
 }
 
-export function matchAll(regex: any, content: string) {
-  const matches = [...content.matchAll(regex)]
-  if (matches !== null) {
-    // each entry in the array has this form: Array ["#### Address > f1111222333", "", "f1111222333"]
-    return matches.map(elem => elem[2])
-  }
-}
