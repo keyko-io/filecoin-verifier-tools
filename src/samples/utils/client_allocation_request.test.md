@@ -3,13 +3,12 @@
 For Clients, please note that your responses (past the Core Information section) are entirely optional. However, without answering in detail your total approved DataCap may be limited.
 
 ## Core Information
-
-- Name: Protocol Labs
-- Website / Social Media: https://protocol.ai/
-- DataCap Requested: 10TiB
-- Addresses to be Notarized: t0231874218
-- Notary Requested:notaryuser
-- Region: Europe
+- Name: Strong  HUman  VICtory
+- Website / Social Media: http://shuvic.kro.kr
+- Region: Asia excl. Greater China
+- DataCap Requested: 50TiB
+- Addresses to be Notarized: f1raq3tbv6k2keotawldn2gmf5ygxu2n72dohfsji
+- Notary Requested: IreneYoung
 
 ---
 

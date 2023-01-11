@@ -45,7 +45,8 @@ export function parseOldLDN(issueContent) {
     if (key === 'identifier') {
       result = issueContent.match(value)[1].trim()
     } else {
-      result = trimmed?.match(rg)[0].trim() || null
+      const matched = trimmed?.match(rg)
+      result = matched && matched?.length > 0 ? matched[0].trim() : null
     }
 
     const resultIsNull = !result || !result.length
