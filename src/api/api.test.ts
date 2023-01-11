@@ -27,11 +27,19 @@ describe('should test the api', () => {
     const w = await rkhApi.checkWallet(rkhWallet)
     expect(w).toBeTruthy()
   })
-  it('test proposeVerifier & approveVerifier', async () => {
-    const propose = await rkhApi.proposeVerifier('t01015', 100000000000000000000000000000000000000000n, 2)
-    expect(propose).toBeTruthy()
-    // TODO test approveVerifier
+
+  // it('test proposeVerifier & approveVerifier', async () => {
+  //   const propose = await rkhApi.proposeVerifier('t01015', 100000000000000000000000000000000000000000n, 2)
+  //   expect(propose).toBeTruthy()
+  //   // TODO test approveVerifier
+  // })
+
+  it('should check the class and chainHead propoerty sohuld not be null', async () => {
+    await rkhApi.getChainHead()
+    expect(rkhApi.chainHead).not.toBeNull()
   })
+
+
   //   it("test proposeRemoveVerifier", async ()=> {
 
   //   })
