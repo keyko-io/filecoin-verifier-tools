@@ -13,7 +13,7 @@ interface parseIssueData {
 /* eslint-disable comma-dangle */
 /* eslint-disable semi */
 /* eslint-disable quotes */
-export function parseIssue(issueContent) {
+export function parseIssue(issueContent: string) {
   const data = {
     name: "Name",
     address: "Addresses to be Notarized",

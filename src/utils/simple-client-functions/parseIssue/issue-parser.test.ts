@@ -3,7 +3,7 @@
 /* eslint-disable quotes */
 import { readFileSync } from "fs";
 import path, { dirname, resolve } from "path";
-import { parseIssue } from "./issue-parser";
+import { parseIssue } from "./index";
 const __dirname = path.resolve();
 
 describe("parse simple client()", () => {
