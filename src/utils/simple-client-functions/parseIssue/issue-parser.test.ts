@@ -16,11 +16,12 @@ describe("parse simple client()", () => {
     const parsedResult = parseIssue(issueContent);
 
     expect(parsedResult.correct).toBe(true);
-    expect(parsedResult.name).toBe("Protocol Labs");
-    expect(parsedResult.address).toBe("t0231874218");
-    expect(parsedResult.datacap).toBe("10TiB");
-    expect(parsedResult.website).toContain("https://protocol.ai/");
-    expect(parsedResult.notary).toBe("notaryuser");
-    expect(parsedResult.region).toBe("Europe");
+    expect(parsedResult.name).toBe("Strong  HUman  VICtory");
+    expect(parsedResult.address).toBe("f1raq3tbv6k2keotawldn2gmf5ygxu2n72dohfsji");
+    expect(parsedResult.datacap).toBe("50TiB");
+    expect(parsedResult.website).toContain("http://shuvic.kro.kr");
+    expect(parsedResult.notary).toBe("IreneYoung");
+    console.log(parsedResult.region)
+    expect(parsedResult.region).toBe("Asia excl. Greater China");
   });
 });

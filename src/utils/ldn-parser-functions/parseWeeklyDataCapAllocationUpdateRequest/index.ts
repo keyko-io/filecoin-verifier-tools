@@ -24,7 +24,8 @@ export function parseWeeklyDataCapAllocationUpdateRequest(commentBody) {
       continue
     }
 
-    const result = trimmed?.match(rg)[0].trim() || null
+    const matched = trimmed?.match(rg)
+    const result = matched && matched?.length > 0 ? matched[0].trim() : null
     const resultIsNull = !result || !result.length
 
     if (resultIsNull) {
