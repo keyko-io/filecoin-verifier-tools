@@ -35,11 +35,8 @@ describe('should test the api', () => {
   // })
 
   it('should get chainHead ', async () => {
-    const head = await rkhApi.getChainHead()
-    expect(head).not.toBeNull()
-    expect(head).toHaveProperty('Blocks');
-    expect(head).toHaveProperty('Height');
-    expect(head).toHaveProperty('Cids');
+    await rkhApi.getChainHead()
+    expect(rkhApi.chainHead).toBe("11")
     // TODO test approveVerifier
   })
 
