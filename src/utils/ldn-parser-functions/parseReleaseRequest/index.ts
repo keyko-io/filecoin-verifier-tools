@@ -10,7 +10,7 @@ export function parseReleaseRequest(commentBody) {
   }
 
   const parsedData = {
-    errorDetails:'',
+    errorDetails: '',
     regexMultisig: '',
     notaryAddress: '',
     clientAddress: '',
@@ -28,7 +28,8 @@ export function parseReleaseRequest(commentBody) {
       continue
     }
     const rg = new RegExp(`(?<=${v})(.*?)?(?=#)(?=#)|(?<=${v}).*$`)
-    const result = trimmed?.match(rg)[0].trim() || null
+    const matched = trimmed?.match(rg)
+    const result = matched && matched?.length > 0 ? matched[0].trim() : null
     const resultIsNull = !result || !result.length
 
     if (resultIsNull) {
