@@ -35,7 +35,8 @@ export function parseIssue(issueContent) {
 
     let result
     if (key === 'behalf') {
-      result = issueContent.match(value)[1].trim()
+       const matched = issueContent.match(value)
+      result =  matched && matched?.length > 0 ? matched[1].trim() : null
     } else {
       const matched = trimmed?.match(rg)
       result = matched && matched?.length > 0 ? matched[0].trim() : null
