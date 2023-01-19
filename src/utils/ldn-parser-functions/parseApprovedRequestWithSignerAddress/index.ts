@@ -17,7 +17,7 @@ export function parseApprovedRequestWithSignerAddress(
     issueContent
 ): ParsedData {
     const data = {
-        method: "Request",
+        method: "Request Proposed",
         address: "Address",
         datacap: "Datacap Allocated",
         signerAddress: "Signer Address",
