@@ -39,6 +39,7 @@ export function parseApprovedRequestWithSignerAddress(
     };
 
     const trimmed = issueContent.replace(/(\n)|(\r)/gm, "");
+    console.log("trimmed", trimmed);
 
     for (const [key, value] of Object.entries(data)) {
         let rg = new RegExp(`(?<=${value}>)(.*?)(?=#)`);
@@ -49,7 +50,7 @@ export function parseApprovedRequestWithSignerAddress(
         }
 
         if (key === "method") {
-            parsedData.approvedMessage = trimmed.includes(value);
+            parsedData.approvedMessage = trimmed.includes(value) || trimmed.includes("Request Approved");
             continue;
         }
         const matched = trimmed?.match(rg)

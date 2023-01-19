@@ -3,6 +3,7 @@ import { readFileSync } from 'fs'
 import path, { resolve } from 'path'
 import { parseApprovedRequestWithSignerAddress } from '.'
 const __dirname = path.resolve()
+
 describe('parseApprovedRequestWithSignerAddress()', () => {
     it('we can parse an approve comment including the right data', () => {
         const proposeComment = readFileSync(
