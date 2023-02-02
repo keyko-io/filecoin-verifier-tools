@@ -33,6 +33,7 @@ export function parseReleaseRequest(commentBody) {
     const resultIsNull = !result || !result.length
 
     if (resultIsNull) {
+      if (k === 'uuid') continue
       parsedData.correct = false
       parsedData.errorMessage += `We could not find **${v}** field in the information provided\n`
       if (parsedData.errorDetails !== '') { parsedData.errorDetails = 'Unable to find required attributes.' }

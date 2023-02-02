@@ -44,7 +44,7 @@ export function parseOldLDN(issueContent) {
     let result
     if (key === 'identifier') {
       const matched = issueContent?.match(value)
-      result =  matched && matched?.length > 0 ? issueContent.match(value)[1].trim() : null
+      result = matched && matched?.length > 0 ? issueContent.match(value)[1].trim() : null
     } else {
       const matched = trimmed?.match(rg)
       result = matched && matched?.length > 0 ? matched[0].trim() : null
@@ -53,7 +53,7 @@ export function parseOldLDN(issueContent) {
     const resultIsNull = !result || !result.length
 
     if (resultIsNull) {
-      if (key === 'identifier' || key === 'isCustomNotary') continue
+      if (key === 'identifier' || key === 'isCustomNotary' || key === "region") continue
       parsedData.correct = false
       parsedData.errorMessage += `We could not find **${value}** field in the information provided\n`
       if (parsedData.errorDetails !== '') { parsedData.errorDetails = 'Unable to find required attributes.' }
@@ -61,16 +61,24 @@ export function parseOldLDN(issueContent) {
     }
 
     if (key === 'isCustomNotary') {
-    //@ts-ignore
+      //@ts-ignore
       parsedData[key] = result === 'Custom Notary'
       continue
     }
 
-    parsedData[key] = result || null
-
     if (key === 'address') {
-      parsedData["isAddressFormatted"] = regexForAdress.test(parsedData[key]); //eslint-disable-line
+      if (result.includes("_Please respond")) {
+        parsedData[key] = result.split("_")[0]
+      } else if (result.includes("## Project details")) {
+        parsedData[key] = result.replace("## Project details", "")
+      } else {
+        parsedData[key] = result || null
+      }
+      parsedData["isAddressFormatted"] = regexForAdress.test(parsedData[key]);
+      continue
     }
+
+    parsedData[key] = result || null
   }
 
   return parsedData
