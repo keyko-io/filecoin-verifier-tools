@@ -1,7 +1,7 @@
 /* eslint-disable indent */
-export function parseNewLdn(trimmed) {
-  const regexForAdress = /^(f1|f3)/
+import { regexForAdress } from '../../common-utils'
 
+export function parseNewLdn(trimmed) {
   const data = {
     name: 'Data Owner Name',
     region: "Data Owner Country/Region", //eslint-disable-line

@@ -1,4 +1,6 @@
 /* eslint-disable no-useless-escape */
+import { regexForAdress } from '../../common-utils'
+
 /**
  *
  * @param {*} issueContent
@@ -18,8 +20,6 @@ export function parseOldLDN(issueContent) {
     isCustomNotary: 'Type',
     identifier: /Identifier: (.*)/,
   }
-
-  const regexForAdress = /^(f1|f3)/
 
   const parsedData = {
     name: '',
