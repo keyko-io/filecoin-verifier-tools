@@ -1,5 +1,6 @@
 //@ts-nocheck
 import { VerifyAPI } from './api'
+import { methods } from '../filecoin/methods'
 import MockWallet from '../samples/mockWallet'
 import { rootkey_mnemonic, path } from '../samples/constants'
 
@@ -28,11 +29,18 @@ describe('should test the api', () => {
     expect(w).toBeTruthy()
   })
 
-  // it('test proposeVerifier & approveVerifier', async () => {
-  //   const propose = await rkhApi.proposeVerifier('t01015', 100000000000000000000000000000000000000000n, 2)
-  //   expect(propose).toBeTruthy()
-  //   // TODO test approveVerifier
-  // })
+  it('test proposeVerifier & approveVerifier', async () => {
+    // const propose = await rkhApi.proposeVerifier('t01015', 100000000000000000000000000000000000000000n, 2)
+
+    // expect(propose).toBeTruthy()
+    // console.log("propose",propose)
+    const lst = await rkhApi.pendingRootTransactions()
+    console.log("lst", lst)
+    //const approve = await rkhApi.approveVerifier('t01015', 100000000000000000000000000000000000000000n, 't0101', 12, 2)
+    console.log("wallet accsW",rkhWallet.getAccounts())
+    const approvePending = await rkhApi.send(methods.testnet.rootkey.approve(lst[0].id, lst[0].tx), 1)
+    console.log("approvePending", approvePending)
+  })
 
   it('should check the class and chainHead propoerty sohuld not be null', async () => {
     await rkhApi.getChainHead()
