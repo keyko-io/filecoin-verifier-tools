@@ -3,6 +3,7 @@ import { readFileSync } from 'fs'
 import path, { resolve } from 'path'
 import { ldnv3TriggerCommentParser } from '.'
 const __dirname = path.resolve()
+
 describe('v3 Datacap Request Trigger', () => {
     it('we can parse trigger comment correctly', () => {
         const commentContent = readFileSync(
