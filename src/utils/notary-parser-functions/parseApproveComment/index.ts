@@ -13,7 +13,7 @@ export function parseApproveComment(commentBody) {
     const trimmed = commentBody.replace(/(\n)|(\r)|[>]/gm, "");
 
     const data = {
-        approved: "Request Approved",
+        approved: "Datacap Request For MultiSig",
         address: "Address",
         datacap: "Datacap Allocated",
     };
