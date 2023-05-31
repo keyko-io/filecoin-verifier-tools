@@ -16,10 +16,10 @@ describe('parseOldLDN()', () => {
         const parsedResult = parseNewLdn(trimmed)
 
         expect(parsedResult.correct).toBe(true)
-        expect(parsedResult.name).toBe('alberto')
+        expect(parsedResult.name).toBe('test')
         expect(parsedResult.region).toBe('Åland Islands')
         expect(parsedResult.isAddressFormatted).toBe(true)
-        expect(parsedResult.datacapRequested).toBe('4PiB')
+        expect(parsedResult.datacapRequested).toBe('More Than 15PiB')
         expect(parsedResult.dataCapWeeklyAllocation).toBe('200TiB')
         expect(parsedResult.website).toBe('rob.co')
         expect(parsedResult.address).toBe('f1212121212121')
