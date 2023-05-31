@@ -1,11 +1,14 @@
 ## DataCap Allocation requested
 
-### Request #7
+### Request number 2
 #### Multisig Notary address
-> f01105812
+> f02049625
+
 #### Client address
-> f3vnq2cmwig3qjisnx5hobxvsd4drn4f54xfxnv4tciw6vnjdsf5xipgafreprh5riwmgtcirpcdmi3urbg36a
+> f172zurpjgt6a7kgjoka5q3e375zakyihqw5uhdia
+
 #### DataCap allocation requested
-> 10TiB
+> 400TiB
+
 #### Id
-> 6bbdae0f-c6fc-498f-a587-cb6a534d99a2
+> aa486d00-1283-4a56-bff0-0d5dd49e762a
