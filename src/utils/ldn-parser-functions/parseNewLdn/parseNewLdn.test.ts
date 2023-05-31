@@ -4,7 +4,7 @@ import path, { resolve } from 'path'
 import { parseNewLdn } from '.'
 const __dirname = path.resolve()
 
-describe('parseOldLDN()', () => {
+describe('parseNewLdn()', () => {
     it('we can parse new template correctly', () => {
         const issueContent = readFileSync(
             resolve(__dirname, 'src/samples/utils/new_ldn_template_yaml.md'),
@@ -24,6 +24,8 @@ describe('parseOldLDN()', () => {
         expect(parsedResult.website).toBe('rob.co')
         expect(parsedResult.address).toBe('f1212121212121')
         expect(parsedResult.identifier).toBe('E-fil')
+        console.log("parsedResult.dataType",parsedResult.dataType)
+        expect(parsedResult.dataType).toBe('Private Non-Profit / Social impact')
     },
     )
 })

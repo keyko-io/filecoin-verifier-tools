@@ -47,7 +47,7 @@ f1212121212121
 
 ### Data Type of Application
 
-Slingshot
+Private Non-Profit / Social impact
 
 ### Custom multisig
 

@@ -11,6 +11,7 @@ export function parseNewLdn(trimmed) {
     address: 'On-chain address for first allocation',
     isCustomNotary: 'Custom multisig',
     identifier: 'Identifier',
+    dataType: 'Data Type of Application'
   }
 
   const parsedData = {
@@ -22,6 +23,7 @@ export function parseNewLdn(trimmed) {
     address: '',
     isCustomNotary: '',
     identifier: '',
+    dataType: '',
     correct: true,
     errorMessage: '',
     errorDetails: '',
