@@ -19,6 +19,7 @@ export function parseOldLDN(issueContent) {
     address: 'On-chain address for first allocation',
     isCustomNotary: 'Type',
     identifier: /Identifier: (.*)/,
+    dataType: 'Data Type of Application'
   }
 
   const parsedData = {
@@ -34,6 +35,7 @@ export function parseOldLDN(issueContent) {
     errorMessage: '',
     errorDetails: '',
     isAddressFormatted: false,
+    dataType: ''
   }
 
   const trimmed = issueContent.replace(/(\n)|(\r)/gm, '')
