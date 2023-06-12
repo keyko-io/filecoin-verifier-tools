@@ -6,6 +6,7 @@ import { parseMultisigReconnectComment } from './ldn-parser-functions/parseMulti
 import { parseNotaryConfirmation } from './ldn-parser-functions/parseNotaryConfirmation/index'
 import { parseWeeklyDataCapAllocationUpdateRequest } from './ldn-parser-functions/parseWeeklyDataCapAllocationUpdateRequest/index'
 import { parseReleaseRequest } from './ldn-parser-functions/parseReleaseRequest/index'
+import { parseDataCapRemoval } from './ldn-parser-functions/parseDataCapRemoval/index'
 
 export {
   parseIssue,
@@ -16,4 +17,5 @@ export {
   parseApprovedRequestWithSignerAddress,
   parseMultisigReconnectComment,
   ldnv3TriggerCommentParser,
+  parseDataCapRemoval
 }
