@@ -1,7 +1,8 @@
 /* eslint-disable indent */
 import { regexForAdress } from '../../common-utils'
 
-export function parseDataCapRemoval(trimmed) {
+export function parseDataCapRemoval(body:string) {
+  const trimmed = body.replace(/(\n)|(\r)/gm, '')
   const data = {
     url: 'Client Application URL or Application Number',
     name: "Client Name", //eslint-disable-line
