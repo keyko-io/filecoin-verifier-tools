@@ -67,6 +67,17 @@ export class VerifyAPI {
     return res['/']
   }
 
+  async proposeRemoveDataCap(clientToRemoveDcFrom, datacap, verifier1, signature1, verifier2, signature2, indexAccount, wallet, { gas } = { gas: 0 }) {
+    const removeDatacapProposal = this.methods.verifreg.removeVerifiedClientDataCap(
+      clientToRemoveDcFrom, datacap,
+      { verifier: verifier1, signature: signature1 },
+      { verifier: verifier2, signature: signature2 },
+    )
+    const tx = this.methods.rootkey.propose(removeDatacapProposal)
+    const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas })
+    return res['/']
+  }
+
   async proposeRemoveVerifier(verifierAccount, indexAccount, wallet, { gas } = { gas: 0 }) {
     // Not address but account in the form "t01004", for instance
     const tx = this.methods.rootkey.propose(this.methods.verifreg.removeVerifier(verifierAccount))
