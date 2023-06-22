@@ -700,6 +700,21 @@ function make(testnet) {
                 cap: "bigint",
             },
         },
+        7: {
+            name: 'removeVerifiedClientDataCap',
+            input: {
+                verifiedClientToRemove: 'address',
+                dataCapAmountToRemove: 'bigint',
+                verifierRequest1: {
+                    verifier: 'address',
+                    signature: 'signature',
+                },
+                verifierRequest2: {
+                    verifier: 'address',
+                    signature: 'signature',
+                },
+            },
+        },
     };
 
     const table = {
@@ -713,6 +728,12 @@ function make(testnet) {
         verifiers: ["ref", table],
         clients: ["ref", table],
     };
+
+    const REMOVE_DATACAP_PROPOSAL = {
+        removalProposalID: 'bigint',
+        datacapAmount: 'bigint',
+        verifiedClient: 'address',
+    }
 
     const reg = {
         t080: multisig,
@@ -784,6 +805,7 @@ function make(testnet) {
         ROOTKEY,
         VERIFREG,
         INIT_ACTOR,
+        RemoveDataCapProposal: REMOVE_DATACAP_PROPOSAL
     };
 }
 
