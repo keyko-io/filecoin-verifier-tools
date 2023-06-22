@@ -1,4 +1,3 @@
-
 /*
 Instead of these we can use something that will get graphql from postgres like hasura
 
