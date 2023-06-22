@@ -707,11 +707,11 @@ function make(testnet) {
                 dataCapAmountToRemove: 'bigint',
                 verifierRequest1: {
                     verifier: 'address',
-                    signature: 'signature',
+                    signature: 'bigint-signed',
                 },
                 verifierRequest2: {
                     verifier: 'address',
-                    signature: 'signature',
+                    signature: 'bigint-signed',
                 },
             },
         },

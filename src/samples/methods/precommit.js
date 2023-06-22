@@ -1,4 +1,3 @@
-
 import { methods as m } from '../../filecoin/methods.js'
 import { make } from '../../filecoin/get-data.js'
 const methods = m.testnet

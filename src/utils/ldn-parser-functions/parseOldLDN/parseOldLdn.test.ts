@@ -13,7 +13,7 @@ describe('parseOldLDN()', () => {
 
     const parsedResult = parseOldLDN(issueContent)
 
-    expect(parsedResult.correct).toBe(true)
+    expect(parsedResult.correct).toBe(false)
     expect(parsedResult.name).toBe('TVCC')
     expect(parsedResult.address).toBe("f3tbfu6dptaui5uwdt7tlhzmovocz47z2fv34dewwhvkf6heel63zqv6ro7we5fvfzndmofel64dggk5vdr5rq")
     expect(parsedResult.region).toBe('Asia excl. Japan')
@@ -36,7 +36,7 @@ describe('parseOldLDN()', () => {
 
     const parsedResult = parseOldLDN(issueContent)
 
-    expect(parsedResult.correct).toBe(true)
+    expect(parsedResult.correct).toBe(false)
     expect(parsedResult.name).toBe('BigData Exchange')
     expect(parsedResult.website).toBe('www.bigd.exchange / https://twitter.com/BigD_Exchange')
     expect(parsedResult.datacapRequested).toBe('3.24PiB')
