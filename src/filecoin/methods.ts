@@ -734,7 +734,7 @@ function make(testnet) {
         {
             verifiedClient: 'address',
             datacapAmount: 'bigint',
-            removalProposalID: 'bigint',
+            removalProposalID: ["list", "int"]
         },
     ];
 

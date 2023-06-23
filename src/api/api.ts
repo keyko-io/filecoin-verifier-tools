@@ -67,7 +67,7 @@ export class VerifyAPI {
     return res['/']
   }
 
-  encodeRemoveDataCapParameters(message: [address: string, datacap: string, id: string]) {
+  encodeRemoveDataCapParameters(message: [address: string, datacap: string, id: number[]]) {
     return this.methods.encode(this.methods.RemoveDataCapProposal,message)
   }
 

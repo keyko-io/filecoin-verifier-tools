@@ -18,7 +18,8 @@ const api = new VerifyAPI.VerifyAPI(VerifyAPI.VerifyAPI.standAloneProvider(endpo
 async function removeDatacap() {
   try {
   
-    const encoded =  api.encodeRemoveDataCapParameters(["t01004",158856254,1256])
+    const encoded =  api.encodeRemoveDataCapParameters(["t01004",158856254,[1256]])
+    console.log(encoded)
     console.log(encoded.toString('hex'))
     // console.log('encoded:', encoded[0].toString('hex'), encoded[1].toString('hex'), encoded[2].toString('hex'))
     //datacap 000977f43e  ok!!!
@@ -27,6 +28,7 @@ async function removeDatacap() {
 
 
     console.log('834300ec0745000977f43e811904e8')
+    console.log(encoded.toString('hex') === '834300ec0745000977f43e811904e8')
     process.exit(0)
   } catch (error) {
     console.log(error)
