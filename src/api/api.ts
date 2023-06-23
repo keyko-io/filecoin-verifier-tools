@@ -67,6 +67,10 @@ export class VerifyAPI {
     return res['/']
   }
 
+  encodeRemoveDataCapParameters(message: [address: string, datacap: string, id: string]) {
+    return this.methods.encode(this.methods.RemoveDataCapProposal,message)
+  }
+
   async proposeRemoveDataCap(clientToRemoveDcFrom, datacap, verifier1, signature1, verifier2, signature2, indexAccount, wallet, { gas } = { gas: 0 }) {
     const removeDatacapProposal = this.methods.verifreg.removeVerifiedClientDataCap(
       clientToRemoveDcFrom, datacap,

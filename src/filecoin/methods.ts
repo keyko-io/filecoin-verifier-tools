@@ -729,11 +729,14 @@ function make(testnet) {
         clients: ["ref", table],
     };
 
-    const REMOVE_DATACAP_PROPOSAL = {
-        removalProposalID: 'bigint',
-        datacapAmount: 'bigint',
-        verifiedClient: 'address',
-    }
+    const REMOVE_DATACAP_PROPOSAL = [
+        "cbor",
+        {
+            verifiedClient: 'address',
+            datacapAmount: 'bigint',
+            removalProposalID: 'bigint',
+        },
+    ];
 
     const reg = {
         t080: multisig,
