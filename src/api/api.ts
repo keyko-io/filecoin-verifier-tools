@@ -8,6 +8,7 @@ import { decode } from 'cbor'
 
 const cacheAddress = {}
 const cacheKey = {}
+const SignatureDomainSeparation_RemoveDataCap = "fil_removedatacap:"
 
 export class VerifyAPI {
   constructor(lotusClient, walletContext, testnet = true) {
@@ -67,17 +68,28 @@ export class VerifyAPI {
     return res['/']
   }
 
-  encodeRemoveDataCapParameters(message: [address: string, datacap: string, id: number[]]) {
-    return this.methods.encode(this.methods.RemoveDataCapProposal,message)
+  // encodeRemoveDataCapParameters_old(message: [address: string, datacap: string, id: number[]]) {
+  //   return this.methods.encode(
+  //     this.methods.RemoveDataCapProposal, message
+  //   )
+  // }
+
+  encodeRemoveDataCapParameters(message: {verifiedClient: string, dataCapAmount: string, removalProposalID: number[]}) {
+    const orderedProposalParams = [SignatureDomainSeparation_RemoveDataCap, message.verifiedClient, message.dataCapAmount, message.removalProposalID]
+    return this.methods.encode(this.methods.RemoveDataCapProposal, orderedProposalParams)
   }
 
-  async proposeRemoveDataCap(clientToRemoveDcFrom, datacap, verifier1, signature1, verifier2, signature2, indexAccount, wallet, { gas } = { gas: 0 }) {
-    const removeDatacapProposal = this.methods.verifreg.removeVerifiedClientDataCap(
+  async proposeRemoveDataCap(
+    clientToRemoveDcFrom, datacap,
+    verifier1, signature1, verifier2, signature2,
+    indexAccount, wallet, { gas } = { gas: 0 }) {
+
+    const removeDatacapRequest = this.methods.verifreg.removeVerifiedClientDataCap(
       clientToRemoveDcFrom, datacap,
       { verifier: verifier1, signature: signature1 },
       { verifier: verifier2, signature: signature2 },
     )
-    const tx = this.methods.rootkey.propose(removeDatacapProposal)
+    const tx = this.methods.rootkey.propose(removeDatacapRequest)
     const res = await this.methods.sendTx(this.client, indexAccount, this.checkWallet(wallet), { ...tx, gas })
     return res['/']
   }
