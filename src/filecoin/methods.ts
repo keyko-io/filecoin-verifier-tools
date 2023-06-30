@@ -4,9 +4,7 @@ import cbor from "cbor";
 import * as hamt from "../hamt/hamt-2";
 import blake from "blakejs";
 import * as address from "@glif/filecoin-address";
-// const { CID } = require("multiformats/cid");
 import { CID } from "multiformats/cid";
-import multihashes from "multihashes";
 import { identity } from "multiformats/hashes/identity";
 import * as rawFormat from "multiformats/codecs/raw";
 
@@ -731,11 +729,18 @@ function make(testnet) {
 
     const REMOVE_DATACAP_PROPOSAL = [
         "cbor",
-        {
-            verifiedClient: 'address',
-            datacapAmount: 'bigint',
-            removalProposalID: ["list", "int"]
-        },
+        [
+            'string', // sigDomainSeparationString
+            'address', // verifiedClient
+            'bigint', // dataCapAmount
+            ["list", "int"] // removalProposalID
+        ]
+        // {
+        //     sigDomainSeparationString: 'string',
+        //     verifiedClient: 'address',
+        //     dataCapAmount: 'bigint',
+        //     removalProposalID: ["list", "int"]
+        // }
     ];
 
     const reg = {
