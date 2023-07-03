@@ -8,7 +8,7 @@ import { decode } from 'cbor'
 
 const cacheAddress = {}
 const cacheKey = {}
-const SignatureDomainSeparation_RemoveDataCap = "fil_removedatacap:"
+const SIGNATURE_DOMAIN_SEPARATION_REMOVE_DATACAP = "fil_removedatacap:"
 
 export class VerifyAPI {
   constructor(lotusClient, walletContext, testnet = true) {
@@ -68,15 +68,15 @@ export class VerifyAPI {
     return res['/']
   }
 
-  // encodeRemoveDataCapParameters_old(message: [address: string, datacap: string, id: number[]]) {
-  //   return this.methods.encode(
-  //     this.methods.RemoveDataCapProposal, message
-  //   )
-  // }
 
-  encodeRemoveDataCapParameters(message: {verifiedClient: string, dataCapAmount: string, removalProposalID: number[]}) {
-    const orderedProposalParams = [SignatureDomainSeparation_RemoveDataCap, message.verifiedClient, message.dataCapAmount, message.removalProposalID]
-    return this.methods.encode(this.methods.RemoveDataCapProposal, orderedProposalParams)
+  encodeRemoveDataCapParameters(message: { verifiedClient: string, dataCapAmount: string, removalProposalID: number[] }) {
+
+    const orderedProposalParams = [message.verifiedClient, message.dataCapAmount, message.removalProposalID]
+    const prefix__hex_encoded = Buffer.from(SIGNATURE_DOMAIN_SEPARATION_REMOVE_DATACAP).toString('hex')
+    const encoded_params_buffer = this.methods.encode(this.methods.RemoveDataCapProposal, orderedProposalParams)
+    const encoded_hex_params = encoded_params_buffer.toString('hex')
+    const txBlob = prefix__hex_encoded.concat(encoded_hex_params)
+    return txBlob
   }
 
   async proposeRemoveDataCap(
