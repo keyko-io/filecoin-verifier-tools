@@ -730,17 +730,10 @@ function make(testnet) {
     const REMOVE_DATACAP_PROPOSAL = [
         "cbor",
         [
-            'string', // sigDomainSeparationString
             'address', // verifiedClient
             'bigint', // dataCapAmount
             ["list", "int"] // removalProposalID
         ]
-        // {
-        //     sigDomainSeparationString: 'string',
-        //     verifiedClient: 'address',
-        //     dataCapAmount: 'bigint',
-        //     removalProposalID: ["list", "int"]
-        // }
     ];
 
     const reg = {
