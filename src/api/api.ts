@@ -79,7 +79,7 @@ export class VerifyAPI {
     const prefix__hex_encoded = Buffer.from(SIGNATURE_DOMAIN_SEPARATION_REMOVE_DATACAP).toString('hex')
 
     const encoded_params_buffer = this.methods.encode(this.methods.RemoveDataCapProposal, orderedProposalParams)
-    const encoded_hex_params =encoded_params_buffer.toString('hex')
+    const encoded_hex_params = encoded_params_buffer.toString('hex')
 
     const txBlob = prefix__hex_encoded.concat(encoded_hex_params)
 

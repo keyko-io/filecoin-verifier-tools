@@ -17,7 +17,7 @@ const api = new VerifyAPI.VerifyAPI(VerifyAPI.VerifyAPI.standAloneProvider(endpo
 
 async function removeDatacap() {
   try {
-    const encoded_object = api.encodeRemoveDataCapParameters({verifiedClient:'t0102', dataCapAmount:34359738368, removalProposalID:[0]})
+    const encoded_object = api.encodeRemoveDataCapParameters({ verifiedClient: 't0102', dataCapAmount: 34359738368, removalProposalID: [0] })
     // console.log("encoded_object",encoded_object)
     // console.log('\n')
 
