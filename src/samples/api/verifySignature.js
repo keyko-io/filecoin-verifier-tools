@@ -7,40 +7,47 @@ const endpointUrl = constants.lotus_endpoint
 const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.wpOIystriKCXuvbxQnMnYP8tNxgi3Uwn3yeBpeiZJtw'
 
 const verifiersWallet = new MockWallet(constants.verifier_mnemonic, constants.path)
-
-// const api = new VerifyAPI(VerifyAPI.standAloneProvider(endpointUrl, {
-//   token,
-// }), verifiersWallet)
 const api = new VerifyAPI.VerifyAPI(VerifyAPI.VerifyAPI.standAloneProvider(endpointUrl, {
   token,
 }), verifiersWallet)
 
+const bytes_array_to_compare = [102, 105, 108, 95, 114, 101, 109, 111, 118, 101, 100, 97, 116, 97, 99, 97, 112, 58, 131, 66, 0, 102, 70, 0, 8, 0, 0, 0, 0, 129, 0]
+
+const hexStringToCompare = '66696c5f72656d6f7665646174616361703a83420066460008000000008100'
+
 async function removeDatacap() {
   try {
-    const encoded_object = api.encodeRemoveDataCapParameters({ verifiedClient: 't0102', dataCapAmount: 34359738368, removalProposalID: [0] })
-    // console.log("encoded_object",encoded_object)
-    // console.log('\n')
+    const params = { verifiedClient: 't0102', dataCapAmount: 34359738368, removalProposalID: [0] }
+    const encoded_object = api.encodeRemoveDataCapParameters(params)
 
-    // const prefix = Buffer.from("fil_removedatacap:").toString('hex')
-    // console.log("prefix",prefix)
-    // console.log('\n')
-
-    // const encoded_string_hex = encoded_object.toString('hex')
-    // console.log("encoded_string_hex",encoded_string_hex)
-    // console.log('\n')
-
-    // const full_buff = prefix.concat(encoded_string_hex)
-    // console.log("full_buff",full_buff)
-    // console.log('\n')
-
-    console.log('66696c5f72656d6f7665646174616361703a83420066460008000000008100')
+    console.log(hexStringToCompare)
     console.log(encoded_object)
     console.log('\n')
-    console.log(encoded_object === '66696c5f72656d6f7665646174616361703a83420066460008000000008100')
+    console.log('is the txBlob correct?', encoded_object === hexStringToCompare)
+
+    console.log('is the bytes array correct?', compareStringToBytesArray(encoded_object, bytes_array_to_compare))
     process.exit(0)
   } catch (error) {
     console.log(error)
   }
+}
+
+function compareStringToBytesArray(string, compareArray) {
+  const pairs = string.match(/.{1,2}/g)
+  // console.log(pairs)
+
+  const byteArray = []
+  for (let i = 0; i < pairs.length; i++) {
+    const byte = parseInt(pairs[i], 16)
+    byteArray.push(byte)
+  }
+
+  // console.log(byteArray);
+  // console.log(compareArray);
+  const hasSameLength = byteArray.length === compareArray.length
+  const everyValueIsSame = byteArray.every((elem, i) => elem === compareArray[i])
+
+  return hasSameLength && everyValueIsSame
 }
 
 removeDatacap()
