@@ -34,7 +34,6 @@ async function removeDatacap() {
 
 function compareStringToBytesArray(string, compareArray) {
   const pairs = string.match(/.{1,2}/g)
-  // console.log(pairs)
 
   const byteArray = []
   for (let i = 0; i < pairs.length; i++) {
@@ -42,8 +41,6 @@ function compareStringToBytesArray(string, compareArray) {
     byteArray.push(byte)
   }
 
-  // console.log(byteArray);
-  // console.log(compareArray);
   const hasSameLength = byteArray.length === compareArray.length
   const everyValueIsSame = byteArray.every((elem, i) => elem === compareArray[i])
 
