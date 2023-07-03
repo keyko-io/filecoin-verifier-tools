@@ -8,7 +8,7 @@ import { decode } from 'cbor'
 
 const cacheAddress = {}
 const cacheKey = {}
-const SignatureDomainSeparation_RemoveDataCap = "fil_removedatacap:"
+const SIGNATURE_DOMAIN_SEPARATION_REMOVE_DATACAP = "fil_removedatacap:"
 
 export class VerifyAPI {
   constructor(lotusClient, walletContext, testnet = true) {
@@ -76,8 +76,7 @@ export class VerifyAPI {
 
   encodeRemoveDataCapParameters(message: { verifiedClient: string, dataCapAmount: string, removalProposalID: number[] }) {
     const orderedProposalParams = [message.verifiedClient, message.dataCapAmount, message.removalProposalID]
-    const prefix = "fil_removedatacap:"
-    const prefix__hex_encoded = Buffer.from(prefix).toString('hex')
+    const prefix__hex_encoded = Buffer.from(SIGNATURE_DOMAIN_SEPARATION_REMOVE_DATACAP).toString('hex')
 
     const encoded_params_buffer = this.methods.encode(this.methods.RemoveDataCapProposal, orderedProposalParams)
     const encoded_hex_params =encoded_params_buffer.toString('hex')
